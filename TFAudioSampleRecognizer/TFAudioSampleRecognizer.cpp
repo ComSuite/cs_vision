@@ -219,7 +219,7 @@ void window_function(cv::Mat& data, float** vals, float& min, float& max)
 }
 
 #ifdef __HAS_CUDA__
-void TFAudioSampleRecognizer::draw_detection(cv::cuda::GpuMat* detect_frame, DetectionItem* detection, bool is_show_mask)
+void TFAudioSampleRecognizer::draw_detection(cv::cuda::GpuMat* detect_frame, DetectionItem* detection, cv::Scalar& background_color, bool is_show_mask)
 #else
 void TFAudioSampleRecognizer::draw_detection(cv::Mat* detect_frame, DetectionItem* detection)
 #endif
@@ -231,14 +231,14 @@ void TFAudioSampleRecognizer::draw_detection(cv::Mat* detect_frame, DetectionIte
     float min = 0;
     float max = 0;
 
-    window_function(input, &vals, min, max); // * sizeof(float)
+    window_function(input, &vals, min, max);
     if (min == max)
         return;
     
     float* p = vals;
     int n = (input.cols / sizeof(float));
     cv::Mat frame(640, n, CV_8UC3);
-    frame.setTo(cv::Scalar(00, 00, 0xdd));
+    frame.setTo(background_color);
 
     for (int i = 0; i < n - 1; i++) {
         int x0 = i;
@@ -250,7 +250,7 @@ void TFAudioSampleRecognizer::draw_detection(cv::Mat* detect_frame, DetectionIte
     }
 
     cv::resize(frame, frame, cv::Size(640, 640), 0, 0, cv::INTER_AREA);
-    draw_label(frame, detection->label, 10, 10);
+    draw_label(frame, detection->label, 10, 10, background_color, color);
 
     detect_frame->upload(frame);
 

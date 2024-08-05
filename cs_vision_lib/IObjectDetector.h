@@ -142,14 +142,14 @@ namespace cs
 		float get_mean_detect_duration();
 
 #ifdef __HAS_CUDA__
-		virtual void draw_detection(cv::cuda::GpuMat* detect_frame, DetectionItem* detection, bool is_show_mask);
+		virtual void draw_detection(cv::cuda::GpuMat* detect_frame, DetectionItem* detection, cv::Scalar& background_color, bool is_show_mask);
 		void draw_mask(DetectionItem* det, cv::cuda::GpuMat* frame, const cv::Scalar& color = cv::Scalar(255, 255, 255));
 #else
-		virtual void draw_detection(cv::Mat* detect_frame, DetectionItem* detection);
+		virtual void draw_detection(cv::Mat* detect_frame, DetectionItem* detection, bool is_show_mask);
 		void draw_mask(DetectionItem* det, cv::Mat* frame, const cv::Scalar color = cv::Scalar(255, 255, 255));
 #endif
 
-		void draw_label(cv::Mat& input_image, std::string& label, int left, int top);
+		void draw_label(cv::Mat& input_image, std::string& label, int left, int top, cv::Scalar& background_color, cv::Scalar& text_color);
 
 		std::string name = "";
 		int id = 0;

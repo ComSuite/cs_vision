@@ -121,6 +121,7 @@ bool init_detectors_environment(DetectorEnvironment* environment, camera_setting
 	environment->camera_id = set->id;
 	environment->mqtt_detection_topic = set->mqtt_detection_topic;
 	environment->mqtt_is_send_empty = set->mqtt_is_send_empty;
+	environment->background_color = set->background_color;
 
 	create_video_streamer(environment, set);
 	connect_to_mqtt_broker(set, environment);
@@ -135,7 +136,7 @@ bool init_detectors_environment(DetectorEnvironment* environment, camera_setting
 		environment->execute_mode = set->execute_mode;
 	}
 #endif
-
+	
 	for (auto& detector : set->detectors) {
 		IObjectDetector* _detector = create_detector(detector->kind);
 		if (_detector != nullptr) {
@@ -202,7 +203,7 @@ void draw_detections(DetectorEnvironment* env, cv::Mat* detect_frame, list<Detec
 		if (det->is_draw) {
 			IObjectDetector* detector = env->get_detector(det->detector_id);
 			if (detector != nullptr) {
-				detector->draw_detection(detect_frame, det, is_show_mask);
+				detector->draw_detection(detect_frame, det, env->background_color, is_show_mask);
 			}
 		}
 	}

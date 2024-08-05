@@ -84,6 +84,7 @@ namespace cs
 		bool is_draw_detections = false;
 		cv::Size original_size;
 		cv::Size border_dims;
+		cv::Scalar background_color = cv::Scalar(255, 255, 255);
 
 		IObjectDetector* get_detector(int detector_id)
 		{

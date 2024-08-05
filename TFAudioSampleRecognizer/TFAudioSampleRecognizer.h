@@ -46,9 +46,9 @@ namespace cs
 		virtual int detect_batch(const std::vector<cv::Mat*>& input, int& current_id, bool is_draw = false) override { return 0; }
 
 #ifdef __HAS_CUDA__
-		virtual void draw_detection(cv::cuda::GpuMat* detect_frame, DetectionItem* detection, bool is_show_mask) override;
+		virtual void draw_detection(cv::cuda::GpuMat* detect_frame, DetectionItem* detection, cv::Scalar& background_color, bool is_show_mask) override;
 #else
-		virtual void draw_detection(cv::Mat* detect_frame, DetectionItem* detection) override;
+		virtual void draw_detection(cv::Mat* detect_frame, DetectionItem* detectioncv::Scalar& background_color, bool is_show_mask) override;
 #endif
 	private:
 		TfLiteModel* model = nullptr;
