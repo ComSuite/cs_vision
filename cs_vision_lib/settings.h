@@ -121,6 +121,7 @@ namespace cs
 		INPUT_OUTPUT_DEVICE_KIND output_kind = INPUT_OUTPUT_DEVICE_KIND::INPUT_OUTPUT_DEVICE_KIND_NONE;
 
 		cv::Scalar background_color = cv::Scalar(255, 255, 255);
+		std::string aliases_path = "";
 
 		int get_attempts_count() { return attempts_count; };
 		int get_is_convert_to_gray() { return is_convert_to_gray; };

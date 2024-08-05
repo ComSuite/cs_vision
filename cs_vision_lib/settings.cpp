@@ -123,6 +123,7 @@ int camera_settings::parse(rapidjson::Value& root)
 	output_kind = static_cast<INPUT_OUTPUT_DEVICE_KIND>(json_get_int(root, "output_kind", static_cast<int>(output_kind)));
 
 	background_color = cv_string_to_color(json_get_string(root, "background_color", "0x00FFFFFF"));
+	aliases_path = json_get_string(root, "aliases_path", aliases_path.c_str());
 
 #ifdef __WITH_SCRIPT_LANG__
 	on_postprocess = json_get_string(root, "on_postprocess", on_postprocess.c_str());

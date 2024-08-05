@@ -122,6 +122,8 @@ bool init_detectors_environment(DetectorEnvironment* environment, camera_setting
 	environment->mqtt_detection_topic = set->mqtt_detection_topic;
 	environment->mqtt_is_send_empty = set->mqtt_is_send_empty;
 	environment->background_color = set->background_color;
+	environment->aliases_path = set->aliases_path;
+	environment->aliases.clear();
 
 	create_video_streamer(environment, set);
 	connect_to_mqtt_broker(set, environment);
