@@ -14,6 +14,7 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)aliases.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)camera_loop.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)command_processor.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)IObjectDetector.cpp" />
@@ -22,6 +23,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)settings.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)aliases.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)camera_loop.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)camera_loop_utils.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)command_processor.h" />

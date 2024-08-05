@@ -39,6 +39,7 @@
 #ifdef __WITH_SCRIPT_LANG__
 #include "CSScript.h"
 #endif
+#include "aliases.h"
 
 namespace cs
 {
