@@ -1,0 +1,33 @@
+curl
+sudo apt-get install curl
+
+cmake
+sudo apt install cmake
+
+wget -O tensorflow.zip https://github.com/tensorflow/tensorflow/archive/v2.4.1.zip
+unzip tensorflow.zip
+mv tensorflow-2.4.1 tensorflow
+cd tensorflow/
+./tensorflow/lite/tools/make/download_dependencies.sh
+
+file: /home/marmot/tensorflow/tensorflow/lite/tools/make/downloads/ruy/ruy/block_map.cc
+add: #include <limits>
+
+./tensorflow/lite/tools/make/build_aarch64_lib.sh
+cd ~/tensorflow/tensorflow/lite/tools/make/downloads/flatbuffers
+mkdir build
+cd build/
+cmake ..
+make -j4
+sudo make install
+sudo ldconfig
+cd ~
+rm tensorflow.zip 
+cd tensorflow/tensorflow/lite/tools/make/
+sudo make install
+
+sudo find / -name *tensorflow*.so
+sudo find / -name libtensorflow-lite.*
+
+https://qengineering.eu/install-tensorflow-2-lite-on-jetson-nano.html
+

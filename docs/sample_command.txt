@@ -1,0 +1,234 @@
+**************************************************************************                          
+						  Commands and responses
+						         version 1.4
+								 
+Author: Alex Epstine
+mail: alex@comsuite.co.il
+Date: 22 Jun 2024
+**************************************************************************                          
+
+This document describes examples of currently supported commands and responses.
+
+Any commands should be sended via MQTT broker (mosquitto) from "client" (any external application) to "server" - Vision hosted computer, for example Jetson Orin Nano. THe field named "req_id" is unique for your system number that you can use for syncronize commands and responses. This field is optional, as is the "timestamp".
+
+1. Restart (1)
+*************************************
+Description: The service will be restarted and the new settings will be applied. You should use this command if you want to apply the settings immediately. 
+
+Command: 
+channel: mqtt_command_topic
+
+sample content:
+
+{
+	"timestamp" : 13312123,
+	"req_id" : 10,
+    "command": {
+        "command_id": 1,
+        "device_id": 1
+    },
+    "command_version_high": 1,
+    "command_version_low": 4,
+    "payload": {
+    }
+}
+
+Response:
+channel: mqtt_response_topic
+
+sample content:
+
+{
+	"timestamp" : 13312125,
+	"req_id" : 10,
+    "command_version_high": 1,
+    "command_version_low": 4,
+    "response": {
+        "command_id": 1,
+        "device_id": 1,
+		"error_code" : 0,
+		"error_string": ""
+    }
+}
+
+2. Get settings (4)
+*************************************
+Command:
+channel: mqtt_command_topic
+
+sample content:
+
+{
+	"timestamp" : 13312123,
+	"req_id" : 11,
+    "command_version_high": 1,
+    "command_version_low": 4,
+    "command": {
+        "command_id": 4,
+        "device_id": 1
+    },
+    "payload": {
+    }
+}
+
+Response: 
+channel: mqtt_settings_get_topic
+
+content: The whole settings file. All fields from secrets_dictionary will be replaced with asterisks.
+
+channel: mqtt_response_topic
+
+sample content:
+
+{
+	"timestamp" : 13312125,
+	"req_id" : 10,
+    "command_version_high": 1,
+    "command_version_low": 4,
+    "response": {
+        "command_id": 4,
+        "device_id": 1,
+		"error_code" : 0,
+		"error_string": ""
+    }
+}
+
+3. Set settings (3)
+*************************************
+Command:
+channel: mqtt_command_topic
+
+sample content:
+
+{
+	"timestamp" : 13312123,
+	"req_id" : 12,
+    "command": {
+        "command_id": 3,
+        "device_id": "1"
+    },
+    "command_version_high": 1,
+    "command_version_low": 4,
+    "payload": {
+        "values": [
+            {
+                "path": "settings/alarm_duration",
+                "value": 0
+            },
+            {
+                "path": "settings/cameras[0]/detectors[0]/is_draw_detections",
+                "value": true
+            },
+            {
+                "path": "settings/cameras[0]/detectors[0]/input_tensor_name",
+                "value": "images"
+            },
+            {
+                "path": "settings/cameras[0]/rotate_angle",
+                "value": 7.2
+            }
+        ]
+    }
+}
+
+Response: 
+channel: mqtt_response_topic
+
+sample content:
+
+{
+	"timestamp" : 13312125,
+	"req_id" : 12,
+    "command_version_high": 1,
+    "command_version_low": 4,
+    "response": {
+        "command_id": 3,
+        "device_id": 1,
+		"error_code" : 0,
+		"error_string": ""
+    }
+}
+
+4. Restore from backup (8)
+*************************************
+channel: mqtt_command_topic
+
+sample content:
+
+{
+	"timestamp" : 13312123,
+	"req_id" : 13,
+    "command_version_high": 1,
+    "command_version_low": 4,
+    "command": {
+        "command_id": 8,
+        "device_id": 1
+    },
+    "payload": {
+    }
+}
+
+Response:
+channel: mqtt_response_topic
+
+sample content:
+
+{
+	"timestamp" : 13312125,
+	"req_id" : 13,
+    "command_version_high": 1,
+    "command_version_low": 4,
+    "response": {
+        "command_id": 8,
+        "device_id": 1,
+		"error_code" : 0,
+		"error_string": ""
+    }
+}
+
+5. Ping (9)
+*************************************
+channel: mqtt_command_topic
+
+sample content:
+
+{
+	"timestamp" : 13312123,
+	"req_id" : 19,
+    "command_version_high": 1,
+    "command_version_low": 4,
+    "command": {
+        "command_id": 9,
+        "device_id": 1
+    },
+    "payload": {
+    }
+}
+
+Response:
+channel: mqtt_ping_topic
+
+sample content:
+
+{
+	"timestamp" : 13312125,
+	"req_id" : 19,
+    "command_version_high": 1,
+    "command_version_low": 4,
+    "response": {
+        "command_id": 9,
+        "device_id": 1,
+		"error_code" : 0,
+		"error_string": "ping"
+    }
+}
+
+6. Error codes
+*************************************
+ERROR_NO_ERROR = 0;
+ERROR_INTERNAL_ERROR = 1;
+ERROR_NOT_ENOUGHT_MEMORY = 2;
+ERROR_INVALID_SETTINGS_VERSION = 3;
+int ERROR_INVALID_COMMAND_VERSION = 4;
+ERROR_BAD_COMMAND_ID = 5;
+ERROR_CAN_NOT_RESTORE_FROM_BACKUP = 6;

@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|ARM">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM">
+      <Configuration>Release</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|ARM64">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM64">
+      <Configuration>Release</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x86">
+      <Configuration>Debug</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x86">
+      <Configuration>Release</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{66ac5979-e2f7-49eb-874d-1cfec12d5f84}</ProjectGuid>
+    <Keyword>Linux</Keyword>
+    <RootNamespace>cs_vision_orin_nano</RootNamespace>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <ApplicationType>Linux</ApplicationType>
+    <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
+    <TargetLinuxPlatform>Generic</TargetLinuxPlatform>
+    <LinuxProjectType>{2238F9CD-F817-4ECC-BD14-2524D2669B35}</LinuxProjectType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared">
+    <Import Project="..\ChaiScript\ChaiScript.vcxitems" Label="Shared" />
+    <Import Project="..\cs_script\cs_script.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_common\cs_vision_common.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_lib\cs_vision_lib.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_yolov5_trt\cs_vision_yolov5_trt.vcxitems" Label="Shared" />
+    <Import Project="..\rapidjson\rapidjson.vcxitems" Label="Shared" />
+    <Import Project="..\user_interface\user_interface.vcxitems" Label="Shared" />
+    <Import Project="..\video_streamer\video_streamer.vcxitems" Label="Shared" />
+    <Import Project="..\yolov5_tensorrt\yolov5_tensorrt.vcxitems" Label="Shared" />
+    <Import Project="..\yolov8_ocvdnn\yolov8_ocvdnn.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_yolov5_tflite\cs_vision_yolov5_tflite.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_yolov8_trt\cs_vision_yolov8_trt.vcxitems" Label="Shared" />
+    <Import Project="..\TFAudioSampleRecognizer\TFAudioSampleRecognizer.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_portaudio\cs_vision_portaudio.vcxitems" Label="Shared" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>
+    </IncludePath>
+    <LibraryPath>
+    </LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+    <IncludePath>/usr/include/opencv4/;/usr/local/cuda/include;~/tensorflow/;../ChaiScript/include</IncludePath>
+    <LibraryPath>/usr/lib/aarch64-linux-gnu;/usr/local/cuda/targets/aarch64-linux/lib;~/tensorflow/tensorflow/lite/tools/make/gen/linux_aarch64/lib</LibraryPath>
+    <TargetExt />
+  </PropertyGroup>
+  <ItemGroup>
+    <ClCompile Include="camera_loop_utils.cpp" />
+  </ItemGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>__LINUX__;_DEBUG_;__WITH_FILESYSTEM_CXX__;__WITH_SCRIPT_LANG__;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;__USE_POSIX199309;_____GPIO_NVIDIA_JETSON____;DBUILD_ZLIB=ON;__HAS_CUDA__;YOLOV5_OPENCV_HAS_CUDA;_WITH_VPI</PreprocessorDefinitions>
+      <CppLanguageStandard>c++2a</CppLanguageStandard>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>OpenGL;GLX;GLU;cuda;cudart;cudadevrt;nvrtc;nvrtc-builtins;nvonnxparser;nvinfer;nvparsers;nvinfer_plugin;opencv_alphamat;opencv_aruco;opencv_bgsegm;opencv_bioinspired;opencv_calib3d;opencv_ccalib;opencv_core;opencv_datasets;opencv_dnn;opencv_hfs;opencv_imgproc;opencv_intensity_transform;opencv_line_descriptor;opencv_mcc;opencv_ml;opencv_highgui;opencv_img_hash;opencv_features2d;opencv_objdetect;opencv_plot;opencv_quality;opencv_video;opencv_flann;opencv_videoio;opencv_videostab;opencv_imgcodecs;opencv_photo;opencv_rapid;opencv_reg;opencv_rgbd;opencv_saliency;opencv_shape;opencv_stereo;opencv_stitching;opencv_structured_light;opencv_superres;opencv_dnn_superres;opencv_surface_matching;opencv_tracking;opencv_xfeatures2d;opencv_ximgproc;opencv_xobjdetect;opencv_xphoto;opencv_cudaarithm;opencv_cudabgsegm;opencv_cudacodec;opencv_cudafeatures2d;opencv_cudafilters;opencv_cudaimgproc;opencv_cudaobjdetect;opencv_cudaoptflow;opencv_cudastereo;opencv_cudawarping;opencv_cudev;opencv_gapi;mosquitto;pthread;dl</LibraryDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+    <ClCompile>
+      <PreprocessorDefinitions>__LINUX__;_DEBUG_;__WITH_FILESYSTEM_CXX__;__WITH_SCRIPT_LANG__;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;__USE_POSIX199309;_____GPIO_NVIDIA_JETSON____;DBUILD_ZLIB=ON;__HAS_CUDA__;YOLOV5_OPENCV_HAS_CUDA;_WITH_VPI</PreprocessorDefinitions>
+      <CppLanguageStandard>c++2a</CppLanguageStandard>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>OpenGL;GLX;GLU;cuda;cudart;cudadevrt;nvrtc;nvrtc-builtins;nvonnxparser;nvinfer;nvparsers;nvinfer_plugin;opencv_alphamat;opencv_aruco;opencv_bgsegm;opencv_bioinspired;opencv_calib3d;opencv_ccalib;opencv_core;opencv_datasets;opencv_dnn;opencv_hfs;opencv_imgproc;opencv_intensity_transform;opencv_line_descriptor;opencv_mcc;opencv_ml;opencv_highgui;opencv_img_hash;opencv_features2d;opencv_objdetect;opencv_plot;opencv_quality;opencv_video;opencv_flann;opencv_videoio;opencv_videostab;opencv_imgcodecs;opencv_photo;opencv_rapid;opencv_reg;opencv_rgbd;opencv_saliency;opencv_shape;opencv_stereo;opencv_stitching;opencv_structured_light;opencv_superres;opencv_dnn_superres;opencv_surface_matching;opencv_tracking;opencv_xfeatures2d;opencv_ximgproc;opencv_xobjdetect;opencv_xphoto;opencv_cudaarithm;opencv_cudabgsegm;opencv_cudacodec;opencv_cudafeatures2d;opencv_cudafilters;opencv_cudaimgproc;opencv_cudaobjdetect;opencv_cudaoptflow;opencv_cudastereo;opencv_cudawarping;opencv_cudev;opencv_gapi;mosquitto;tensorflow-lite;pthread;portaudio;dl</LibraryDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

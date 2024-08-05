@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{65d302be-4f9b-44f5-a4af-fe415505d32d}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)engine.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)TRTYOLOv8ObjectDetector.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)yolov8.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)engine.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TRTYOLOv8ObjectDetector.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yolov8.h" />
+  </ItemGroup>
+</Project>

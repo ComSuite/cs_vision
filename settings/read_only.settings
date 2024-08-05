@@ -1,0 +1,12 @@
+config_version_high
+config_version_low
+device_kind
+settings/is_use_readonly_checker
+settings/readonly_checker_dictionary
+settings/secrets_dictionary
+settings/cameras[0]/detectors[0]/labels_path
+settings/cameras[0]/detectors[1]/labels_path
+settings/mqtt_command_topic
+settings/mqtt_broker_ip
+settings/mqtt_broker_port
+

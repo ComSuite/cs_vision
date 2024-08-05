@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{051bcae7-c9d7-4bf8-940a-66148a6ae8b0}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\chaiscript.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\chaiscript_basic.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\chaiscript_defines.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\chaiscript_stdlib.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\chaiscript_threading.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\dispatchkit\any.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\dispatchkit\bad_boxed_cast.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\dispatchkit\bind_first.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\dispatchkit\bootstrap.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\dispatchkit\bootstrap_stl.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\dispatchkit\boxed_cast.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\dispatchkit\boxed_cast_helper.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\dispatchkit\boxed_number.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\dispatchkit\boxed_value.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\dispatchkit\callable_traits.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\dispatchkit\dispatchkit.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\dispatchkit\dynamic_object.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\dispatchkit\dynamic_object_detail.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\dispatchkit\exception_specification.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\dispatchkit\function_call.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\dispatchkit\function_call_detail.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\dispatchkit\function_params.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\dispatchkit\function_signature.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\dispatchkit\handle_return.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\dispatchkit\operators.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\dispatchkit\proxy_constructors.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\dispatchkit\proxy_functions.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\dispatchkit\proxy_functions_detail.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\dispatchkit\register_function.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\dispatchkit\short_alloc.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\dispatchkit\type_conversions.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\dispatchkit\type_info.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\language\chaiscript_algebraic.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\language\chaiscript_common.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\language\chaiscript_engine.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\language\chaiscript_eval.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\language\chaiscript_optimizer.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\language\chaiscript_parser.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\language\chaiscript_posix.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\language\chaiscript_prelude.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\language\chaiscript_prelude_docs.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\language\chaiscript_tracer.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\language\chaiscript_unknown.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\language\chaiscript_windows.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\utility\fnv1a.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\utility\hash.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\utility\json.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\utility\json_wrap.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\utility\quick_flat_map.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\utility\stack_vector.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\utility\static_string.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\chaiscript\utility\utility.hpp" />
+  </ItemGroup>
+</Project>

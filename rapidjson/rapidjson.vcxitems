@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{b712c436-e9e0-45b6-beac-c397891dbec0}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)allocators.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)document.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)encodedstream.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)encodings.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)error\en.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)error\error.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)filereadstream.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)filewritestream.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)fwd.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)internal\biginteger.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)internal\diyfp.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)internal\dtoa.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)internal\ieee754.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)internal\itoa.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)internal\meta.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)internal\pow10.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)internal\regex.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)internal\stack.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)internal\strfunc.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)internal\strtod.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)internal\swap.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)istreamwrapper.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)memorybuffer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)memorystream.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)msinttypes\inttypes.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)msinttypes\stdint.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ostreamwrapper.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)pointer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)prettywriter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)rapidjson.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)reader.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)schema.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)stream.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)stringbuffer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)writer.h" />
+  </ItemGroup>
+</Project>

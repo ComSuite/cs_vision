@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{6f93440d-6b30-4ead-b564-d80ab54c34a5}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)camera_loop.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)command_processor.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)IObjectDetector.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)main.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MQTTClient.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)settings.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)camera_loop.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)camera_loop_utils.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)command_processor.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)DetectorEnvironment.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)IObjectDetector.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)JsonCOCOLabels.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MQTTClient.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)settings.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)types.h" />
+  </ItemGroup>
+</Project>

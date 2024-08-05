@@ -1,0 +1,10 @@
+﻿{
+    "profiles": {
+      "AGLStudio (Package)": {
+        "commandName": "MsixPackage"
+      },
+      "AGLStudio (Unpackaged)": {
+        "commandName": "Project"
+      }
+    }
+}

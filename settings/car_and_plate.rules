@@ -1,0 +1,14 @@
+{
+    "rules": [
+        {
+            "id": 0,
+            "score": 0.5,
+            "description": "car"
+        },
+        {
+            "id": 1,
+            "score": 0.5,
+            "description": "plate"
+        }
+    ]
+}

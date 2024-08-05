@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{423494c3-ef27-45c7-96b8-096b70eefb32}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)HTTPVideoStreamer.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)SimpleGStreamerVideoStreamer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)http_message.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)IVideoStreamer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)mjpeg_streamer.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SimpleGStreamerVideoStreamer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)version.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)HTTPVideoStreamer.h" />
+  </ItemGroup>
+</Project>

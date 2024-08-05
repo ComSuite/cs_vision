@@ -1,0 +1,10 @@
+C:\Projects\SmartMedic\Sources\icons\aortic.png
+C:\Projects\SmartMedic\Sources\icons\asthma.png
+C:\Projects\SmartMedic\Sources\icons\bronchral.png
+C:\Projects\SmartMedic\Sources\icons\crackles.png
+C:\Projects\SmartMedic\Sources\icons\creptation.png
+C:\Projects\SmartMedic\Sources\icons\normal.png
+C:\Projects\SmartMedic\Sources\icons\pleuraleffusion.png
+C:\Projects\SmartMedic\Sources\icons\pneumonia.png
+C:\Projects\SmartMedic\Sources\icons\rhonching.png
+

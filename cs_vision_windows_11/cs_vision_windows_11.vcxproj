@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{04fef7b3-b28a-4a5a-957a-10aa384413c0}</ProjectGuid>
+    <RootNamespace>csvisionwindows11</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+    <Import Project="..\cs_vision_common\cs_vision_common.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_lib\cs_vision_lib.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_yolov5_tflite\cs_vision_yolov5_tflite.vcxitems" Label="Shared" />
+    <Import Project="..\rapidjson\rapidjson.vcxitems" Label="Shared" />
+    <Import Project="..\video_streamer\video_streamer.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_yolov5_trt\cs_vision_yolov5_trt.vcxitems" Label="Shared" />
+    <Import Project="..\yolov5_tensorrt\yolov5_tensorrt.vcxitems" Label="Shared" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>G:\Nvidia\TensorRT-8.5.3.1.Windows10.x86_64.cuda-11.8.cudnn8.6\TensorRT-8.5.3.1\include;$(CUDA_PATH)\include;$(MOSQUITTO_DIR)\devel;C:\opencv\include;$(TENSORFLOW_LITE_PATH)\include;C:\Program Files\NVIDIA\CUDNN\v9.2\include;../ChaiScript/include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.4\lib\x64;C:\Program Files\NVIDIA\CUDNN\v9.2\lib;C:\opencv\lib;C:\Program Files\mosquitto\devel;G:\Nvidia\TensorRT-8.5.3.1.Windows10.x86_64.cuda-11.8.cudnn8.6\TensorRT-8.5.3.1\lib;$(TENSORFLOW_LITE_PATH)\libs\windows_x86_64;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_DEBUG_;__HAS_CUDA__;_CRT_SECURE_NO_WARNING;__WITH_FILESYSTEM_CXX__;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;__USE_POSIX199309;DBUILD_ZLIB=ON;YOLOV5_OPENCV_HAS_CUDA;_WITH_VPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <AdditionalDependencies>OpenCL.lib;opengl32.lib;nppc.lib;nppial.lib;nppicc.lib;nppidei.lib;nppif.lib;nppig.lib;nppim.lib;nppist.lib;nppisu.lib;nppitc.lib;npps.lib;nvrtc.lib;cuda.lib;cudart.lib;cudadevrt.lib;nvonnxparser.lib;nvinfer.lib;nvparsers.lib;nvinfer_plugin.lib;aded.lib;IlmImfd.lib;ippicvmt.lib;ippiwd.lib;ittnotifyd.lib;libjpeg-turbod.lib;libopenjp2d.lib;libpngd.lib;libprotobufd.lib;libtiffd.lib;libwebpd.lib;quircd.lib;zlibd.lib;opencv_aruco455d.lib;opencv_bgsegm455d.lib;opencv_bioinspired455d.lib;opencv_calib3d455d.lib;opencv_ccalib455d.lib;opencv_core455d.lib;opencv_datasets455d.lib;opencv_dnn455d.lib;opencv_hfs455d.lib;opencv_imgproc455d.lib;opencv_intensity_transform455d.lib;opencv_line_descriptor455d.lib;opencv_mcc455d.lib;opencv_ml455d.lib;opencv_highgui455d.lib;opencv_img_hash455d.lib;opencv_features2d455d.lib;opencv_objdetect455d.lib;opencv_plot455d.lib;opencv_quality455d.lib;opencv_video455d.lib;opencv_flann455d.lib;opencv_videoio455d.lib;opencv_videostab455d.lib;opencv_imgcodecs455d.lib;opencv_photo455d.lib;opencv_rapid455d.lib;opencv_reg455d.lib;opencv_rgbd455d.lib;opencv_saliency455d.lib;opencv_shape455d.lib;opencv_stereo455d.lib;opencv_stitching455d.lib;opencv_structured_light455d.lib;opencv_superres455d.lib;opencv_dnn_superres455d.lib;opencv_surface_matching455d.lib;opencv_tracking455d.lib;opencv_xfeatures2d455d.lib;opencv_ximgproc455d.lib;opencv_xobjdetect455d.lib;opencv_xphoto455d.lib;opencv_cudaarithm455d.lib;opencv_cudabgsegm455d.lib;opencv_cudacodec455d.lib;opencv_cudafeatures2d455d.lib;opencv_cudafilters455d.lib;opencv_cudaimgproc455d.lib;opencv_cudaobjdetect455d.lib;opencv_cudaoptflow455d.lib;opencv_cudastereo455d.lib;opencv_cudawarping455d.lib;opencv_cudev455d.lib;opencv_gapi455d.lib;mosquitto.lib;tensorflowlite.dll.if.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>msvcprtd.lib</IgnoreSpecificDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="camera_loop_utils.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
