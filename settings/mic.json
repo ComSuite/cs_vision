@@ -74,7 +74,9 @@
 				"execute_always": false,
 				"execute_mode": 0,
 				"input_kind": 2,
-				"output_kind": 1
+				"output_kind": 1,
+				"background_color": "0x000000FF",
+				"aliases_path": "/home/marmot/settings/output.aliases"
 			}
         ],
         "gpios": [

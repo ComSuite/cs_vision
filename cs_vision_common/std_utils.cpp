@@ -26,6 +26,12 @@
 #include <ios>
 #include <iostream>
 #include <fstream>
+#include <streambuf>
+#include <sstream>
+
+#ifdef __WITH_FILESYSTEM_CXX__
+#include <filesystem>
+#endif
 
 const std::string WHITESPACE = " \n\r\t\f\v";
 
@@ -57,4 +63,20 @@ std::string read_str_file(const char* filename)
     ifs.read(bytes.data(), fileSize);
 
     return std::string(bytes.data(), fileSize);
+}
+
+bool is_file_exists(const char* filename)
+{
+#ifdef __WITH_FILESYSTEM_CXX__
+	return std::filesystem::exists(std::filesystem::path(filename));
+#else
+	std::ifstream ifs;
+	ifs.open(filename);
+
+	if (ifs.is_open()) {
+		ifs.close();
+		return true;
+	}
+#endif
+	return false;
 }

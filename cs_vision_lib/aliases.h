@@ -9,11 +9,16 @@ namespace cs
 	class aliases : public cs::JsonWrapper
 	{
 	public:
-		std::string get_alias(const std::string& camera_id, const std::string& topic, const std::string& name, const std::string& def_val);
+		void set_id(const char* id) 
+		{
+			this->id = id;
+		}
+		const std::string get_alias(const std::string& camera_id, const std::string& topic, const std::string& name, const std::string& def_val);
 	protected:
-		std::map<std::string, std::map<std::tuple<std::string, std::string>, std::string>> data;
-
 		int parse(rapidjson::Document& root) override;
+	private:
+		std::string id = "";
+		std::map<std::tuple<std::string, std::string>, std::string> data;
 	};
 }
 

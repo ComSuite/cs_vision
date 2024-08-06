@@ -86,8 +86,7 @@ namespace cs
 		cv::Size original_size;
 		cv::Size border_dims;
 		cv::Scalar background_color = cv::Scalar(255, 255, 255);
-		std::string aliases_path = "";
-		std::map<std::string, std::string> aliases;
+		aliases* field_aliases = nullptr;
 
 		IObjectDetector* get_detector(int detector_id)
 		{

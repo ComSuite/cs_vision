@@ -1,0 +1,28 @@
+{
+    "aliases": [
+        {
+			"camera_id" : "2",
+			"topic": "microphone/detections",
+            "name": "id",
+            "alias": "id1"
+        },
+        {
+			"camera_id" : "2",
+			"topic": "microphone/detections",
+            "name": "kind",
+            "alias": "kind2"
+        },
+        {
+			"camera_id" : "2",
+			"topic": "microphone/detections",
+            "name": "cls",
+            "alias": "class_id"
+        },
+        {
+			"camera_id" : "2",
+			"topic": "microphone/detections",
+            "name": "conf",
+            "alias": "score"
+        }
+	]
+}

@@ -27,6 +27,7 @@
 #include "../rapidjson/document.h"
 #include "MQTTWrapper.h"
 #include "IObjectDetector.h"
+#include "aliases.h"
 
 namespace cs
 {
@@ -37,9 +38,11 @@ namespace cs
 		MQTTClient(struct mosquitto* mosq);
 
 		void send_detection(const char* camera_id, const char* topic, std::list<DetectionItem*> detections);
+		void send_detection(const char* camera_id, const char* topic, std::list<DetectionItem*> detections, aliases* field_aliases);
 		void send_command_response(int command_id, const char* device_id, const char* topic, uint64_t req_id, int error_code, const char* error_string);
 	private:
 		void _send(const char* topic, rapidjson::Document& root);
+		void prepare_root(rapidjson::Document& root);
 	};
 }
 

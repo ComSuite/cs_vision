@@ -122,8 +122,13 @@ bool init_detectors_environment(DetectorEnvironment* environment, camera_setting
 	environment->mqtt_detection_topic = set->mqtt_detection_topic;
 	environment->mqtt_is_send_empty = set->mqtt_is_send_empty;
 	environment->background_color = set->background_color;
-	environment->aliases_path = set->aliases_path;
-	environment->aliases.clear();
+	if (::is_file_exists(set->aliases_path.c_str())) {
+		environment->field_aliases = new aliases();
+		if (environment->field_aliases != nullptr) {
+			environment->field_aliases->set_id(environment->camera_id.c_str());
+			environment->field_aliases->load(set->aliases_path.c_str());
+		}
+	}
 
 	create_video_streamer(environment, set);
 	connect_to_mqtt_broker(set, environment);
@@ -189,7 +194,7 @@ void send_results_thread(DetectorEnvironment* env, list<DetectionItem*>& detecti
 	if (env->mqtt_client == nullptr)
 		return;
 
-	env->mqtt_client->send_detection(env->camera_id.c_str(), env->mqtt_detection_topic.c_str(), detections);
+	env->mqtt_client->send_detection(env->camera_id.c_str(), env->mqtt_detection_topic.c_str(), detections, env->field_aliases);
 }
 
 #ifdef __HAS_CUDA__

@@ -32,6 +32,7 @@
 #include "../rapidjson/stringbuffer.h"
 #include "../rapidjson/istreamwrapper.h"
 #include "../rapidjson/ostreamwrapper.h"
+#include "std_utils.h"
 
 using namespace std;
 using namespace rapidjson;
@@ -39,15 +40,7 @@ using namespace cs;
 
 bool JsonWrapper::is_file_exists(const char* filename)
 {
-	ifstream ifs;
-	ifs.open(filename);
-
-	if (ifs.is_open()) {
-		ifs.close();
-		return true;
-	}
-
-	return false;
+	return ::is_file_exists(filename);
 }
 
 int JsonWrapper::load(const char* filename, string& json)

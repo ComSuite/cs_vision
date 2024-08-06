@@ -3,14 +3,13 @@
 using namespace std;
 using namespace cs;
 
-std::string aliases::get_alias(const std::string& camera_id, const std::string& topic, const std::string& name, const std::string& def_val)
+const std::string aliases::get_alias(const std::string& camera_id, const std::string& topic, const std::string& name, const std::string& def_val)
 {
-	if (data.find(camera_id) != data.end()) {
-		if (data.find(camera_id)->second.find(std::tuple(topic, name)) != data.find(camera_id)->second.end())
-			return data.find(camera_id)->second.find(std::tuple(topic, name))->second;
+	if (data.find(std::tuple(topic, name)) != data.end()) {
+		return data.find(std::tuple(topic, name))->second;
 	}
 
-	return "";
+	return def_val;
 }
 
 int aliases::parse(rapidjson::Document& root)
@@ -23,13 +22,12 @@ int aliases::parse(rapidjson::Document& root)
 			if (root["aliases"].IsArray()) {
 				auto _aliases = root["aliases"].GetArray();
 				for (auto& _alias : _aliases) {
-					string camera_id = json_get_string(_alias, "camera_id", "");
-					string topic = json_get_string(_alias, "topic", "");
-					string name = json_get_string(_alias, "name", "");
-					string alias = json_get_string(_alias, "alias", "");
+					if (this->id.compare(json_get_string(_alias, "camera_id", "")) == 0) {
+						string topic = json_get_string(_alias, "topic", "");
+						string name = json_get_string(_alias, "name", "");
+						string alias = json_get_string(_alias, "alias", "");
 
-					if (camera_id.length() > 0) {
-						data[camera_id][std::tuple(topic, name)] = alias;
+						data[std::tuple(topic, name)] = alias;
 					}
 				}
 			}

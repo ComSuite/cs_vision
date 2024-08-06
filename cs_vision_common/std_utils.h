@@ -121,3 +121,5 @@ bool txt_load_to(const char* file_path, T<std::string>& out)
 }
 
 std::string read_str_file(const char* filename);
+
+bool is_file_exists(const char* filename);

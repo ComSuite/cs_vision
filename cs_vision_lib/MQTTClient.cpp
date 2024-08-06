@@ -39,6 +39,80 @@ MQTTClient::MQTTClient(struct mosquitto* mosq) : MQTTWrapper(mosq)
 {
 }
 
+void MQTTClient::prepare_root(Document& root)
+{
+
+}
+
+void MQTTClient::send_detection(const char* camera_id, const char* topic, std::list<DetectionItem*> detections, aliases* field_aliases)
+{
+	if (field_aliases == nullptr)
+		return send_detection(camera_id, topic, detections);
+
+	Document root;
+	Value objects(kArrayType);
+
+	root.SetObject();
+	Document::AllocatorType& allocator = root.GetAllocator();
+
+	chrono::milliseconds ms = chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now().time_since_epoch());
+	root.AddMember("ts", ms.count(), root.GetAllocator());
+	root.AddMember("cam_id", Value().SetString(camera_id, strlen(camera_id)), allocator);
+
+	for (auto& it : detections) {
+		if (it->is_send_result) {
+			Document object;
+			object.SetObject();
+			
+			std::string name = field_aliases->get_alias(camera_id, topic, "id", "id");
+			object.AddMember(Value().SetString(name.c_str(), name.length(), allocator), (int)it->id, allocator);
+			name = field_aliases->get_alias(camera_id, topic, "kind", "kind");
+			object.AddMember(Value().SetString(name.c_str(), name.length(), allocator), (int)it->kind, allocator);
+			name = field_aliases->get_alias(camera_id, topic, "cls", "cls");
+			object.AddMember(Value().SetString(name.c_str(), name.length(), allocator), it->class_id, allocator);
+			name = field_aliases->get_alias(camera_id, topic, "nn_id", "nn_id");
+			object.AddMember(Value().SetString(name.c_str(), name.length(), allocator), it->neural_network_id, allocator);
+			name = field_aliases->get_alias(camera_id, topic, "label", "label");
+			object.AddMember(Value().SetString(name.c_str(), name.length(), allocator), Value().SetString(it->label.c_str(), it->label.length()), allocator);
+			name = field_aliases->get_alias(camera_id, topic, "conf", "conf");
+			object.AddMember(Value().SetString(name.c_str(), name.length(), allocator), it->score, allocator);
+			name = field_aliases->get_alias(camera_id, topic, "predecessor_object_id", "predecessor_object_id");
+			object.AddMember(Value().SetString(name.c_str(), name.length(), allocator), it->predecessor_id, allocator);
+			name = field_aliases->get_alias(camera_id, topic, "predecessor_detector_id", "predecessor_detector_id");
+			object.AddMember(Value().SetString(name.c_str(), name.length(), allocator), it->predecessor_detector_id, allocator);
+			name = field_aliases->get_alias(camera_id, topic, "predecessor_class", "predecessor_class");
+			object.AddMember(Value().SetString(name.c_str(), name.length(), allocator), it->predecessor_class, allocator);
+
+			float x0 = it->box.x + it->original_x;
+			float y0 = it->box.y + it->original_y;
+			float x1 = x0 + it->box.width;
+			float y1 = y0 + it->box.height;
+
+			if (it->mapping_rule == DetectionItem::RESULTS_MAPPING_RULE_NORM && it->frame_w != 0 && it->frame_h != 0) {
+				x0 = x0 / it->frame_w;
+				y0 = y0 / it->frame_h;
+				x1 = x1 / it->frame_w;
+				y1 = y1 / it->frame_h;
+			}
+
+			name = field_aliases->get_alias(camera_id, topic, "x0", "x0");
+			object.AddMember(Value().SetString(name.c_str(), name.length(), allocator), x0, allocator);
+			name = field_aliases->get_alias(camera_id, topic, "y0", "y0");
+			object.AddMember(Value().SetString(name.c_str(), name.length(), allocator), y0, allocator);
+			name = field_aliases->get_alias(camera_id, topic, "x1", "x1");
+			object.AddMember(Value().SetString(name.c_str(), name.length(), allocator), x1, allocator);
+			name = field_aliases->get_alias(camera_id, topic, "y1", "y1");
+			object.AddMember(Value().SetString(name.c_str(), name.length(), allocator), y1, allocator);
+
+			objects.PushBack(object, allocator);
+		}
+	}
+
+	root.AddMember("detections", objects, root.GetAllocator());
+
+	_send(topic, root);
+}
+
 void MQTTClient::send_detection(const char* camera_id, const char* topic, list<DetectionItem*> detections)
 {
 	if (topic == NULL || strlen(topic) == 0)
