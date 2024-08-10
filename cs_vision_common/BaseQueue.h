@@ -39,7 +39,7 @@ namespace cs
                 return;
 
             m.lock();
-            q.push(elem);
+            q.push_back(elem);
             m.unlock();
         }
 
@@ -50,14 +50,14 @@ namespace cs
             m.lock();
             if (!q.empty()) {
                 elem = q.front();
-                q.pop();
+                q.pop_front();
             }
             m.unlock();
 
             return elem;
         }
     private:
-        std::queue<T*> q;
+        std::list<T*> q;
         std::mutex m;
     };
 }

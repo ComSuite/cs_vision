@@ -19,7 +19,7 @@ void YOLOV5::getLabelsName(std::string path, std::vector<std::string> &labelName
     in.close();
 }
 
-void YOLOV5::loadModel(const  std::string path)
+void YOLOV5::loadModel(const std::string path)
 {
 
     _model = tflite::FlatBufferModel::BuildFromFile(path.c_str());

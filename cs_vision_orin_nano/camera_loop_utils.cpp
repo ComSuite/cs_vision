@@ -27,6 +27,7 @@
 #include "OCVYOLOv8ObjectDetector.h"
 #include "TFYOLOv5ObjectDetector.h"
 #include "TFAudioSampleRecognizer.h"
+#include "HaarCascadeClassifier.h"
 #include "cv_utils.h"
 #ifdef __HAS_CUDA__
 #include <opencv2/core/cuda.hpp>
@@ -49,6 +50,7 @@ IObjectDetector* create_detector(int kind)
 	case ObjectDetectorKind::OBJECT_DETECTOR_TENSORFLOW_YOLOv5: return new TFYOLOv5ObjectDetector();
 	case ObjectDetectorKind::OBJECT_DETECTOR_TENSORRT_YOLOv8: return new TRTYOLOv8ObjectDetector();
 	case ObjectDetectorKind::AUDIO_RECOGNIZER_TFLITE: return new TFAudioSampleRecognizer();
+	case ObjectDetectorKind::HAAR_CASCADE_CLASSIFIER: return new HaarCascadeClassifier();
 	}
 
 	return nullptr;

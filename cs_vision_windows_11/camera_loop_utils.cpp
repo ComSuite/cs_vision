@@ -22,9 +22,11 @@
  */
 
 #include "camera_loop_utils.h"
-#include "TRTYOLOv5ObjectDetector.h"
+//#include "TRTYOLOv5ObjectDetector.h"
 //#include "OCVYOLOv8ObjectDetector.h"
 #include "TFYOLOv5ObjectDetector.h"
+#include "TRTYOLOv8ObjectDetector.h"
+#include "NullObjectDetector.h"
 #include "cv_utils.h"
 #ifdef __HAS_CUDA__
 #include <opencv2/core/cuda.hpp>
@@ -41,9 +43,10 @@ using namespace cv::cuda;
 IObjectDetector* create_detector(int kind)
 {
 	switch (static_cast<ObjectDetectorKind>(kind)) {
-		case ObjectDetectorKind::OBJECT_DETECTOR_TENSORRT: return new TRTYOLOv5ObjectDetector();
-	//case ObjectDetectorKind::OBJECT_DETECTOR_OPENCV_YOLOv8: return new OCVYOLOv8ObjectDetector();
-		case ObjectDetectorKind::OBJECT_DETECTOR_TENSORFLOW: return new TFYOLOv5ObjectDetector();
+	case ObjectDetectorKind::OBJECT_DETECTOR_NONE: return new NullObjectDetector();
+	//case ObjectDetectorKind::OBJECT_DETECTOR_TENSORRT_YOLOv5: return new TRTYOLOv5ObjectDetector();
+	case ObjectDetectorKind::OBJECT_DETECTOR_TENSORFLOW_YOLOv5: return new TFYOLOv5ObjectDetector();
+	case ObjectDetectorKind::OBJECT_DETECTOR_TENSORRT_YOLOv8: return new TRTYOLOv8ObjectDetector();
 	}
 
 	return nullptr;
@@ -80,13 +83,13 @@ void gpu_preprocessing(cv::Mat& src, cs::camera_settings* set, cv::cuda::GpuMat&
 void gpu_setup_device()
 {
 #ifdef __HAS_CUDA__
-	cudaDeviceProp prop;
-	cudaGetDeviceProperties(&prop, 0);
-	if (prop.canMapHostMemory) {
+	//cudaDeviceProp prop;
+	//cudaGetDeviceProperties(&prop, 0);
+	//if (prop.canMapHostMemory) {
 		//cudaSetDeviceFlags(cudaDeviceMapHost);
 		//cudaHostAlloc(&a_h, nBytes, cudaHostAllocMapped);
 		//cudaHostGetDevicePointer(&a_map, a_h, 0);
 		//kernel << <gridSize, blockSize >> > (a_map);
-	}
+	//}
 #endif
 }

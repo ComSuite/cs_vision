@@ -31,6 +31,9 @@
 #ifndef __int128_t
 using __int128_t = int64_t;
 #endif
+#ifndef __uint128_t
+using __uint128_t = uint64_t;
+#endif
 #endif
 
 namespace cs
@@ -49,8 +52,9 @@ namespace cs
 			if (ticker == default_fps_counter_step) {
 				ticker = 0;
 				std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-				int n = counter / std::chrono::duration_cast<std::chrono::seconds>(end - begin).count();
-				std::cout << prompt << n << std::endl;
+				auto diff = std::chrono::duration_cast<std::chrono::seconds>(end - begin).count();
+				if (diff != 0) 
+					std::cout << prompt << static_cast<int>(counter / diff) << std::endl;
 			}
 			else
 				ticker++;

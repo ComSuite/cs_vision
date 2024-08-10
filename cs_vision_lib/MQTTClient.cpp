@@ -122,10 +122,10 @@ void MQTTClient::send_detection(const char* camera_id, const char* topic, list<D
 	Value objects(kArrayType);
 
 	root.SetObject();
-	Document::AllocatorType& allocator = root.GetAllocator();
+	auto& allocator = root.GetAllocator();
 
 	chrono::milliseconds ms = chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now().time_since_epoch());
-	root.AddMember("ts", ms.count(), root.GetAllocator());
+	root.AddMember("ts", ms.count(), allocator);
 	root.AddMember("cam_id", Value().SetString(camera_id, strlen(camera_id)), allocator);
 
 	for (auto& it : detections) {

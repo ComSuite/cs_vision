@@ -22,6 +22,8 @@
  */
 
 #include "TFAudioSampleRecognizer.h"
+#define _USE_MATH_DEFINES
+#include <math.h>
 #include <iostream>
 #include <fstream>
 #include <string>

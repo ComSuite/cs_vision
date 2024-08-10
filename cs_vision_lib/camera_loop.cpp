@@ -47,7 +47,9 @@
 #include "ICamera.h"
 #include "OpenCVCamera.h"
 #include "OpenCVCamera_GPU.h"
+#ifdef __WITH_AUDIO_PROCESSING__
 #include "PortAudioMicrophone.h"
+#endif
 #include "cv_utils.h"
 #include "std_utils.h"
 #include <atomic>
@@ -253,12 +255,24 @@ atomic<int> is_can_send = 1;
 #ifdef __HAS_CUDA__
 void stream_thread_func(cv::cuda::GpuMat* frame, const char* channel, IVideoStreamer* streamer)
 {
-	Mat image;
-	frame->download(image);
-	streamer->show_frame(image, channel);
-	is_can_send = 1;
+	if (frame == nullptr)
+		return;
+
+	if (frame->empty()) {
+		delete frame;
+		return;
+	}
+
+	Mat* image = new Mat();
+	if (image != nullptr) {
+		frame->download(*image);
+		streamer->show_frame(*image, channel);
+
+		delete image;
+	}
 
 	delete frame;
+	is_can_send = 1;
 }
 #else
 void stream_thread_func(Mat* frame, const char* channel, IVideoStreamer* streamer)
@@ -289,7 +303,7 @@ void stream_frame_(Mat* frame, const char* channel, IVideoStreamer* streamer)
 		thread stream_tread(stream_thread_func, show_frame, channel, streamer);
 		stream_tread.detach();
 //#else
-//		stream_thread_func(show_frame, channel, streamer);
+		//stream_thread_func(show_frame, channel, streamer);
 //#endif 
 
 	}
@@ -440,6 +454,7 @@ void detect_func(DetectorEnvironment* env)
 	}
 
 	clear<DetectionItem, std::list>(detections);
+	delete detect_frame;
 }
 
 void thread_func(DetectorEnvironment* env)
@@ -456,11 +471,15 @@ void thread_func(DetectorEnvironment* env)
 }
 
 #ifdef __HAS_CUDA__
-void process_frame(ICamera* capture, cs::camera_settings* set, DetectorEnvironment* environment, Mat* frame, cv::cuda::GpuMat* image)
+void process_frame(ICamera* capture, cs::camera_settings* set, DetectorEnvironment* environment, Mat* frame)
+//void process_frame(ICamera* capture, cs::camera_settings* set, DetectorEnvironment* environment, Mat* frame, cv::cuda::GpuMat* image)
+{
+	cv::cuda::GpuMat* image = new cv::cuda::GpuMat();
 #else
 void process_frame(cs::camera_settings* set, DetectorEnvironment* environment, Mat* frame, Mat* image)
-#endif
 {
+	cv::Mat* image = new cv::Mat();
+#endif
 	if (environment->detector_ready) {
 		environment->original_size = frame->size();
 
@@ -480,10 +499,15 @@ void process_frame(cs::camera_settings* set, DetectorEnvironment* environment, M
 			cpu_preprocessing(*frame, set, *image, environment->border_dims);
 		}
 #endif
+		if (set->video_stream_mode == VIDEO_STREAM_MODE::VIDEO_STREAM_MODE_SOURCE && environment->video_streamer != nullptr) {
+			stream_frame_(image, environment->video_stream_channel.c_str(), environment->video_streamer);
+		}
+
 		capture->set_ready(false);
 
 		environment->queue.push(image);
 		environment->detector_ready = false;
+		//thread_func(environment);
 		//thread detect_tread(thread_func, environment);
 		//detect_tread.detach();
 	}
@@ -506,9 +530,11 @@ ICamera* create_input_device(cs::camera_settings* set)
 		return new OpenCVCamera();
 #endif
 		break;
+#ifdef __WITH_AUDIO_PROCESSING__
 	case INPUT_OUTPUT_DEVICE_KIND::INPUT_OUTPUT_DEVICE_KIND_MICROPHONE:
 		return new PortAudioMicrophone();
 		break;
+#endif
 	}
 
 	return nullptr;
@@ -558,9 +584,9 @@ void* camera_loop(void* arg)
 
 	Mat frame(capture->get_height(), capture->get_width(), CV_8UC3);
 #ifdef __HAS_CUDA__
-	cv::cuda::GpuMat image(set->resize_y, set->resize_x, CV_8UC3);
+	//cv::cuda::GpuMat image(set->resize_y, set->resize_x, CV_8UC3);
 #else
-	Mat image(set->resize_y, set->resize_x, CV_8UC3);
+	//Mat image(set->resize_y, set->resize_x, CV_8UC3);
 #endif
 
 	environment->mqtt_client->loop();
@@ -589,11 +615,8 @@ void* camera_loop(void* arg)
 			}
 #endif
 			if (!frame.empty()) {
-				if (set->video_stream_mode == VIDEO_STREAM_MODE::VIDEO_STREAM_MODE_SOURCE && environment->video_streamer != nullptr) {
-					stream_frame_(&image, environment->video_stream_channel.c_str(), environment->video_streamer);
-				}
-
-				process_frame(capture, set, environment, &frame, &image);
+				//process_frame(capture, set, environment, &frame, &image);
+				process_frame(capture, set, environment, &frame);
 			}
 
 			if (capture->source_is_file && capture->is_end_of_file()) {

@@ -86,6 +86,7 @@
     <Import Project="..\cs_vision_yolov8_trt\cs_vision_yolov8_trt.vcxitems" Label="Shared" />
     <Import Project="..\TFAudioSampleRecognizer\TFAudioSampleRecognizer.vcxitems" Label="Shared" />
     <Import Project="..\cs_vision_portaudio\cs_vision_portaudio.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_haar_cascade\cs_vision_haar_cascade.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
@@ -114,7 +115,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
-      <PreprocessorDefinitions>__LINUX__;_DEBUG_;__WITH_FILESYSTEM_CXX__;__WITH_SCRIPT_LANG__;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;__USE_POSIX199309;_____GPIO_NVIDIA_JETSON____;DBUILD_ZLIB=ON;__HAS_CUDA__;YOLOV5_OPENCV_HAS_CUDA;_WITH_VPI</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__LINUX__;_DEBUG_;__WITH_FILESYSTEM_CXX__;__WITH_SCRIPT_LANG__;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;__USE_POSIX199309;_____GPIO_NVIDIA_JETSON____;DBUILD_ZLIB=ON;__HAS_CUDA__;YOLOV5_OPENCV_HAS_CUDA;__WITH_AUDIO_PROCESSING__;_WITH_VPI</PreprocessorDefinitions>
       <CppLanguageStandard>c++2a</CppLanguageStandard>
     </ClCompile>
     <Link>

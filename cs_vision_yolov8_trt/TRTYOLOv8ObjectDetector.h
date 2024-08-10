@@ -49,7 +49,7 @@ namespace cs
 		std::unique_ptr<YoloV8> detector = nullptr;
 		YoloV8Config config;
 
-		void postprocess(std::vector<Object>& detections, int& current_id, bool is_draw, cv::Mat* image);
+		void postprocess(std::vector<Object>* detections, int& current_id, bool is_draw, cv::Mat* image);
 	};
 }
 

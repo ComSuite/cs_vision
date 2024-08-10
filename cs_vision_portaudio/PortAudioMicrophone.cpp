@@ -62,7 +62,7 @@ PortAudioMicrophone::~PortAudioMicrophone()
 
 int PortAudioMicrophone::info()
 {
-
+    return 1;
 }
 
 int PortAudioMicrophone::open(std::variant<std::string, int> device)

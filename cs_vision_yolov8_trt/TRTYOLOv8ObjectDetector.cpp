@@ -59,12 +59,15 @@ void TRTYOLOv8ObjectDetector::clear()
 
 }
 
-void TRTYOLOv8ObjectDetector::postprocess(std::vector<Object>& detections, int& current_id, bool is_draw, cv::Mat* image)
+void TRTYOLOv8ObjectDetector::postprocess(std::vector<Object>* detections, int& current_id, bool is_draw, cv::Mat* image)
 {
-	if (detections.size() <= 0)
+	if (detections == nullptr)
+		return; 
+
+	if (detections->size() <= 0)
 		return;
 
-	for (auto detection : detections) {
+	for (auto detection : *detections) {
 		DetectionItem* item = new DetectionItem();
 		item->color = color;
 		if (check_rule(detection.label, detection.probability, item->color)) {
@@ -89,7 +92,7 @@ void TRTYOLOv8ObjectDetector::postprocess(std::vector<Object>& detections, int& 
 	}
 
 	if (is_draw && image != nullptr) {
-		detector->drawObjectLabels(*image, detections);
+		detector->drawObjectLabels(*image, *detections);
 	}
 }
 
@@ -100,7 +103,7 @@ int TRTYOLOv8ObjectDetector::detect(cv::Mat* input, int& current_id, bool is_dra
 
 	clear_last_detections();
 	auto detections = detector->detectObjects(*input);
-	postprocess(detections, current_id, is_draw, input);
+	postprocess(&detections, current_id, is_draw, input);
 
 	return detections.size() > 0;
 }
@@ -116,11 +119,11 @@ int TRTYOLOv8ObjectDetector::detect(cv::cuda::GpuMat* input, int& current_id, bo
 	if (is_draw) {
 		cv::Mat img;
 		input->download(img);
-		postprocess(detections, current_id, is_draw, &img);
+		postprocess(&detections, current_id, is_draw, &img);
 		input->upload(img);
 	}
 	else
-		postprocess(detections, current_id, false, nullptr);
+		postprocess(&detections, current_id, false, nullptr);
 
 	return detections.size() > 0;
 }

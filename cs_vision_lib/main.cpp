@@ -41,7 +41,9 @@
 #ifdef __WITH_SCRIPT_LANG__
 #include "CSScript.h"
 #endif
+#ifdef __WITH_AUDIO_PROCESSING__
 #include "portaudio_stream.h"
+#endif
 
 using namespace std;
 using namespace cs;
@@ -199,10 +201,10 @@ public:
 };
 
 int pthread_exists(pthread_t tid) {
-    if (!pthread_equal(tid, pthread_t(0)))
+    if (!pthread_equal(tid, (pthread_t)(0x0000)))
         return pthread_kill(tid, 0) == 0;
     else
-        return 3;
+        return 1;
 }
 
 int main(int argc, char* argv[])

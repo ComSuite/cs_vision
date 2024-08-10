@@ -31,6 +31,9 @@
 #ifndef __int128_t
 using __int128_t = int64_t;
 #endif
+#ifndef __uint128_t
+using __uint128_t = uint64_t;
+#endif
 #endif
 
 namespace cs
