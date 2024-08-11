@@ -178,8 +178,10 @@ bool init_detectors_environment(DetectorEnvironment* environment, camera_setting
 
 	if (set->is_use_super_resolution) {
 		environment->super_resolution = new cv::dnn_superres::DnnSuperResImpl();
-		environment->super_resolution->readModel(set->super_resolution_model_path);
-		environment->super_resolution->setModel(set->super_resolution_name, set->super_resolution_factor);  
+		if (environment->super_resolution != nullptr) {
+			environment->super_resolution->readModel(set->super_resolution_model_path);
+			environment->super_resolution->setModel(set->super_resolution_name, set->super_resolution_factor);
+		}
 
 		cout << "Using super resolution DNN: " << set->super_resolution_model_path << " Name: " << set->super_resolution_name << " Scale factor: " << set->super_resolution_factor << endl;
 	}
