@@ -255,7 +255,7 @@ atomic<int> is_can_send = 1;
 #ifdef __HAS_CUDA__
 void stream_thread_func(cv::cuda::GpuMat* frame, const char* channel, IVideoStreamer* streamer)
 {
-	if (frame == nullptr)
+	if (frame == nullptr || channel == nullptr || create_video_streamer == nullptr)
 		return;
 
 	if (frame->empty()) {
@@ -277,10 +277,18 @@ void stream_thread_func(cv::cuda::GpuMat* frame, const char* channel, IVideoStre
 #else
 void stream_thread_func(Mat* frame, const char* channel, IVideoStreamer* streamer)
 {
+	if (frame == nullptr || channel == nullptr || create_video_streamer == nullptr)
+		return;
+
+	if (frame->empty()) {
+		delete frame;
+		return;
+	}
+
 	streamer->show_frame(*frame, channel);
-	is_can_send = 1;
 
 	delete frame;
+	is_can_send = 1;
 }
 #endif
 
