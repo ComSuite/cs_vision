@@ -50,8 +50,8 @@ namespace cs
 		{
 			clear<IObjectDetector, std::list>(detectors);
 
-			//if (detect_frame != nullptr)
-			//	delete detect_frame;
+			//if (show_frame != nullptr)
+			//	delete show_frame;
 
 			if (video_streamer != nullptr)
 				delete video_streamer;
@@ -70,12 +70,14 @@ namespace cs
 
 		std::list<IObjectDetector*> detectors; //to do: shold be changed to map<int, IObjectDetector*>?
 
+		std::atomic<bool> is_can_show = true;
+
 #ifdef __HAS_CUDA__
 		BaseQueue<cv::cuda::GpuMat> queue;
-		//cv::cuda::GpuMat* detect_frame = NULL;
+		cv::cuda::GpuMat show_frame;
 #else
 		BaseQueue<cvMat> queue;
-		//cv::Mat* detect_frame = NULL;
+		cv::Mat show_frame;
 #endif
 		std::string topic = "";
 		std::string camera_id = "";

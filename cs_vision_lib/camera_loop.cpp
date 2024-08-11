@@ -250,70 +250,55 @@ public:
 	int scale_factor = 1;
 };
 
-atomic<int> is_can_send = 1;
-
 #ifdef __HAS_CUDA__
-void stream_thread_func(cv::cuda::GpuMat* frame, const char* channel, IVideoStreamer* streamer)
+void stream_thread_func(DetectorEnvironment* env)
 {
-	if (frame == nullptr || channel == nullptr || create_video_streamer == nullptr)
+	if (env == nullptr)
 		return;
 
-	if (frame->empty()) {
-		delete frame;
+	if (env->video_stream_channel.length() == 0 || env->video_streamer == nullptr)
 		return;
+
+	while (true) {
+		if (!env->is_can_show && !env->show_frame.empty()) {
+			Mat* image = new Mat();
+			if (image != nullptr) {
+				env->show_frame.download(*image);
+				env->video_streamer->show_frame(*image, env->video_stream_channel.c_str());
+				delete image;
+			}
+
+			env->is_can_show = true;
+		}
 	}
-
-	Mat* image = new Mat();
-	if (image != nullptr) {
-		frame->download(*image);
-		streamer->show_frame(*image, channel);
-
-		delete image;
-	}
-
-	delete frame;
-	is_can_send = 1;
 }
 #else
-void stream_thread_func(Mat* frame, const char* channel, IVideoStreamer* streamer)
+void stream_thread_func(DetectorEnvironment* env)
 {
-	if (frame == nullptr || channel == nullptr || create_video_streamer == nullptr)
+	if (env == nullptr)
 		return;
 
-	if (frame->empty()) {
-		delete frame;
+	if (env->video_stream_channel.length() == 0 || env->video_streamer == nullptr)
 		return;
+
+	while (true) {
+		if (!env->is_can_show && !env->show_frame.empty()) {
+			env->video_streamer->show_frame(env->show_frame, env->video_stream_channel.c_str());
+			env->is_can_show = true;
+		}
 	}
-
-	streamer->show_frame(*frame, channel);
-
-	delete frame;
-	is_can_send = 1;
 }
 #endif
 
 #ifdef __HAS_CUDA__
-void stream_frame_(cv::cuda::GpuMat* frame, const char* channel, IVideoStreamer* streamer)
+void stream_frame_(cv::cuda::GpuMat* frame, DetectorEnvironment* env)
 #else
-void stream_frame_(Mat* frame, const char* channel, IVideoStreamer* streamer)
+void stream_frame_(Mat* frame, DetectorEnvironment* env)
 #endif
 {
-	if (is_can_send) {
-		is_can_send = 0;
-
-#ifdef __HAS_CUDA__
-		cv::cuda::GpuMat* show_frame = new cv::cuda::GpuMat(*frame);
-#else
-		Mat* show_frame = new Mat(*frame);
-#endif
-
-//#ifdef __LINUX__ 
-		thread stream_tread(stream_thread_func, show_frame, channel, streamer);
-		stream_tread.detach();
-//#else
-		//stream_thread_func(show_frame, channel, streamer);
-//#endif 
-
+	if (env->is_can_show) {
+		frame->copyTo(env->show_frame);
+		env->is_can_show = false;
 	}
 }
 
@@ -458,7 +443,7 @@ void detect_func(DetectorEnvironment* env)
 
 	if (env->video_stream_mode == VIDEO_STREAM_MODE::VIDEO_STREAM_MODE_DETECTOR && env->video_streamer != nullptr) {
 		draw_detections(env, detect_frame, detections, env->is_show_mask);
-		stream_frame_(detect_frame, env->video_stream_channel.c_str(), env->video_streamer);
+		stream_frame_(detect_frame, env);
 	}
 
 	clear<DetectionItem, std::list>(detections);
@@ -480,7 +465,6 @@ void thread_func(DetectorEnvironment* env)
 
 #ifdef __HAS_CUDA__
 void process_frame(ICamera* capture, cs::camera_settings* set, DetectorEnvironment* environment, Mat* frame)
-//void process_frame(ICamera* capture, cs::camera_settings* set, DetectorEnvironment* environment, Mat* frame, cv::cuda::GpuMat* image)
 {
 	cv::cuda::GpuMat* image = new cv::cuda::GpuMat();
 #else
@@ -508,16 +492,13 @@ void process_frame(cs::camera_settings* set, DetectorEnvironment* environment, M
 		}
 #endif
 		if (set->video_stream_mode == VIDEO_STREAM_MODE::VIDEO_STREAM_MODE_SOURCE && environment->video_streamer != nullptr) {
-			stream_frame_(image, environment->video_stream_channel.c_str(), environment->video_streamer);
+			stream_frame_(image, environment);
 		}
 
 		capture->set_ready(false);
 
 		environment->queue.push(image);
 		environment->detector_ready = false;
-		//thread_func(environment);
-		//thread detect_tread(thread_func, environment);
-		//detect_tread.detach();
 	}
 }
 
@@ -591,13 +572,9 @@ void* camera_loop(void* arg)
 	}
 
 	Mat frame(capture->get_height(), capture->get_width(), CV_8UC3);
-#ifdef __HAS_CUDA__
-	//cv::cuda::GpuMat image(set->resize_y, set->resize_x, CV_8UC3);
-#else
-	//Mat image(set->resize_y, set->resize_x, CV_8UC3);
-#endif
 
 	environment->mqtt_client->loop();
+
 #ifdef _DEBUG_
 	fps_counter fps;
 	if (set->input_kind == INPUT_OUTPUT_DEVICE_KIND::INPUT_OUTPUT_DEVICE_KIND_CAMERA) {
@@ -612,6 +589,9 @@ void* camera_loop(void* arg)
 	thread detect_tread(thread_func, environment);
 	detect_tread.detach();
 
+	thread stream_tread(stream_thread_func, environment); //show_frame, 
+	stream_tread.detach();
+
 	for (;;) {
 		if (!capture->is_ready())
 			continue;
@@ -623,7 +603,6 @@ void* camera_loop(void* arg)
 			}
 #endif
 			if (!frame.empty()) {
-				//process_frame(capture, set, environment, &frame, &image);
 				process_frame(capture, set, environment, &frame);
 			}
 
