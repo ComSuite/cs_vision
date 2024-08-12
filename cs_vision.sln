@@ -53,6 +53,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cs_vision_portaudio", "cs_v
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cs_vision_haar_cascade", "cs_vision_haar_cascade\cs_vision_haar_cascade.vcxitems", "{82D588A6-86AA-4B07-8198-CD1E37E95264}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mongoose", "mongoose\mongoose.vcxitems", "{A22EF9E6-3884-4A39-A3D9-5CBB4A8A4FA7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -282,6 +284,7 @@ Global
 		cs_vision_lib\cs_vision_lib.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
 		cs_vision_yolov5_tflite\cs_vision_yolov5_tflite.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
 		cs_vision_yolov8_trt\cs_vision_yolov8_trt.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
+		mongoose\mongoose.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
 		rapidjson\rapidjson.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
 		video_streamer\video_streamer.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
 		ChaiScript\ChaiScript.vcxitems*{051bcae7-c9d7-4bf8-940a-66148a6ae8b0}*SharedItemsImports = 9
@@ -312,6 +315,7 @@ Global
 		user_interface\user_interface.vcxitems*{72bc0788-965d-48a3-94fc-ac9585307a70}*SharedItemsImports = 9
 		cs_vision_haar_cascade\cs_vision_haar_cascade.vcxitems*{82d588a6-86aa-4b07-8198-cd1e37e95264}*SharedItemsImports = 9
 		yolov8_ocvdnn\yolov8_ocvdnn.vcxitems*{8d162a0b-8bd6-4dd7-a243-73f5b0d155a6}*SharedItemsImports = 9
+		mongoose\mongoose.vcxitems*{a22ef9e6-3884-4a39-a3d9-5cbb4a8a4fa7}*SharedItemsImports = 9
 		cs_vision_yolov5_tflite\cs_vision_yolov5_tflite.vcxitems*{a2f476b3-5b9a-4958-a90c-4265cb6693d8}*SharedItemsImports = 9
 		command_line_parcer\command_line_parcer.vcxitems*{a6bf81a0-a5a9-41d9-a32c-0ef2016232b5}*SharedItemsImports = 4
 		onnx_trtengine_converter_lib\onnx_trtengine_converter_lib.vcxitems*{a6bf81a0-a5a9-41d9-a32c-0ef2016232b5}*SharedItemsImports = 4

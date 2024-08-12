@@ -74,8 +74,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\opencv\include;$(CUDA_PATH)\include;G:\Nvidia\TensorRT-8.5.3.1.Windows10.x86_64.cuda-11.8.cudnn8.6\TensorRT-8.5.3.1\include;C:\Program Files\NVIDIA\CUDNN\v9.2\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.4\lib\x64;C:\Program Files\NVIDIA\CUDNN\v9.2\lib;C:\opencv\lib;G:\Nvidia\TensorRT-8.5.3.1.Windows10.x86_64.cuda-11.8.cudnn8.6\TensorRT-8.5.3.1\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>G:\Projects\ocv\build\install\include;$(CUDA_PATH)\include;G:\Nvidia\TensorRT-10.0.1.6\include;C:\Program Files\NVIDIA\CUDNN\v9.2\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(CUDA_PATH)\lib\x64;C:\Program Files\NVIDIA\CUDNN\v9.2\lib;G:\Projects\ocv\build\install\x64\vc17\lib;G:\Nvidia\TensorRT-10.0.1.6\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -136,6 +136,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="onnx_trtengine_converter_win.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

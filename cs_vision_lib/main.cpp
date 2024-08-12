@@ -44,6 +44,9 @@
 #ifdef __WITH_AUDIO_PROCESSING__
 #include "portaudio_stream.h"
 #endif
+#ifdef __WITH_MONGOOSE_SERVER__
+#include "mongoose_loop.h"
+#endif
 
 using namespace std;
 using namespace cs;
@@ -258,6 +261,13 @@ int main(int argc, char* argv[])
         else
             cout << "Cannot allocate memory for command`s topic MQTT client. Broker IP: " << settings->mqtt_broker_ip.c_str() << " port: " << settings->mqtt_broker_port << endl;
     }
+
+#ifdef __WITH_MONGOOSE_SERVER__
+    pthread_t http_thread;
+
+    pthread_create(&http_thread, NULL, mongoose_thread_func, settings);
+    pthread_detach(http_thread);
+#endif
 
     auto begin_time = std::chrono::steady_clock::now();
 
