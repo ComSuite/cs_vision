@@ -40,8 +40,8 @@ function Sidebar({url, show}) {
             border-gray-200 overflow-y-auto scrollbar-y
             ${show && 'translate-x-0'} right-auto bottom-0">
   <div class="flex flex-col m-4 gap-y-6">
-    <div class="flex h-10 shrink-0 items-center gap-x-4 font-bold text-xl text-slate-500">
-      <${Logo} class="h-full"/> Your Brand
+    <div class="flex shrink-0 items-center gap-x-4 font-bold text-xl text-slate-500">
+      <img src="logo_v_0.1.png" alt="AIGlobalLab" /> 
     <//>
     <div class="flex flex-1 flex-col">
       <${NavLink} title="Dashboard" icon=${Icons.home} href="/" url=${url} />
@@ -146,9 +146,25 @@ function Chart({data}) {
 
 function DeveloperNote({text, children}) {
   return html`
+<div class="flex p-4 gap-2">
+  <div class="text-sm text-slate-500">
+    <div class="flex items-center">
+      <${Icons.info} class="self-start basis-[30px] grow-0 shrink-0 text-green-600 mr-2" />
+      <div class="font-semibold">Developer Note<//>
+    <//>
+    ${(text || '').split('.').map(v => html` <p class="my-2 ">${v}<//>`)}
+    ${children}
+  <//>
+<//>`;
+};
+
+function Video({text, children}) {
+  var host = window.location.protocol + "//" + window.location.hostname + ":8088";
+	
+  return html`
 <div id="container">
-  <img src="http://localhost:8088/camera1" //>
-<//div>`;
+  <img src="${host}/camera1" />
+</div>`;
 };
 
 function Main({}) {
@@ -170,7 +186,7 @@ function Main({}) {
     <${Chart} data=${stats.points} />
 
     <div class="my-4 hx-24 bg-white border rounded-md shadow-lg" role="alert">
-      <${DeveloperNote}
+      <${Video}
         text="This chart is an SVG image, generated on the fly from the
         data returned by the api/stats/get API call" />
     <//>

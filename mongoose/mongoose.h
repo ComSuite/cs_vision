@@ -2051,9 +2051,8 @@ PORTABLE_8439_DECL size_t mg_chacha20_poly1305_decrypt(
 
 
 struct mg_connection;
-typedef void (*mg_event_handler_t)(struct mg_connection *, int ev,
-                                   void *ev_data, void* user_data);
-void mg_call(struct mg_connection *c, int ev, void *ev_data);
+typedef void (*mg_event_handler_t)(struct mg_connection *, int ev, void *ev_data, void* user_data);
+void mg_call(struct mg_connection *c, int ev, void *ev_data, void* user_data);
 void mg_error(struct mg_connection *c, const char *fmt, ...);
 
 enum {

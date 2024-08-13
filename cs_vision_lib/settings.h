@@ -133,6 +133,19 @@ namespace cs
 		int attempts_count = 1;
 	};
 
+	class http_server_settings : public cs::JsonWrapper
+	{
+	public:
+		std::string device_name = "";
+		std::string root_dir = "";
+		int http_port = 0;
+		int https_port = 0;
+		std::string cert_dir = "";
+		std::string home_page = "";
+
+		int parse(rapidjson::Value& root);
+	};
+
 	class device_settings : public cs::JsonWrapper
 	{
 	public:
@@ -156,6 +169,8 @@ namespace cs
 		std::string readonly_checker_dictionary = "";
 		std::string secrets_dictionary = "";
 		bool is_create_backup = true;
+
+		http_server_settings* http_server = nullptr;
 	protected:
 		int parse(rapidjson::Document& root) override;
 	};

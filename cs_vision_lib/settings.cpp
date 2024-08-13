@@ -147,6 +147,18 @@ int camera_settings::parse(rapidjson::Value& root)
 	return 1;
 }
 
+int http_server_settings::parse(rapidjson::Value& root)
+{
+	device_name = json_get_string(root, "device_name", device_name.c_str());
+	root_dir = json_get_string(root, "root_dir", root_dir.c_str());
+	http_port = json_get_int(root, "http_port", http_port);
+	https_port = json_get_int(root, "https_port", https_port);
+	cert_dir = json_get_string(root, "cert_dir", cert_dir.c_str());
+	home_page = json_get_string(root, "home_page", home_page.c_str());
+
+	return 1;
+}
+
 //******************************************************************************************
 int device_settings::parse(Document& root)
 {
@@ -199,6 +211,15 @@ int device_settings::parse(Document& root)
 						else
 							delete cam_set;
 					}
+				}
+			}
+		}
+
+		if (settings.HasMember("http_server")) {
+			if (settings["http_server"].IsObject()) {
+				http_server = new http_server_settings();
+				if (http_server != nullptr) {
+					http_server->parse(settings["http_server"]);
 				}
 			}
 		}

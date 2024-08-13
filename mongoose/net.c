@@ -305,7 +305,7 @@ static void fn(struct mg_connection *c, int ev, void *ev_data, struct http_serve
 
 void web_init(struct mg_mgr *mgr, struct http_server_params* params) {
     if (params != NULL && params->device_name != NULL)
-        s_settings.device_name = strdup(params);
+        s_settings.device_name = strdup(params->device_name);
     else
         s_settings.device_name = strdup("MyDevice");
 

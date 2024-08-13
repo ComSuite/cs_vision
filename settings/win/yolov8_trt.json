@@ -172,6 +172,13 @@
 		"readonly_checker_dictionary": "G:/Projects/comsuite/sources/cs_vision/settings/read_only_settings.txt",
 		"settings_backup_path": "G:/Projects/comsuite/sources/cs_vision/settings/",
 		"secrets_dictionary": "G:/Projects/comsuite/sources/cs_vision/settings/secret_settings.txt",
-		"is_create_backup": true
+		"is_create_backup": true,
+		"http_server": {
+			"root_dir": "G:\\Projects\\comsuite\\sources\\cs_vision\\web_root\\web_root",
+			"http_port": 8000,
+			"https_port": 8443,
+			"cert_dir": "",
+			"home_page": "index.html"
+		}
     }
 }

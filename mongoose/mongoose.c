@@ -2669,7 +2669,7 @@ void mg_http_reply(struct mg_connection *c, int code, const char *headers,
   c->is_resp = 0;
 }
 
-static void http_cb(struct mg_connection *, int, void *);
+static void http_cb(struct mg_connection *, int, void*, void*);
 static void restore_http_cb(struct mg_connection *c) {
   mg_fs_close((struct mg_fd *) c->pfn_data);
   c->pfn_data = NULL;
