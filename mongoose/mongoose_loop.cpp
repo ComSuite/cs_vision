@@ -5,6 +5,12 @@
 using namespace std;
 using namespace cs;
 
+#ifdef __LINUX__
+#ifndef _strdup
+#define _strdup strdup
+#endif
+#endif
+
 static int s_sig_num;
 static void signal_handler(int sig_num) 
 {
@@ -20,10 +26,15 @@ void* cs::mongoose_thread_func(void* arg)
 	//signal(SIGINT, signal_handler);
 	//signal(SIGTERM, signal_handler);
 
+	http_server_params server_params;
+	server_params.device_name = _strdup("ComSuite Vision");
+	server_params.root_dir = _strdup("G:\\Projects\\comsuite\\sources\\cs_vision\\web_root\\web_root");
+
 	mg_log_set(MG_LL_DEBUG);  // Set debug log level
 	mg_mgr_init(&mgr);
+	mgr.userdata = &server_params;
 
-	web_init(&mgr);
+	web_init(&mgr, &server_params);
 	while (s_sig_num == 0) {
 		mg_mgr_poll(&mgr, 50);
 	}

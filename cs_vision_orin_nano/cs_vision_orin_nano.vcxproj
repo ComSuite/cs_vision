@@ -87,6 +87,7 @@
     <Import Project="..\TFAudioSampleRecognizer\TFAudioSampleRecognizer.vcxitems" Label="Shared" />
     <Import Project="..\cs_vision_portaudio\cs_vision_portaudio.vcxitems" Label="Shared" />
     <Import Project="..\cs_vision_haar_cascade\cs_vision_haar_cascade.vcxitems" Label="Shared" />
+    <Import Project="..\mongoose\mongoose.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
@@ -100,6 +101,10 @@
     <IncludePath>/usr/include/opencv4/;/usr/local/cuda/include;~/tensorflow/;../ChaiScript/include</IncludePath>
     <LibraryPath>/usr/lib/aarch64-linux-gnu;/usr/local/cuda/targets/aarch64-linux/lib;~/tensorflow/tensorflow/lite/tools/make/gen/linux_aarch64/lib</LibraryPath>
     <TargetExt />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <IncludePath>/usr/include/opencv4/;/usr/local/cuda/include;~/tensorflow/;../ChaiScript/include</IncludePath>
+    <LibraryPath>/usr/lib/aarch64-linux-gnu;/usr/local/cuda/targets/aarch64-linux/lib;~/tensorflow/tensorflow/lite/tools/make/gen/linux_aarch64/lib</LibraryPath>
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="camera_loop_utils.cpp" />
@@ -115,12 +120,25 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
-      <PreprocessorDefinitions>__LINUX__;_DEBUG_;__WITH_FILESYSTEM_CXX__;__WITH_SCRIPT_LANG__;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;__USE_POSIX199309;_____GPIO_NVIDIA_JETSON____;DBUILD_ZLIB=ON;__HAS_CUDA__;YOLOV5_OPENCV_HAS_CUDA;__WITH_AUDIO_PROCESSING__;_WITH_VPI</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__LINUX__;_DEBUG_;__WITH_FILESYSTEM_CXX__;__WITH_SCRIPT_LANG__;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;__USE_POSIX199309L;_____GPIO_NVIDIA_JETSON____;DBUILD_ZLIB=ON;__HAS_CUDA__;YOLOV5_OPENCV_HAS_CUDA;__WITH_AUDIO_PROCESSING__;__WITH_MONGOOSE_SERVER__;_WITH_VPI</PreprocessorDefinitions>
       <CppLanguageStandard>c++2a</CppLanguageStandard>
+      <CLanguageStandard>gnu11</CLanguageStandard>
     </ClCompile>
     <Link>
       <LibraryDependencies>OpenGL;GLX;GLU;cuda;cudart;cudadevrt;nvrtc;nvrtc-builtins;nvonnxparser;nvinfer;nvparsers;nvinfer_plugin;opencv_alphamat;opencv_aruco;opencv_bgsegm;opencv_bioinspired;opencv_calib3d;opencv_ccalib;opencv_core;opencv_datasets;opencv_dnn;opencv_hfs;opencv_imgproc;opencv_intensity_transform;opencv_line_descriptor;opencv_mcc;opencv_ml;opencv_highgui;opencv_img_hash;opencv_features2d;opencv_objdetect;opencv_plot;opencv_quality;opencv_video;opencv_flann;opencv_videoio;opencv_videostab;opencv_imgcodecs;opencv_photo;opencv_rapid;opencv_reg;opencv_rgbd;opencv_saliency;opencv_shape;opencv_stereo;opencv_stitching;opencv_structured_light;opencv_superres;opencv_dnn_superres;opencv_surface_matching;opencv_tracking;opencv_xfeatures2d;opencv_ximgproc;opencv_xobjdetect;opencv_xphoto;opencv_cudaarithm;opencv_cudabgsegm;opencv_cudacodec;opencv_cudafeatures2d;opencv_cudafilters;opencv_cudaimgproc;opencv_cudaobjdetect;opencv_cudaoptflow;opencv_cudastereo;opencv_cudawarping;opencv_cudev;opencv_gapi;mosquitto;tensorflow-lite;pthread;portaudio;dl</LibraryDependencies>
     </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <Link>
+      <LibraryDependencies>OpenGL;GLX;GLU;cuda;cudart;cudadevrt;nvrtc;nvrtc-builtins;nvonnxparser;nvinfer;nvparsers;nvinfer_plugin;opencv_alphamat;opencv_aruco;opencv_bgsegm;opencv_bioinspired;opencv_calib3d;opencv_ccalib;opencv_core;opencv_datasets;opencv_dnn;opencv_hfs;opencv_imgproc;opencv_intensity_transform;opencv_line_descriptor;opencv_mcc;opencv_ml;opencv_highgui;opencv_img_hash;opencv_features2d;opencv_objdetect;opencv_plot;opencv_quality;opencv_video;opencv_flann;opencv_videoio;opencv_videostab;opencv_imgcodecs;opencv_photo;opencv_rapid;opencv_reg;opencv_rgbd;opencv_saliency;opencv_shape;opencv_stereo;opencv_stitching;opencv_structured_light;opencv_superres;opencv_dnn_superres;opencv_surface_matching;opencv_tracking;opencv_xfeatures2d;opencv_ximgproc;opencv_xobjdetect;opencv_xphoto;opencv_cudaarithm;opencv_cudabgsegm;opencv_cudacodec;opencv_cudafeatures2d;opencv_cudafilters;opencv_cudaimgproc;opencv_cudaobjdetect;opencv_cudaoptflow;opencv_cudastereo;opencv_cudawarping;opencv_cudev;opencv_gapi;mosquitto;tensorflow-lite;pthread;portaudio;dl</LibraryDependencies>
+    </Link>
+    <ClCompile>
+      <CLanguageStandard>gnu11</CLanguageStandard>
+    </ClCompile>
+    <ClCompile>
+      <CppLanguageStandard>c++2a</CppLanguageStandard>
+      <PreprocessorDefinitions>NDEBUG;__LINUX__;_DEBUG_;__WITH_FILESYSTEM_CXX__;__WITH_SCRIPT_LANG__;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;__USE_POSIX199309L;_____GPIO_NVIDIA_JETSON____;DBUILD_ZLIB=ON;__HAS_CUDA__;YOLOV5_OPENCV_HAS_CUDA;__WITH_AUDIO_PROCESSING__;__WITH_MONGOOSE_SERVER__;_WITH_VPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

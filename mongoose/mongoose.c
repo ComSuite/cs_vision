@@ -23,6 +23,12 @@
 #line 1 "src/base64.c"
 #endif
 
+#define _GNU_SOURCE 
+#define _POSIX_C_SOURCE 199309L
+
+#ifndef CLOCK_REALTIME
+#define CLOCK_REALTIME 0
+#endif
 
 static int mg_base64_encode_single(int c) {
   if (c < 26) {
@@ -1337,7 +1343,7 @@ void mg_resolve(struct mg_connection *c, const char *url) {
 
 
 
-void mg_call(struct mg_connection *c, int ev, void *ev_data) {
+void mg_call(struct mg_connection *c, int ev, void *ev_data, void* user_data) {
 #if MG_ENABLE_PROFILE
   const char *names[] = {
       "EV_ERROR",    "EV_OPEN",      "EV_POLL",      "EV_RESOLVE",
@@ -1350,8 +1356,8 @@ void mg_call(struct mg_connection *c, int ev, void *ev_data) {
   }
 #endif
   // Fire protocol handler first, user handler second. See #2559
-  if (c->pfn != NULL) c->pfn(c, ev, ev_data);
-  if (c->fn != NULL) c->fn(c, ev, ev_data);
+  if (c->pfn != NULL) c->pfn(c, ev, ev_data, user_data);
+  if (c->fn != NULL) c->fn(c, ev, ev_data, user_data);
 }
 
 void mg_error(struct mg_connection *c, const char *fmt, ...) {
@@ -1362,7 +1368,7 @@ void mg_error(struct mg_connection *c, const char *fmt, ...) {
   va_end(ap);
   MG_ERROR(("%lu %ld %s", c->id, c->fd, buf));
   c->is_closing = 1;             // Set is_closing before sending MG_EV_CALL
-  mg_call(c, MG_EV_ERROR, buf);  // Let user handler override it
+  mg_call(c, MG_EV_ERROR, buf, NULL);  // Let user handler override it
 }
 
 #ifdef MG_ENABLE_LINES
@@ -3214,7 +3220,7 @@ static int skip_chunk(const char *buf, int len, int *pl, int *dl) {
   return i + 2 + n + 2;
 }
 
-static void http_cb(struct mg_connection *c, int ev, void *ev_data) {
+static void http_cb(struct mg_connection *c, int ev, void *ev_data, void* user_data) {
   if (ev == MG_EV_READ || ev == MG_EV_CLOSE ||
       (ev == MG_EV_POLL && c->is_accepted && !c->is_draining &&
        c->recv.len > 0)) {  // see #2796
@@ -3235,7 +3241,7 @@ static void http_cb(struct mg_connection *c, int ev, void *ev_data) {
         return;
       }
       if (n == 0) break;                 // Request is not buffered yet
-      mg_call(c, MG_EV_HTTP_HDRS, &hm);  // Got all HTTP headers
+      mg_call(c, MG_EV_HTTP_HDRS, &hm, NULL);  // Got all HTTP headers
       if (ev == MG_EV_CLOSE) {           // If client did not set Content-Length
         hm.message.len = c->recv.len - ofs;  // and closes now, deliver MSG
         hm.body.len = hm.message.len - (size_t) (hm.body.buf - hm.message.buf);
@@ -3300,7 +3306,7 @@ static void http_cb(struct mg_connection *c, int ev, void *ev_data) {
       }
 
       if (c->is_accepted) c->is_resp = 1;  // Start generating response
-      mg_call(c, MG_EV_HTTP_MSG, &hm);     // User handler can clear is_resp
+      mg_call(c, MG_EV_HTTP_MSG, &hm, user_data);     // User handler can clear is_resp
       if (c->is_accepted) {
         struct mg_str *cc = mg_http_get_header(&hm, "Connection");
         if (cc != NULL && mg_strcasecmp(*cc, mg_str("close")) == 0) {
@@ -3337,7 +3343,7 @@ void mg_hello(const char *url) {
   struct mg_mgr mgr;
   bool done = false;
   mg_mgr_init(&mgr);
-  if (mg_http_listen(&mgr, url, mg_hfn, &done) == NULL) done = true;
+  if (mg_http_listen(&mgr, url, mg_hfn, &done, NULL) == NULL) done = true;
   while (done == false) mg_mgr_poll(&mgr, 100);
   mg_mgr_free(&mgr);
 }
@@ -3350,8 +3356,8 @@ struct mg_connection *mg_http_connect(struct mg_mgr *mgr, const char *url,
 }
 
 struct mg_connection *mg_http_listen(struct mg_mgr *mgr, const char *url,
-                                     mg_event_handler_t fn, void *fn_data) {
-  struct mg_connection *c = mg_listen(mgr, url, fn, fn_data);
+                                     mg_event_handler_t fn, void *fn_data, void* user_data) {
+  struct mg_connection *c = mg_listen(mgr, url, fn, fn_data, user_data);
   if (c != NULL) c->pfn = http_cb;
   return c;
 }
@@ -4530,7 +4536,7 @@ static void mqtt_cb(struct mg_connection *c, int ev, void *ev_data) {
                     (int) mm.dgram.len, (int) mm.data.len, mm.data.buf));
         switch (mm.cmd) {
           case MQTT_CMD_CONNACK:
-            mg_call(c, MG_EV_MQTT_OPEN, &mm.ack);
+            mg_call(c, MG_EV_MQTT_OPEN, &mm.ack, NULL);
             if (mm.ack == 0) {
               MG_DEBUG(("%lu Connected", c->id));
             } else {
@@ -4557,7 +4563,7 @@ static void mqtt_cb(struct mg_connection *c, int ev, void *ev_data) {
                 mg_send(c, &zero, sizeof(zero));
               }
             }
-            mg_call(c, MG_EV_MQTT_MSG, &mm);  // let the app handle qos stuff
+            mg_call(c, MG_EV_MQTT_MSG, &mm, NULL);  // let the app handle qos stuff
             break;
           }
           case MQTT_CMD_PUBREC: {  // MQTT5: 3.5.2-1 TODO(): variable header rc
@@ -4575,7 +4581,7 @@ static void mqtt_cb(struct mg_connection *c, int ev, void *ev_data) {
             break;
           }
         }
-        mg_call(c, MG_EV_MQTT_CMD, &mm);
+        mg_call(c, MG_EV_MQTT_CMD, &mm, NULL);
         mg_iobuf_del(&c->recv, 0, mm.dgram.len);
       } else {
         break;
@@ -4621,7 +4627,7 @@ struct mg_connection *mg_mqtt_connect(struct mg_mgr *mgr, const char *url,
 
 struct mg_connection *mg_mqtt_listen(struct mg_mgr *mgr, const char *url,
                                      mg_event_handler_t fn, void *fn_data) {
-  struct mg_connection *c = mg_listen(mgr, url, fn, fn_data);
+  struct mg_connection *c = mg_listen(mgr, url, fn, fn_data, NULL);
   if (c != NULL) c->pfn = mqtt_cb, c->pfn_data = mgr;
   return c;
 }
@@ -4774,7 +4780,7 @@ void mg_close_conn(struct mg_connection *c) {
   if (c == c->mgr->dns6.c) c->mgr->dns6.c = NULL;
   // Order of operations is important. `MG_EV_CLOSE` event must be fired
   // before we deallocate received data, see #1331
-  mg_call(c, MG_EV_CLOSE, NULL);
+  mg_call(c, MG_EV_CLOSE, NULL, NULL);
   MG_DEBUG(("%lu %ld closed", c->id, c->fd));
   MG_PROF_DUMP(c);
   MG_PROF_FREE(c);
@@ -4802,14 +4808,14 @@ struct mg_connection *mg_connect(struct mg_mgr *mgr, const char *url,
     c->is_client = true;
     c->fn_data = fn_data;
     MG_DEBUG(("%lu %ld %s", c->id, c->fd, url));
-    mg_call(c, MG_EV_OPEN, (void *) url);
+    mg_call(c, MG_EV_OPEN, (void *) url, mgr->userdata);
     mg_resolve(c, url);
   }
   return c;
 }
 
 struct mg_connection *mg_listen(struct mg_mgr *mgr, const char *url,
-                                mg_event_handler_t fn, void *fn_data) {
+                                mg_event_handler_t fn, void *fn_data, void* user_data) {
   struct mg_connection *c = NULL;
   if ((c = mg_alloc_conn(mgr)) == NULL) {
     MG_ERROR(("OOM %s", url));
@@ -4824,7 +4830,7 @@ struct mg_connection *mg_listen(struct mg_mgr *mgr, const char *url,
     LIST_ADD_HEAD(struct mg_connection, &mgr->conns, c);
     c->fn = fn;
     c->fn_data = fn_data;
-    mg_call(c, MG_EV_OPEN, NULL);
+    mg_call(c, MG_EV_OPEN, NULL, mgr->userdata);
     if (mg_url_is_ssl(url)) c->is_tls = 1;  // Accepted connection must
     MG_DEBUG(("%lu %ld %s", c->id, c->fd, url));
   }
@@ -4839,7 +4845,7 @@ struct mg_connection *mg_wrapfd(struct mg_mgr *mgr, int fd,
     c->fn = fn;
     c->fn_data = fn_data;
     MG_EPOLL_ADD(c);
-    mg_call(c, MG_EV_OPEN, NULL);
+    mg_call(c, MG_EV_OPEN, NULL, mgr->userdata);
     LIST_ADD_HEAD(struct mg_connection, &mgr->conns, c);
   }
   return c;
@@ -7204,7 +7210,7 @@ static void sntp_cb(struct mg_connection *c, int ev, void *ev_data) {
     int64_t milliseconds = mg_sntp_parse(c->recv.buf, c->recv.len);
     if (milliseconds > 0) {
       s_boot_timestamp = (uint64_t) milliseconds - mg_millis();
-      mg_call(c, MG_EV_SNTP_TIME, (uint64_t *) &milliseconds);
+      mg_call(c, MG_EV_SNTP_TIME, (uint64_t *) &milliseconds, NULL);
       MG_DEBUG(("%lu got time: %lld ms from epoch", c->id, milliseconds));
     }
     // mg_iobuf_del(&c->recv, 0, c->recv.len);  // Free receive buffer
@@ -7338,7 +7344,7 @@ static void setlocaddr(MG_SOCKET_TYPE fd, struct mg_addr *addr) {
   }
 }
 
-static void iolog(struct mg_connection *c, char *buf, long n, bool r) {
+static void iolog(struct mg_connection *c, char *buf, long n, bool r, void* user_data) {
   if (n == MG_IO_WAIT) {
     // Do nothing
   } else if (n <= 0) {
@@ -7351,14 +7357,14 @@ static void iolog(struct mg_connection *c, char *buf, long n, bool r) {
     }
     if (r) {
       c->recv.len += (size_t) n;
-      mg_call(c, MG_EV_READ, &n);
+      mg_call(c, MG_EV_READ, &n, user_data);
     } else {
       mg_iobuf_del(&c->send, 0, (size_t) n);
       // if (c->send.len == 0) mg_iobuf_resize(&c->send, 0);
       if (c->send.len == 0) {
         MG_EPOLL_MOD(c, 0);
       }
-      mg_call(c, MG_EV_WRITE, &n);
+      mg_call(c, MG_EV_WRITE, &n, user_data);
     }
   }
 }
@@ -7385,7 +7391,7 @@ bool mg_send(struct mg_connection *c, const void *buf, size_t len) {
     long n = mg_io_send(c, buf, len);
     MG_DEBUG(("%lu %ld %lu:%lu:%lu %ld err %d", c->id, c->fd, c->send.len,
               c->recv.len, c->rtls.len, n, MG_SOCK_ERR(n)));
-    iolog(c, (char *) buf, n, false);
+    iolog(c, (char *) buf, n, false, NULL);
     return n > 0;
   } else {
     return mg_iobuf_add(&c->send, c->send.len, buf, len);
@@ -7517,7 +7523,7 @@ static bool ioalloc(struct mg_connection *c, struct mg_iobuf *io) {
 
 // NOTE(lsm): do only one iteration of reads, cause some systems
 // (e.g. FreeRTOS stack) return 0 instead of -1/EWOULDBLOCK when no data
-static void read_conn(struct mg_connection *c) {
+static void read_conn(struct mg_connection *c, void* user_data) {
   if (ioalloc(c, &c->recv)) {
     char *buf = (char *) &c->recv.buf[c->recv.len];
     size_t len = c->recv.size - c->recv.len;
@@ -7549,18 +7555,18 @@ static void read_conn(struct mg_connection *c) {
     }
     MG_DEBUG(("%lu %ld %lu:%lu:%lu %ld err %d", c->id, c->fd, c->send.len,
               c->recv.len, c->rtls.len, n, MG_SOCK_ERR(n)));
-    iolog(c, buf, n, true);
+    iolog(c, buf, n, true, user_data);
   }
 }
 
-static void write_conn(struct mg_connection *c) {
+static void write_conn(struct mg_connection *c, void* user_data) {
   char *buf = (char *) c->send.buf;
   size_t len = c->send.len;
   long n = c->is_tls ? mg_tls_send(c, buf, len) : mg_io_send(c, buf, len);
   MG_DEBUG(("%lu %ld snd %ld/%ld rcv %ld/%ld n=%ld err=%d", c->id, c->fd,
             (long) c->send.len, (long) c->send.size, (long) c->recv.len,
             (long) c->recv.size, n, MG_SOCK_ERR(n)));
-  iolog(c, buf, n, false);
+  iolog(c, buf, n, false, user_data);
 }
 
 static void close_conn(struct mg_connection *c) {
@@ -7583,7 +7589,7 @@ static void connect_conn(struct mg_connection *c) {
   if (getpeername(FD(c), &usa.sa, &n) == 0) {
     c->is_connecting = 0;
     setlocaddr(FD(c), &c->loc);
-    mg_call(c, MG_EV_CONNECT, NULL);
+    mg_call(c, MG_EV_CONNECT, NULL, NULL);
     MG_EPOLL_MOD(c, 0);
     if (c->is_tls_hs) mg_tls_handshake(c);
   } else {
@@ -7625,19 +7631,19 @@ void mg_connect_resolved(struct mg_connection *c) {
       MG_ERROR(("bind: %d", MG_SOCK_ERR(rc)));
 #endif
     setlocaddr(FD(c), &c->loc);
-    mg_call(c, MG_EV_RESOLVE, NULL);
-    mg_call(c, MG_EV_CONNECT, NULL);
+    mg_call(c, MG_EV_RESOLVE, NULL, NULL);
+    mg_call(c, MG_EV_CONNECT, NULL, NULL);
   } else {
     union usa usa;
     socklen_t slen = tousa(&c->rem, &usa);
     mg_set_non_blocking_mode(FD(c));
     setsockopts(c);
     MG_EPOLL_ADD(c);
-    mg_call(c, MG_EV_RESOLVE, NULL);
+    mg_call(c, MG_EV_RESOLVE, NULL, NULL);
     rc = connect(FD(c), &usa.sa, slen);  // Attempt to connect
     if (rc == 0) {                       // Success
       setlocaddr(FD(c), &c->loc);
-      mg_call(c, MG_EV_CONNECT, NULL);  // Send MG_EV_CONNECT to the user
+      mg_call(c, MG_EV_CONNECT, NULL, NULL);  // Send MG_EV_CONNECT to the user
     } else if (MG_SOCK_PENDING(rc)) {   // Need to wait for TCP handshake
       MG_DEBUG(("%lu %ld -> %M pend", c->id, c->fd, mg_print_ip_port, &c->rem));
       c->is_connecting = 1;
@@ -7695,8 +7701,8 @@ static void accept_conn(struct mg_mgr *mgr, struct mg_connection *lsn) {
     c->fn_data = lsn->fn_data;
     MG_DEBUG(("%lu %ld accepted %M -> %M", c->id, c->fd, mg_print_ip_port,
               &c->rem, mg_print_ip_port, &c->loc));
-    mg_call(c, MG_EV_OPEN, NULL);
-    mg_call(c, MG_EV_ACCEPT, NULL);
+    mg_call(c, MG_EV_OPEN, NULL, mgr->userdata);
+    mg_call(c, MG_EV_ACCEPT, NULL, mgr->userdata);
   }
 }
 
@@ -7886,7 +7892,7 @@ static void wufn(struct mg_connection *c, int ev, void *ev_data) {
         if (t->id == *id) {
           struct mg_str data = mg_str_n((char *) c->recv.buf + sizeof(*id),
                                         c->recv.len - sizeof(*id));
-          mg_call(t, MG_EV_WAKEUP, &data);
+          mg_call(t, MG_EV_WAKEUP, &data, NULL);
         }
       }
     }
@@ -7943,10 +7949,10 @@ void mg_mgr_poll(struct mg_mgr *mgr, int ms) {
   for (c = mgr->conns; c != NULL; c = tmp) {
     bool is_resp = c->is_resp;
     tmp = c->next;
-    mg_call(c, MG_EV_POLL, &now);
+    mg_call(c, MG_EV_POLL, &now, mgr->userdata);
     if (is_resp && !c->is_resp) {
       long n = 0;
-      mg_call(c, MG_EV_READ, &n);
+      mg_call(c, MG_EV_READ, &n, mgr->userdata);
     }
     MG_VERBOSE(("%lu %c%c %c%c%c%c%c %lu %lu", c->id,
                 c->is_readable ? 'r' : '-', c->is_writable ? 'w' : '-',
@@ -7962,8 +7968,8 @@ void mg_mgr_poll(struct mg_mgr *mgr, int ms) {
       //} else if (c->is_tls_hs) {
       //  if ((c->is_readable || c->is_writable)) mg_tls_handshake(c);
     } else {
-      if (c->is_readable) read_conn(c);
-      if (c->is_writable) write_conn(c);
+      if (c->is_readable) read_conn(c, mgr->userdata);
+      if (c->is_writable) write_conn(c, mgr->userdata);
     }
 
     if (c->is_draining && c->send.len == 0) c->is_closing = 1;
@@ -16657,7 +16663,7 @@ static bool mg_ws_client_handshake(struct mg_connection *c) {
       struct mg_http_message hm;
       if (mg_http_parse((char *) c->recv.buf, c->recv.len, &hm)) {
         c->is_websocket = 1;
-        mg_call(c, MG_EV_WS_OPEN, &hm);
+        mg_call(c, MG_EV_WS_OPEN, &hm, NULL);
       } else {
         mg_error(c, "ws handshake error");
       }
@@ -16686,23 +16692,23 @@ static void mg_ws_cb(struct mg_connection *c, int ev, void *ev_data) {
       //                       (int) m.data.len, (int) m.data.len, m.data.buf));
       switch (op) {
         case WEBSOCKET_OP_CONTINUE:
-          mg_call(c, MG_EV_WS_CTL, &m);
+          mg_call(c, MG_EV_WS_CTL, &m, NULL);
           break;
         case WEBSOCKET_OP_PING:
           MG_DEBUG(("%s", "WS PONG"));
           mg_ws_send(c, s, msg.data_len, WEBSOCKET_OP_PONG);
-          mg_call(c, MG_EV_WS_CTL, &m);
+          mg_call(c, MG_EV_WS_CTL, &m, NULL);
           break;
         case WEBSOCKET_OP_PONG:
-          mg_call(c, MG_EV_WS_CTL, &m);
+          mg_call(c, MG_EV_WS_CTL, &m, NULL);
           break;
         case WEBSOCKET_OP_TEXT:
         case WEBSOCKET_OP_BINARY:
-          if (final) mg_call(c, MG_EV_WS_MSG, &m);
+          if (final) mg_call(c, MG_EV_WS_MSG, &m, NULL);
           break;
         case WEBSOCKET_OP_CLOSE:
           MG_DEBUG(("%lu WS CLOSE", c->id));
-          mg_call(c, MG_EV_WS_CTL, &m);
+          mg_call(c, MG_EV_WS_CTL, &m, NULL);
           // Echo the payload of the received CLOSE message back to the sender
           mg_ws_send(c, m.data.buf, m.data.len, WEBSOCKET_OP_CLOSE);
           c->is_draining = 1;
@@ -16728,7 +16734,7 @@ static void mg_ws_cb(struct mg_connection *c, int ev, void *ev_data) {
       if (final && !op) {
         m.flags = c->recv.buf[0];
         m.data = mg_str_n((char *) &c->recv.buf[1], (size_t) (ofs - 1));
-        mg_call(c, MG_EV_WS_MSG, &m);
+        mg_call(c, MG_EV_WS_MSG, &m, NULL);
         mg_iobuf_del(&c->recv, 0, ofs);
         ofs = 0;
         c->pfn_data = NULL;
@@ -16784,7 +16790,7 @@ void mg_ws_upgrade(struct mg_connection *c, struct mg_http_message *hm,
     va_end(ap);
     c->is_websocket = 1;
     c->is_resp = 0;
-    mg_call(c, MG_EV_WS_OPEN, hm);
+    mg_call(c, MG_EV_WS_OPEN, hm, NULL);
   }
 }
 

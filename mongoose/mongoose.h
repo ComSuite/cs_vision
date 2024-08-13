@@ -2052,7 +2052,7 @@ PORTABLE_8439_DECL size_t mg_chacha20_poly1305_decrypt(
 
 struct mg_connection;
 typedef void (*mg_event_handler_t)(struct mg_connection *, int ev,
-                                   void *ev_data);
+                                   void *ev_data, void* user_data);
 void mg_call(struct mg_connection *c, int ev, void *ev_data);
 void mg_error(struct mg_connection *c, const char *fmt, ...);
 
@@ -2165,7 +2165,7 @@ void mg_mgr_init(struct mg_mgr *);
 void mg_mgr_free(struct mg_mgr *);
 
 struct mg_connection *mg_listen(struct mg_mgr *, const char *url,
-                                mg_event_handler_t fn, void *fn_data);
+                                mg_event_handler_t fn, void *fn_data, void* user_data);
 struct mg_connection *mg_connect(struct mg_mgr *, const char *url,
                                  mg_event_handler_t fn, void *fn_data);
 struct mg_connection *mg_wrapfd(struct mg_mgr *mgr, int fd,
@@ -2230,7 +2230,7 @@ void mg_http_printf_chunk(struct mg_connection *cnn, const char *fmt, ...);
 void mg_http_write_chunk(struct mg_connection *c, const char *buf, size_t len);
 void mg_http_delete_chunk(struct mg_connection *c, struct mg_http_message *hm);
 struct mg_connection *mg_http_listen(struct mg_mgr *, const char *url,
-                                     mg_event_handler_t fn, void *fn_data);
+                                     mg_event_handler_t fn, void *fn_data, void* user_data);
 struct mg_connection *mg_http_connect(struct mg_mgr *, const char *url,
                                       mg_event_handler_t fn, void *fn_data);
 void mg_http_serve_dir(struct mg_connection *, struct mg_http_message *hm,

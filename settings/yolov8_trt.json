@@ -172,6 +172,13 @@
 		"readonly_checker_dictionary": "/home/marmot/settings/read_only_settings.txt",
 		"settings_backup_path": "/home/marmot/settings/",
 		"secrets_dictionary": "/home/marmot/settings/secret_settings.txt",
-		"is_create_backup": true
+		"is_create_backup": true,
+		"http_server": {
+			"root_dir": "",
+			"http_port": "",
+			"https_port": "",
+			"cert_dir": "",
+			"home_page": "index.html"
+		}
     }
 }

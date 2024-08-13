@@ -240,7 +240,7 @@ static void handle_device_eraselast(struct mg_connection *c) {
 }
 
 // HTTP request handler function
-static void fn(struct mg_connection *c, int ev, void *ev_data) {
+static void fn(struct mg_connection *c, int ev, void *ev_data, struct http_server_params* server_params) {
   if (ev == MG_EV_ACCEPT) {
     if (c->fn_data != NULL) {  // TLS listener!
       struct mg_tls_opts opts = {0};
@@ -284,9 +284,15 @@ static void fn(struct mg_connection *c, int ev, void *ev_data) {
       struct mg_http_serve_opts opts;
       memset(&opts, 0, sizeof(opts));
 #if MG_ARCH == MG_ARCH_UNIX || MG_ARCH == MG_ARCH_WIN32
-      opts.root_dir = "web_root";  // On workstations, use filesystem
+      if (server_params != NULL && server_params->root_dir != NULL)
+          opts.root_dir = server_params->root_dir;
+      else
+        opts.root_dir = "web_root";  // On workstations, use filesystem
 #else
-      opts.root_dir = "/web_root";  // On embedded, use packed files
+      if (server_params != NULL && server_params->root_dir != NULL)
+          opts.root_dir = server_params->root_dir;
+      else
+        opts.root_dir = "/web_root";  // On embedded, use packed files
       opts.fs = &mg_fs_packed;
 #endif
       mg_http_serve_dir(c, ev_data, &opts);
@@ -297,10 +303,27 @@ static void fn(struct mg_connection *c, int ev, void *ev_data) {
   }
 }
 
-void web_init(struct mg_mgr *mgr) {
-  s_settings.device_name = strdup("My Device");
-  mg_http_listen(mgr, HTTP_URL, fn, NULL);
-  mg_http_listen(mgr, HTTPS_URL, fn, (void *) 1);
+void web_init(struct mg_mgr *mgr, struct http_server_params* params) {
+    if (params != NULL && params->device_name != NULL)
+        s_settings.device_name = strdup(params);
+    else
+        s_settings.device_name = strdup("MyDevice");
+
+  mg_http_listen(mgr, HTTP_URL, fn, NULL, params);
+  mg_http_listen(mgr, HTTPS_URL, fn, (void *) 1, params);
   mg_timer_add(mgr, 3600 * 1000, MG_TIMER_RUN_NOW | MG_TIMER_REPEAT,
                timer_sntp_fn, mgr);
+}
+
+void init_http_server_params(struct http_server_params* params, const char* device_name, const char* root_dir, const int http_port, const int https_port, const char* cert_dir, const char* home_page)
+{
+    if (params == NULL)
+        return;
+
+    params->device_name = strdup(device_name);
+    params->root_dir = strdup(root_dir);
+    params->http_port = http_port;
+    params->https_port = https_port;
+    params->cert_dir = strdup(cert_dir);
+    params->home_page = strdup(home_page);
 }

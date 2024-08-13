@@ -28,7 +28,18 @@ struct ui_event {
   char text[10];
 };
 
-void web_init(struct mg_mgr *mgr);
+struct http_server_params
+{
+	char* device_name;
+	char* root_dir;
+	int http_port;
+	int https_port;
+	char* cert_dir;
+	char* home_page;
+};
+
+void web_init(struct mg_mgr *mgr, struct http_server_params* params);
+void init_http_server_params(struct http_server_params* params, const char* device_name, const char* root_dir, const int http_port, const int https_port, const char* cert_dir, const char* home_page);
 
 #ifdef __cplusplus
 }
