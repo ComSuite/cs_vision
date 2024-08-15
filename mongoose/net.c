@@ -2,7 +2,10 @@
 // All rights reserved
 
 #include "net.h"
-
+#ifdef __LINUX__
+#include <shadow.h>
+#include <pwd.h>
+#endif
 // Authenticated user.
 // A user can be authenticated by:
 //   - a name:pass pair, passed in a header Authorization: Basic .....
@@ -159,19 +162,60 @@ static void handle_settings_set(struct mg_connection *c, struct mg_str body) {
     free(s);
   }
   s_settings = settings; // Save to the device flash
-  mg_http_reply(c, 200, s_json_header,
+  mg_http_reply(c, 200, s_json_header, 
                 "{%m:%s,%m:%m}",                          //
                 MG_ESC("status"), ok ? "true" : "false",  //
                 MG_ESC("message"), MG_ESC(ok ? "Success" : "Failed"));
 }
 
-static void handle_settings_get(struct mg_connection *c) {
-  mg_http_reply(c, 200, s_json_header, "{%m:%s,%m:%hhu,%m:%hhu,%m:%m}\n",  //
-                MG_ESC("log_enabled"),
-                s_settings.log_enabled ? "true" : "false",    //
-                MG_ESC("log_level"), s_settings.log_level,    //
-                MG_ESC("brightness"), s_settings.brightness,  //
-                MG_ESC("device_name"), MG_ESC(s_settings.device_name));
+char* load_file(const char* path) {
+    FILE* file;
+    char* buffer;
+    long file_size;
+
+    if (path == NULL)
+        return NULL;
+
+    file = fopen(path, "rb");
+    if (file == NULL) {
+        perror("Error opening file");
+        return NULL;
+    }
+
+    // Get the file size
+    fseek(file, 0, SEEK_END);
+    file_size = ftell(file);
+    rewind(file);
+
+    // Allocate memory for the file content
+    buffer = (char*)malloc((file_size + 1) * sizeof(char));
+    if (buffer == NULL) {
+        perror("Memory allocation failed");
+        fclose(file);
+        return NULL;
+    }
+
+    // Read the file into the buffer
+    fread(buffer, sizeof(char), file_size, file);
+    buffer[file_size] = '\0'; // Null-terminate the string
+
+    // Print the file content
+    printf("%s\n", buffer);
+
+    // Clean up
+    fclose(file);
+
+    return buffer;
+}
+
+static void handle_settings_get(struct mg_connection *c, struct http_server_params* server_params) {
+    char* json = load_file(server_params->settings_file_path);
+    if (json == NULL)
+        return;
+
+    mg_http_reply(c, 200, s_json_header, json);
+
+    free(json);
 }
 
 static void handle_firmware_upload(struct mg_connection *c,
@@ -239,6 +283,11 @@ static void handle_device_eraselast(struct mg_connection *c) {
   mg_http_reply(c, 200, s_json_header, "true\n");
 }
 
+static void handle_status(struct mg_connection* c, struct http_server_params* server_params)
+{
+    mg_http_reply(c, 200, s_json_header, "{\"fps\": %d, \"memory\" : 1020}\n", server_params->fps);
+}
+
 // HTTP request handler function
 static void fn(struct mg_connection *c, int ev, void *ev_data, struct http_server_params* server_params) {
   if (ev == MG_EV_ACCEPT) {
@@ -253,9 +302,13 @@ static void fn(struct mg_connection *c, int ev, void *ev_data, struct http_serve
     struct user *u = authenticate(hm);
 
     if (mg_match(hm->uri, mg_str("/api/#"), NULL) && u == NULL) {
-      mg_http_reply(c, 403, "", "Not Authorised\n");
+      mg_http_reply(c, 403, "", "Not Authorized\n");
     } else if (mg_match(hm->uri, mg_str("/api/login"), NULL)) {
       handle_login(c, u);
+    } else if (mg_match(hm->uri, mg_str("/api/login"), NULL)) {
+      handle_login(c, u);
+    } else if (mg_match(hm->uri, mg_str("/api/status/get"), NULL)) {
+        handle_status(c, server_params);
     } else if (mg_match(hm->uri, mg_str("/api/logout"), NULL)) {
       handle_logout(c);
     } else if (mg_match(hm->uri, mg_str("/api/debug"), NULL)) {
@@ -265,7 +318,7 @@ static void fn(struct mg_connection *c, int ev, void *ev_data, struct http_serve
     } else if (mg_match(hm->uri, mg_str("/api/events/get"), NULL)) {
       handle_events_get(c, hm);
     } else if (mg_match(hm->uri, mg_str("/api/settings/get"), NULL)) {
-      handle_settings_get(c);
+      handle_settings_get(c, server_params);
     } else if (mg_match(hm->uri, mg_str("/api/settings/set"), NULL)) {
       handle_settings_set(c, hm->body);
     } else if (mg_match(hm->uri, mg_str("/api/firmware/upload"), NULL)) {

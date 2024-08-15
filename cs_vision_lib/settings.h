@@ -30,6 +30,7 @@
 #include <opencv2/core.hpp>
 #include "JsonWrapper.h"
 #include "types.h"
+#include "fps_counter.h"
 
 namespace cs
 {
@@ -122,6 +123,8 @@ namespace cs
 
 		cv::Scalar background_color = cv::Scalar(255, 255, 255);
 		std::string aliases_path = "";
+
+		BaseQueue<fps_counter_info>* http_server_queue = nullptr;
 
 		int get_attempts_count() { return attempts_count; };
 		int get_is_convert_to_gray() { return is_convert_to_gray; };

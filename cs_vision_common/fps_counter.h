@@ -26,6 +26,7 @@
 #include <chrono>
 #include <cstdio>
 #include <iostream>
+#include "BaseQueue.h"
 
 #ifndef __LINUX__
 #ifndef __int128_t
@@ -40,10 +41,17 @@ namespace cs
 {
 	#define default_fps_counter_step 50
 
+	class fps_counter_info
+	{
+	public:
+		std::string id;
+		uint counter;
+	};
+
 	class fps_counter
 	{
 	public:
-		void tick(const char* prompt)
+		void tick(const char* prompt, const char* id, BaseQueue<fps_counter_info>* queue = nullptr)
 		{
 			if (!is_init)
 				return;
@@ -53,8 +61,20 @@ namespace cs
 				ticker = 0;
 				std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 				auto diff = std::chrono::duration_cast<std::chrono::seconds>(end - begin).count();
-				if (diff != 0) 
-					std::cout << prompt << static_cast<int>(counter / diff) << std::endl;
+				if (diff != 0) {
+					uint val = static_cast<int>(counter / diff);
+					if (queue != nullptr) {
+						fps_counter_info* info = new fps_counter_info();
+						if (info != nullptr) {
+							info->counter = val;
+							info->id = id;
+
+							queue->try_push(info);
+						}
+					}
+
+					std::cout << prompt << val << std::endl;
+				}
 			}
 			else
 				ticker++;

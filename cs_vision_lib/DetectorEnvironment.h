@@ -40,6 +40,8 @@
 #include "CSScript.h"
 #endif
 #include "aliases.h"
+#include "BaseQueue.h"
+#include "fps_counter.h"
 
 namespace cs
 {
@@ -110,6 +112,8 @@ namespace cs
 		VIDEO_STREAM_MODE video_stream_mode = VIDEO_STREAM_MODE::VIDEO_STREAM_MODE_NONE;
 
 		cs::SampleImageWriter* image_writer = nullptr;
+
+		BaseQueue<fps_counter_info>* http_server_queue = nullptr;
 
 #ifdef _DEBUG_
 		fps_counter fps;

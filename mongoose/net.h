@@ -36,6 +36,9 @@ struct http_server_params
 	int https_port;
 	char* cert_dir;
 	char* home_page;
+	char* settings_file_path;
+
+	uint fps;
 };
 
 void web_init(struct mg_mgr *mgr, struct http_server_params* params);

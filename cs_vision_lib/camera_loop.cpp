@@ -132,6 +132,8 @@ bool init_detectors_environment(DetectorEnvironment* environment, camera_setting
 		}
 	}
 
+	environment->http_server_queue = set->http_server_queue;
+
 	create_video_streamer(environment, set);
 	connect_to_mqtt_broker(set, environment);
 
@@ -458,7 +460,7 @@ void thread_func(DetectorEnvironment* env)
 		if (!env->detector_ready) {
 			detect_func(env);
 #ifdef _DEBUG_
-			env->fps.tick("##########Output FPS: ");
+			env->fps.tick("##########Output FPS: ", env->camera_id.c_str(), env->http_server_queue);
 #endif
 			env->detector_ready = true;
 		}
@@ -601,7 +603,7 @@ void* camera_loop(void* arg)
 		if (capture->get_frame(frame, set->get_is_convert_to_gray() != 0)) {
 #ifdef _DEBUG_
 			if (set->input_kind == INPUT_OUTPUT_DEVICE_KIND::INPUT_OUTPUT_DEVICE_KIND_CAMERA) {
-				fps.tick("!!!!!!!!!Input FPS: ");
+				fps.tick("!!!!!!!!!Input FPS: ", "", nullptr);
 			}
 #endif
 			if (!frame.empty()) {

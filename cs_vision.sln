@@ -55,6 +55,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cs_vision_haar_cascade", "c
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mongoose", "mongoose\mongoose.vcxitems", "{A22EF9E6-3884-4A39-A3D9-5CBB4A8A4FA7}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "linux_specific_lib", "linux_specific_lib\linux_specific_lib.vcxitems", "{C513EC8B-3AF3-4889-8C56-C59307F785E1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -304,6 +306,7 @@ Global
 		cs_vision_yolov5_tflite\cs_vision_yolov5_tflite.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4
 		cs_vision_yolov5_trt\cs_vision_yolov5_trt.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4
 		cs_vision_yolov8_trt\cs_vision_yolov8_trt.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4
+		linux_specific_lib\linux_specific_lib.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4
 		mongoose\mongoose.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4
 		rapidjson\rapidjson.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4
 		TFAudioSampleRecognizer\TFAudioSampleRecognizer.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4
@@ -322,6 +325,7 @@ Global
 		onnx_trtengine_converter_lib\onnx_trtengine_converter_lib.vcxitems*{a6bf81a0-a5a9-41d9-a32c-0ef2016232b5}*SharedItemsImports = 4
 		yolov5_tensorrt\yolov5_tensorrt.vcxitems*{a6bf81a0-a5a9-41d9-a32c-0ef2016232b5}*SharedItemsImports = 4
 		rapidjson\rapidjson.vcxitems*{b712c436-e9e0-45b6-beac-c397891dbec0}*SharedItemsImports = 9
+		linux_specific_lib\linux_specific_lib.vcxitems*{c513ec8b-3af3-4889-8c56-c59307f785e1}*SharedItemsImports = 9
 		onnx_trtengine_converter_lib\onnx_trtengine_converter_lib.vcxitems*{cbe8128c-c213-4847-9bf7-b324829bafbe}*SharedItemsImports = 9
 		command_line_parcer\command_line_parcer.vcxitems*{d7e1371c-c6d9-4d01-aba0-96ba52678747}*SharedItemsImports = 4
 		onnx_trtengine_converter_lib\onnx_trtengine_converter_lib.vcxitems*{d7e1371c-c6d9-4d01-aba0-96ba52678747}*SharedItemsImports = 4

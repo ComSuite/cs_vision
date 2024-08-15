@@ -158,16 +158,36 @@ function DeveloperNote({text, children}) {
 <//>`;
 };
 
+//Alex
 function Video({text, children}) {
   var host = window.location.protocol + "//" + window.location.hostname + ":8088";
 	
   return html`
 <div id="container">
   <img src="${host}/camera1" />
+</div>
+<div>
+  <label id="labelFPS">00</label>  
 </div>`;
 };
 
+//Alex
+function LoadFPS() {
+	fetch("/api/status/get").then(function(response) {
+	  response.json().then(function(r){
+		document.getElementById('labelFPS').innerHTML = r.fps;
+	  })
+	  return;
+	}).then(function(data) {
+	  console.log(data);
+	}).catch(function(err) {
+	  console.log('Fetch Error :-S', err);
+	});	
+}
+
 function Main({}) {
+  setInterval(LoadFPS, 1000); //Alex
+  
   const [stats, setStats] = useState(null);
   const refresh = () => fetch('api/stats/get').then(r => r.json()).then(r => setStats(r));
   useEffect(refresh, []);
@@ -186,7 +206,7 @@ function Main({}) {
     <${Chart} data=${stats.points} />
 
     <div class="my-4 hx-24 bg-white border rounded-md shadow-lg" role="alert">
-      <${Video}
+      <${Video} //Alex
         text="This chart is an SVG image, generated on the fly from the
         data returned by the api/stats/get API call" />
     <//>

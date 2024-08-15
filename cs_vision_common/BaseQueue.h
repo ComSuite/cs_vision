@@ -34,7 +34,8 @@ namespace cs
     public:
         BaseQueue() {}
 
-        void push(T* elem) {
+        void push(T* elem) 
+        {
             if (elem == nullptr)
                 return;
 
@@ -55,6 +56,33 @@ namespace cs
             m.unlock();
 
             return elem;
+        }
+
+        T* try_pop()
+        {
+            T* elem = nullptr;
+
+            if (m.try_lock()) {
+                if (!q.empty()) {
+                    elem = q.front();
+                    q.pop_front();
+                }
+
+                m.unlock();
+            }
+
+            return elem;
+        }
+
+        void try_push(T* elem) 
+        {
+            if (elem == nullptr)
+                return;
+
+            if (m.try_lock()) {
+                q.push_back(elem);
+                m.unlock();
+            }
         }
     private:
         std::list<T*> q;

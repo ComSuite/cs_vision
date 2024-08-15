@@ -237,8 +237,22 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+#ifdef __WITH_MONGOOSE_SERVER__
+    http_server_thread_arg* http_arg = new http_server_thread_arg();
+    if (http_arg != nullptr) {
+        http_arg->settings = settings;
+        http_arg->queue = new BaseQueue<fps_counter_info>();
+    }
+#endif
+
     list<camera_thread_description*> camera_threads;
     for (auto& camera : settings->cameras) {
+#ifdef __WITH_MONGOOSE_SERVER__
+        if (http_arg != nullptr) {
+            camera->http_server_queue = http_arg->queue;
+        }
+#endif
+
         camera_thread_description* descr = new camera_thread_description();
 
         pthread_create(&descr->camera_thread, NULL, camera_loop, camera);
@@ -265,8 +279,10 @@ int main(int argc, char* argv[])
 #ifdef __WITH_MONGOOSE_SERVER__
     pthread_t http_thread;
 
-    pthread_create(&http_thread, NULL, mongoose_thread_func, settings);
-    pthread_detach(http_thread);
+    if (http_arg != nullptr) {
+        pthread_create(&http_thread, NULL, mongoose_thread_func, http_arg);
+        pthread_detach(http_thread);
+    }
 #endif
 
     auto begin_time = std::chrono::steady_clock::now();
@@ -291,6 +307,11 @@ int main(int argc, char* argv[])
     delete settings;
     if (mqtt != nullptr)
         delete mqtt;
+#ifdef __WITH_MONGOOSE_SERVER__
+    if (http_arg != nullptr) {
+        delete http_arg->queue;
+    }
+#endif
 
     return 0;
 }
