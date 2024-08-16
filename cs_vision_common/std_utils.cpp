@@ -65,6 +65,20 @@ std::string read_str_file(const char* filename)
     return std::string(bytes.data(), fileSize);
 }
 
+bool write_str_file(const char* filename, const char* content)
+{
+	try {
+		std::ofstream out(filename);
+		out << content;
+		out.close();
+	}
+	catch (...) {
+		return false;
+	}
+
+	return true;
+}
+
 bool is_file_exists(const char* filename)
 {
 #ifdef __WITH_FILESYSTEM_CXX__

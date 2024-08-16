@@ -57,6 +57,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mongoose", "mongoose\mongoo
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "linux_specific_lib", "linux_specific_lib\linux_specific_lib.vcxitems", "{C513EC8B-3AF3-4889-8C56-C59307F785E1}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cs_vision_cred_storage", "cs_vision_cred_storage\cs_vision_cred_storage.vcxitems", "{0AA6DD7A-240A-4A84-99D4-8170ABA8E9E9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -283,6 +285,7 @@ Global
 		video_streamer\video_streamer.vcxitems*{02c4c439-5877-4974-b178-5804df66a6f9}*SharedItemsImports = 4
 		cs_vision_portaudio\cs_vision_portaudio.vcxitems*{03200230-deb5-4f82-a284-96e775280082}*SharedItemsImports = 9
 		cs_vision_common\cs_vision_common.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
+		cs_vision_cred_storage\cs_vision_cred_storage.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
 		cs_vision_lib\cs_vision_lib.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
 		cs_vision_yolov5_tflite\cs_vision_yolov5_tflite.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
 		cs_vision_yolov8_trt\cs_vision_yolov8_trt.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
@@ -290,6 +293,7 @@ Global
 		rapidjson\rapidjson.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
 		video_streamer\video_streamer.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
 		ChaiScript\ChaiScript.vcxitems*{051bcae7-c9d7-4bf8-940a-66148a6ae8b0}*SharedItemsImports = 9
+		cs_vision_cred_storage\cs_vision_cred_storage.vcxitems*{0aa6dd7a-240a-4a84-99d4-8170aba8e9e9}*SharedItemsImports = 9
 		cs_vision_common\cs_vision_common.vcxitems*{0ab0de66-7e7f-415e-971f-450e6caa04ca}*SharedItemsImports = 9
 		command_line_parcer\command_line_parcer.vcxitems*{23d67dea-dab9-4a42-ac3c-4e1e59a0d3f2}*SharedItemsImports = 9
 		cs_script\cs_script.vcxitems*{2b65107c-da78-4e48-97fe-d14b30b72ce1}*SharedItemsImports = 9

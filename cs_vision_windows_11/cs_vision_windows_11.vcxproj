@@ -63,6 +63,7 @@
     <Import Project="..\video_streamer\video_streamer.vcxitems" Label="Shared" />
     <Import Project="..\cs_vision_yolov8_trt\cs_vision_yolov8_trt.vcxitems" Label="Shared" />
     <Import Project="..\mongoose\mongoose.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_cred_storage\cs_vision_cred_storage.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />

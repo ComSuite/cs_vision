@@ -22,6 +22,7 @@
  */
 
 #include "mongoose_loop.h"
+#include "credentials_storage.h"
 #include "mongoose.h"
 #include "net.h"
 
