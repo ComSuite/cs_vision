@@ -141,6 +141,16 @@ int JsonWrapper::json_get_int(rapidjson::GenericObject<false, rapidjson::Value>&
 	return defval;
 }
 
+uint64_t JsonWrapper::json_get_uint64(rapidjson::GenericObject<false, rapidjson::Value>& doc, const char* topic, int defval)
+{
+	if (doc.HasMember(topic)) {
+		if (doc[topic].IsUint64())
+			return doc[topic].GetUint64();
+	}
+
+	return defval;
+}
+
 bool JsonWrapper::json_get_bool(rapidjson::GenericObject<false, rapidjson::Value>& doc, const char* topic, bool defval)
 {
 	if (doc.HasMember(topic)) {
@@ -182,6 +192,13 @@ int JsonWrapper::json_get_int(rapidjson::Value& doc, const char* topic, int defv
 	auto val = doc.GetObject();
 
 	return json_get_int(val, topic, defval);
+}
+
+uint64_t JsonWrapper::json_get_uint64(rapidjson::Value& doc, const char* topic, int defval)
+{
+	auto val = doc.GetObject();
+
+	return json_get_uint64(val, topic, defval);
 }
 
 bool JsonWrapper::json_get_bool(rapidjson::Value& doc, const char* topic, bool defval)

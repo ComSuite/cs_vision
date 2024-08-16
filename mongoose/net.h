@@ -28,6 +28,11 @@ struct ui_event {
   char text[10];
 };
 
+#define CREDENTIALS_OPERATION_CHECK_CREDENTIALS	1
+#define CREDENTIALS_OPERATION_CHECK_TOKEN	2
+#define CREDENTIALS_OPERATION_ADD_USER 3
+#define CREDENTIALS_OPERATION_CHANGE_PASSWORD 4
+
 struct http_server_params
 {
 	char* device_name;
@@ -39,6 +44,9 @@ struct http_server_params
 	char* settings_file_path;
 
 	uint fps;
+
+	void* credentials;
+	bool (*callback)(int operation, void* credentials, const char* login, const char* password, char** token);
 };
 
 void web_init(struct mg_mgr *mgr, struct http_server_params* params);

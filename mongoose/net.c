@@ -2,10 +2,6 @@
 // All rights reserved
 
 #include "net.h"
-#ifdef __LINUX__
-#include <shadow.h>
-#include <pwd.h>
-#endif
 // Authenticated user.
 // A user can be authenticated by:
 //   - a name:pass pair, passed in a header Authorization: Basic .....
@@ -51,31 +47,36 @@ static void timer_sntp_fn(void *param) {  // SNTP timer function. Sync up time
 }
 
 // Parse HTTP requests, return authenticated user or NULL
-static struct user *authenticate(struct mg_http_message *hm) {
-  // In production, make passwords strong and tokens randomly generated
-  // In this example, user list is kept in RAM. In production, it can
-  // be backed by file, database, or some other method.
-  static struct user users[] = {
-      {"admin", "admin", "admin_token"},
-      {"user1", "user1", "user1_token"},
-      {"user2", "user2", "user2_token"},
-      {NULL, NULL, NULL},
-  };
-  char user[64], pass[64];
-  struct user *u, *result = NULL;
-  mg_http_creds(hm, user, sizeof(user), pass, sizeof(pass));
-  MG_VERBOSE(("user [%s] pass [%s]", user, pass));
+static struct user* authenticate(struct mg_http_message *hm, struct http_server_params* server_params) {
+    if (server_params == NULL)
+        return NULL;
 
-  if (user[0] != '\0' && pass[0] != '\0') {
-    // Both user and password is set, search by user/password
-    for (u = users; result == NULL && u->name != NULL; u++)
-      if (strcmp(user, u->name) == 0 && strcmp(pass, u->pass) == 0) result = u;
-  } else if (user[0] == '\0') {
-    // Only password is set, search by token
-    for (u = users; result == NULL && u->name != NULL; u++)
-      if (strcmp(pass, u->access_token) == 0) result = u;
-  }
-  return result;
+    char login[64], pass[64];
+    struct user* result = NULL;
+    mg_http_creds(hm, login, sizeof(login), pass, sizeof(pass));
+    MG_VERBOSE(("user [%s] pass [%s]", login, pass));
+
+    char* token;
+    if (server_params->callback(CREDENTIALS_OPERATION_CHECK_CREDENTIALS, server_params->credentials, login, pass, &token)) {
+        result = (struct user*)malloc(sizeof(struct user));
+        if (result != NULL) {
+            result->access_token = _strdup(token);
+            result->name = _strdup(login);
+        }
+    }
+    else {
+        token = _strdup(pass);
+        memset(pass, 0x00, sizeof(pass));
+        if (server_params->callback(CREDENTIALS_OPERATION_CHECK_TOKEN, server_params->credentials, login, pass, &token)) {
+            result = (struct user*)malloc(sizeof(struct user));
+            if (result != NULL) {
+                result->access_token = _strdup(token);
+                result->name = _strdup(login);
+            }
+        }
+    }
+
+    return result;
 }
 
 static void handle_login(struct mg_connection *c, struct user *u) {
@@ -299,7 +300,7 @@ static void fn(struct mg_connection *c, int ev, void *ev_data, struct http_serve
     }
   } else if (ev == MG_EV_HTTP_MSG) {
     struct mg_http_message *hm = (struct mg_http_message *) ev_data;
-    struct user *u = authenticate(hm);
+    struct user *u = authenticate(hm, server_params);
 
     if (mg_match(hm->uri, mg_str("/api/#"), NULL) && u == NULL) {
       mg_http_reply(c, 403, "", "Not Authorized\n");

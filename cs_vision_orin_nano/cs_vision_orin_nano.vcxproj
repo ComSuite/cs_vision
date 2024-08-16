@@ -111,6 +111,14 @@
   <ItemGroup>
     <ClCompile Include="camera_loop_utils.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Update="G:\Projects\comsuite\sources\cs_vision\mongoose\mongoose.c">
+      <FileType>CppCode</FileType>
+    </ClCompile>
+    <ClCompile Update="G:\Projects\comsuite\sources\cs_vision\mongoose\net.c">
+      <FileType>CppCode</FileType>
+    </ClCompile>
+  </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PreprocessorDefinitions>__LINUX__;_DEBUG_;__WITH_FILESYSTEM_CXX__;__WITH_SCRIPT_LANG__;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;__USE_POSIX199309;_____GPIO_NVIDIA_JETSON____;DBUILD_ZLIB=ON;__HAS_CUDA__;YOLOV5_OPENCV_HAS_CUDA;_WITH_VPI</PreprocessorDefinitions>

@@ -25,6 +25,7 @@
 
 #include "JsonWrapper.h"
 #include <map>
+#include <list>
 
 namespace cs
 {
@@ -64,9 +65,13 @@ namespace cs
 		bool add(const std::string& login, const std::string& password);
 		bool del(const std::string& login);
 
+		bool check_token(const char* token, char* login, size_t length);
+		bool add_token(const char* token, const char* login);
+
 		bool save();
 	private:
 		std::map<std::string, cs::credential*> credentials;
+		std::map<std::string, std::string> tokens;
 	protected:
 		int parse(rapidjson::Document& root) override;
 	};

@@ -159,6 +159,14 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Update="G:\Projects\comsuite\sources\cs_vision\mongoose\mongoose.c">
+      <FileType>CppCode</FileType>
+    </ClCompile>
+    <ClCompile Update="G:\Projects\comsuite\sources\cs_vision\mongoose\net.c">
+      <FileType>CppCode</FileType>
+    </ClCompile>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\portaudio.redist.0.19.1\build\native\portaudio.redist.targets" Condition="Exists('..\packages\portaudio.redist.0.19.1\build\native\portaudio.redist.targets')" />

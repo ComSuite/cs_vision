@@ -35,5 +35,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)NullObjectDetector.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)settings.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)types.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)uuid.h" />
   </ItemGroup>
 </Project>

@@ -25,6 +25,7 @@
 #include "credentials_storage.h"
 #include "mongoose.h"
 #include "net.h"
+#include "uuid.h"
 
 using namespace std;
 using namespace cs;
@@ -41,6 +42,42 @@ static void signal_handler(int sig_num)
 	signal(sig_num, signal_handler);
 	s_sig_num = sig_num;
 }
+
+static bool credentials_callback(int operation, void* credentials, const char* login, const char* password, char** token)
+{
+	credentials_storage* cred = (credentials_storage*)credentials;
+	if (cred == NULL || login == NULL || token == NULL)
+		return false;
+
+	std::random_device rd;
+	auto seed_data = std::array<int, std::mt19937::state_size> {};
+	std::generate(std::begin(seed_data), std::end(seed_data), std::ref(rd));
+	std::seed_seq seq(std::begin(seed_data), std::end(seed_data));
+	std::mt19937 generator(seq);
+	uuids::uuid id = uuids::uuid_random_generator{ generator }();
+
+	switch (operation) {
+	case CREDENTIALS_OPERATION_CHECK_CREDENTIALS:
+		if (cred->check(login, password)) {
+			std::string st = uuids::to_string(id);
+			cred->add_token(st.c_str(), login);
+			*token = _strdup(st.c_str());
+			return true;
+		} 
+		break;
+	case CREDENTIALS_OPERATION_CHECK_TOKEN:
+		return cred->check_token(*token, (char*)login, strlen(login));
+		break;
+	case CREDENTIALS_OPERATION_ADD_USER:
+		break;
+	case CREDENTIALS_OPERATION_CHANGE_PASSWORD:
+		break;
+	}
+
+	cout << "login: " << login << "password: " << password << endl;
+	return false;
+}
+
 
 void* cs::mongoose_thread_func(void* arg)
 {
@@ -60,6 +97,8 @@ void* cs::mongoose_thread_func(void* arg)
 	//signal(SIGINT, signal_handler);
 	//signal(SIGTERM, signal_handler);
 
+	credentials_storage* credentials = new credentials_storage();
+
 	http_server_params server_params;
 	server_params.device_name = _strdup(settings->name.c_str());
 	server_params.root_dir = _strdup(settings->http_server->root_dir.c_str());
@@ -68,6 +107,8 @@ void* cs::mongoose_thread_func(void* arg)
 	server_params.https_port = settings->http_server->https_port;
 	server_params.home_page = _strdup(settings->http_server->home_page.c_str());
 	server_params.settings_file_path = _strdup(settings->get_file_path());
+	server_params.callback = credentials_callback;
+	server_params.credentials = credentials;
 
 	mg_log_set(MG_LL_DEBUG);  // Set debug log level
 	mg_mgr_init(&mgr);
