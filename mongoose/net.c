@@ -80,12 +80,14 @@ static struct user* authenticate(struct mg_http_message *hm, struct http_server_
 }
 
 static void handle_login(struct mg_connection *c, struct user *u) {
-  char cookie[256];
-  mg_snprintf(cookie, sizeof(cookie),
-              "Set-Cookie: access_token=%s; Path=/; "
-              "%sHttpOnly; SameSite=Lax; Max-Age=%d\r\n",
-              u->access_token, c->is_tls ? "Secure; " : "", 3600 * 24);
-  mg_http_reply(c, 200, cookie, "{%m:%m}", MG_ESC("user"), MG_ESC(u->name));
+    char cookie[256];
+    if (u != NULL) {
+        mg_snprintf(cookie, sizeof(cookie),
+                    "Set-Cookie: access_token=%s; Path=/; "
+                    "%sHttpOnly; SameSite=Lax; Max-Age=%d\r\n",
+                    u->access_token, c->is_tls ? "Secure; " : "", 3600 * 24);
+        mg_http_reply(c, 200, cookie, "{%m:%m}", MG_ESC("user"), MG_ESC(u->name));
+    }
 }
 
 static void handle_logout(struct mg_connection *c) {
@@ -299,8 +301,8 @@ static void fn(struct mg_connection *c, int ev, void *ev_data, struct http_serve
       mg_tls_init(c, &opts);
     }
   } else if (ev == MG_EV_HTTP_MSG) {
-    struct mg_http_message *hm = (struct mg_http_message *) ev_data;
-    struct user *u = authenticate(hm, server_params);
+    struct mg_http_message* hm = (struct mg_http_message *) ev_data;
+    struct user* u = authenticate(hm, server_params);
 
     if (mg_match(hm->uri, mg_str("/api/#"), NULL) && u == NULL) {
       mg_http_reply(c, 403, "", "Not Authorized\n");
@@ -350,6 +352,16 @@ static void fn(struct mg_connection *c, int ev, void *ev_data, struct http_serve
       opts.fs = &mg_fs_packed;
 #endif
       mg_http_serve_dir(c, ev_data, &opts);
+    }
+
+    if (u != NULL) {
+        if (u->access_token != NULL)
+            free(u->access_token);
+        if (u->name != NULL)
+            free(u->name);
+        if (u->pass != NULL)
+            free(u->pass);
+        free(u);
     }
     MG_DEBUG(("%lu %.*s %.*s -> %.*s", c->id, (int) hm->method.len,
               hm->method.buf, (int) hm->uri.len, hm->uri.buf, (int) 3,
