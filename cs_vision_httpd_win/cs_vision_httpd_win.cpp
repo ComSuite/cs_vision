@@ -24,6 +24,7 @@
 #include <iostream>
 #include "settings.h"
 #include "mongoose_loop.h"
+#include <pthread.h>
 
 using namespace std;
 using namespace cs;
@@ -42,6 +43,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    settings.http_server->device_name = settings.name;
     http_server_thread_arg* http_arg = new http_server_thread_arg();
     if (http_arg != nullptr) {
         http_arg->settings_file_path = settings.get_file_path();
@@ -49,7 +51,22 @@ int main(int argc, char* argv[])
         http_arg->queue = new BaseQueue<fps_counter_info>();
     }
 
-    mongoose_thread_func((void*)http_arg);
+    pthread_t http_thread;
+    if (http_arg != nullptr) {
+        pthread_create(&http_thread, NULL, mongoose_thread_func, http_arg);
+        pthread_detach(http_thread);
+    }
+
+    unsigned int current = 10;
+    while (true) {
+        fps_counter_info* info = new fps_counter_info();
+        info->counter = 30 - current;
+        current = info->counter;
+        info->id = "1";
+        http_arg->queue->push(info);
+        
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    }
 
     return 0;
 }

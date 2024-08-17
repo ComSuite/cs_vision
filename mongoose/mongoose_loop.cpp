@@ -54,7 +54,7 @@ static uuids::uuid get_uuid()
 	return uuids::uuid_random_generator{ generator }();
 }
 
-static bool credentials_callback(int operation, void* credentials, const char* login, const char* password, char** token)
+static bool credentials_callback(int operation, void* credentials, const char* login, int login_max_len, const char* password, char** token)
 {
 	credentials_storage* cred = (credentials_storage*)credentials;
 	if (cred == NULL || login == NULL || token == NULL)
@@ -70,7 +70,7 @@ static bool credentials_callback(int operation, void* credentials, const char* l
 		} 
 		break;
 	case CREDENTIALS_OPERATION_CHECK_TOKEN:
-		return cred->check_token(*token, (char*)login, strlen(login));
+		return cred->check_token(*token, (char*)login, login_max_len);
 		break;
 	case CREDENTIALS_OPERATION_ADD_USER:
 		break;
@@ -113,6 +113,7 @@ void* cs::mongoose_thread_func(void* arg)
 	server_params.settings_file_path = _strdup(_arg->settings_file_path.c_str());
 	server_params.callback = credentials_callback;
 	server_params.credentials = credentials;
+	server_params.fps = 0;
 
 	mg_log_set(MG_LL_DEBUG);  // Set debug log level
 	mg_mgr_init(&mgr);

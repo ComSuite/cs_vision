@@ -9,7 +9,9 @@
 // When a user is shown a login screen, she enters a user:pass. If successful,
 // a server responds with a http-only access_token cookie set.
 struct user {
-  const char *name, *pass, *access_token;
+    char* name;
+    char* pass;
+    char* access_token;
 };
 
 // Settings
@@ -19,10 +21,6 @@ struct settings {
   long brightness;
   char *device_name;
 };
-
-#ifdef __LINUX__
-#define _strdup strdup
-#endif
 
 static struct settings s_settings = {true, 1, 57, NULL};
 
@@ -61,24 +59,26 @@ static struct user* authenticate(struct mg_http_message *hm, struct http_server_
     MG_VERBOSE(("user [%s] pass [%s]", login, pass));
 
     char* token = NULL;
-    if (server_params->callback(CREDENTIALS_OPERATION_CHECK_CREDENTIALS, server_params->credentials, login, pass, &token)) {
+    if (server_params->callback(CREDENTIALS_OPERATION_CHECK_CREDENTIALS, server_params->credentials, login, 63, pass, &token)) {
         result = (struct user*)malloc(sizeof(struct user));
         if (result != NULL) {
-            result->access_token = _strdup(token);
-            result->name = _strdup(login);
+            result->access_token = strdup(token);
+            result->name = strdup(login);
             result->pass = NULL;
         }
     }
     else {
-        token = _strdup(pass);
-        memset(pass, 0x00, sizeof(pass));
-        memset(login, 0x00, sizeof(login));
-        if (server_params->callback(CREDENTIALS_OPERATION_CHECK_TOKEN, server_params->credentials, login, pass, &token)) {
-            result = (struct user*)malloc(sizeof(struct user));
-            if (result != NULL) {
-                result->access_token = _strdup(token);
-                result->name = _strdup(login);
-                result->pass = NULL;
+        token = strdup(pass);
+        if (token != NULL) {
+            memset(pass, 0x00, sizeof(pass));
+            memset(login, 0x00, sizeof(login));
+            if (server_params->callback(CREDENTIALS_OPERATION_CHECK_TOKEN, server_params->credentials, login, 63, pass, &token)) {
+                result = (struct user*)malloc(sizeof(struct user));
+                if (result != NULL) {
+                    result->access_token = strdup(token);
+                    result->name = strdup(login);
+                    result->pass = NULL;
+                }
             }
         }
     }

@@ -46,7 +46,7 @@ struct http_server_params
 	uint fps;
 
 	void* credentials;
-	bool (*callback)(int operation, void* credentials, const char* login, const char* password, char** token);
+	bool (*callback)(int operation, void* credentials, const char* login, int login_max_len, const char* password, char** token);
 };
 
 void web_init(struct mg_mgr *mgr, struct http_server_params* params);

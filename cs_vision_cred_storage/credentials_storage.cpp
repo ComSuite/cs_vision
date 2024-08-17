@@ -119,7 +119,7 @@ bool credentials_storage::change(const std::string& login, const std::string& pa
 bool credentials_storage::add(const std::string& login, const std::string& password)
 {
 	try {
-		if (credentials.find(login) != credentials.end()) {
+		if (credentials.find(login) == credentials.end()) {
 			credential* cred = new credential();
 			if (cred != nullptr) {
 				cred->hash = std::hash<std::string>{}(password);
