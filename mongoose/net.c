@@ -20,6 +20,10 @@ struct settings {
   char *device_name;
 };
 
+#ifdef __LINUX__
+#define _strdup strdup
+#endif
+
 static struct settings s_settings = {true, 1, 57, NULL};
 
 static const char *s_json_header =
@@ -56,25 +60,34 @@ static struct user* authenticate(struct mg_http_message *hm, struct http_server_
     mg_http_creds(hm, login, sizeof(login), pass, sizeof(pass));
     MG_VERBOSE(("user [%s] pass [%s]", login, pass));
 
-    char* token;
+    char* token = NULL;
     if (server_params->callback(CREDENTIALS_OPERATION_CHECK_CREDENTIALS, server_params->credentials, login, pass, &token)) {
         result = (struct user*)malloc(sizeof(struct user));
         if (result != NULL) {
             result->access_token = _strdup(token);
             result->name = _strdup(login);
+            result->pass = NULL;
         }
     }
     else {
         token = _strdup(pass);
         memset(pass, 0x00, sizeof(pass));
+        memset(login, 0x00, sizeof(login));
         if (server_params->callback(CREDENTIALS_OPERATION_CHECK_TOKEN, server_params->credentials, login, pass, &token)) {
             result = (struct user*)malloc(sizeof(struct user));
             if (result != NULL) {
                 result->access_token = _strdup(token);
                 result->name = _strdup(login);
+                result->pass = NULL;
             }
         }
     }
+
+    if (token != NULL)
+        free(token);
+
+    memset(pass, 0x00, sizeof(pass));
+    memset(login, 0x00, sizeof(login));
 
     return result;
 }
@@ -308,8 +321,8 @@ static void fn(struct mg_connection *c, int ev, void *ev_data, struct http_serve
       mg_http_reply(c, 403, "", "Not Authorized\n");
     } else if (mg_match(hm->uri, mg_str("/api/login"), NULL)) {
       handle_login(c, u);
-    } else if (mg_match(hm->uri, mg_str("/api/login"), NULL)) {
-      handle_login(c, u);
+    //} else if (mg_match(hm->uri, mg_str("/api/login"), NULL)) {
+    //  handle_login(c, u);
     } else if (mg_match(hm->uri, mg_str("/api/status/get"), NULL)) {
         handle_status(c, server_params);
     } else if (mg_match(hm->uri, mg_str("/api/logout"), NULL)) {
@@ -361,6 +374,7 @@ static void fn(struct mg_connection *c, int ev, void *ev_data, struct http_serve
             free(u->name);
         if (u->pass != NULL)
             free(u->pass);
+
         free(u);
     }
     MG_DEBUG(("%lu %.*s %.*s -> %.*s", c->id, (int) hm->method.len,

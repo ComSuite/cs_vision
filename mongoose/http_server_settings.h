@@ -23,21 +23,20 @@
 
 #pragma once
 
-#include "BaseQueue.h"
-#include "fps_counter.h"
-#include "http_server_settings.h"
+#include "JsonWrapper.h"
 
-namespace cs 
+namespace cs
 {
-
-	class http_server_thread_arg
+	class http_server_settings : public cs::JsonWrapper
 	{
 	public:
-		std::string settings_file_path = "";
-		http_server_settings* settings = nullptr;
-		BaseQueue<fps_counter_info>* queue = nullptr;
+		std::string device_name = "";
+		std::string root_dir = "";
+		int http_port = 0;
+		int https_port = 0;
+		std::string cert_dir = "";
+		std::string home_page = "";
+
+		int parse(rapidjson::Value& root);
 	};
-
-	void* mongoose_thread_func(void* arg);
 }
-

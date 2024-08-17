@@ -15,31 +15,21 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)BaseQueue.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)cv_utils.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FileBackup.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)fps_counter.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)ICamera.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)JsonValidator.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)JsonWrapper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)JsonWriter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)kpi_counter.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)MQTTWrapper.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)OpenCVCamera.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)OpenCVCamera_GPU.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ReadOnlyValues.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)SampleImageWriter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)std_utils.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)uuid.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)cv_utils.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FileBackup.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)ICamera.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)JsonValidator.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)JsonWrapper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)JsonWriter.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)MQTTWrapper.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)OpenCVCamera.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)OpenCVCamera_GPU.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)std_utils.cpp" />
   </ItemGroup>
 </Project>

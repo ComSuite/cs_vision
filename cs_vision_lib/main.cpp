@@ -240,7 +240,8 @@ int main(int argc, char* argv[])
 #ifdef __WITH_MONGOOSE_SERVER__
     http_server_thread_arg* http_arg = new http_server_thread_arg();
     if (http_arg != nullptr) {
-        http_arg->settings = settings;
+        http_arg->settings_file_path = settings->get_file_path();
+        http_arg->settings = settings->http_server;
         http_arg->queue = new BaseQueue<fps_counter_info>();
     }
 #endif

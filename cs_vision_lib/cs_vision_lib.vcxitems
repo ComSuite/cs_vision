@@ -17,10 +17,15 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)aliases.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)camera_loop.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)command_processor.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)cv_utils.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ICamera.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)IObjectDetector.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)main.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MQTTClient.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MQTTWrapper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)NullObjectDetector.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)OpenCVCamera.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)OpenCVCamera_GPU.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)settings.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -28,13 +33,18 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)camera_loop.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)camera_loop_utils.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)command_processor.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)cv_utils.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DetectorEnvironment.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ICamera.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)IObjectDetector.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)JsonCOCOLabels.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MQTTClient.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MQTTWrapper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)NullObjectDetector.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)OpenCVCamera.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)OpenCVCamera_GPU.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SampleImageWriter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)settings.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)types.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)uuid.h" />
   </ItemGroup>
 </Project>

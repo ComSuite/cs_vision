@@ -89,6 +89,8 @@
     <Import Project="..\cs_vision_haar_cascade\cs_vision_haar_cascade.vcxitems" Label="Shared" />
     <Import Project="..\mongoose\mongoose.vcxitems" Label="Shared" />
     <Import Project="..\linux_specific_lib\linux_specific_lib.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_cred_storage\cs_vision_cred_storage.vcxitems" Label="Shared" />
+    <Import Project="..\gsl\gsl.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />

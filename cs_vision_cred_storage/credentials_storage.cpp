@@ -61,6 +61,9 @@ credentials_storage::~credentials_storage()
 
 bool credentials_storage::check(const std::string& login, const std::string& password)
 {
+	if (login.size() <= 0 || password.size() <= 0)
+		return false;
+
 	try {
 		credential* cred = credentials.at(login);
 		if (cred != nullptr) {

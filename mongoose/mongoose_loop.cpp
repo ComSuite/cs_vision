@@ -43,23 +43,27 @@ static void signal_handler(int sig_num)
 	s_sig_num = sig_num;
 }
 
+static uuids::uuid get_uuid()
+{
+	std::random_device rd;
+	auto seed_data = std::array<int, std::mt19937::state_size> {};
+	std::generate(std::begin(seed_data), std::end(seed_data), std::ref(rd));
+	std::seed_seq seq(std::begin(seed_data), std::end(seed_data));
+	std::mt19937 generator(seq);
+
+	return uuids::uuid_random_generator{ generator }();
+}
+
 static bool credentials_callback(int operation, void* credentials, const char* login, const char* password, char** token)
 {
 	credentials_storage* cred = (credentials_storage*)credentials;
 	if (cred == NULL || login == NULL || token == NULL)
 		return false;
 
-	std::random_device rd;
-	auto seed_data = std::array<int, std::mt19937::state_size> {};
-	std::generate(std::begin(seed_data), std::end(seed_data), std::ref(rd));
-	std::seed_seq seq(std::begin(seed_data), std::end(seed_data));
-	std::mt19937 generator(seq);
-	uuids::uuid id = uuids::uuid_random_generator{ generator }();
-
 	switch (operation) {
 	case CREDENTIALS_OPERATION_CHECK_CREDENTIALS:
 		if (cred->check(login, password)) {
-			std::string st = uuids::to_string(id);
+			std::string st = uuids::to_string(get_uuid());
 			cred->add_token(st.c_str(), login);
 			*token = _strdup(st.c_str());
 			return true;
@@ -86,7 +90,7 @@ void* cs::mongoose_thread_func(void* arg)
 
 	http_server_thread_arg* _arg = static_cast<http_server_thread_arg*>(arg);
 
-	device_settings* settings = _arg->settings;
+	http_server_settings* settings = _arg->settings;
 	BaseQueue<fps_counter_info>* queue = _arg->queue;
 
 	if (settings == nullptr)
@@ -100,13 +104,13 @@ void* cs::mongoose_thread_func(void* arg)
 	credentials_storage* credentials = new credentials_storage();
 
 	http_server_params server_params;
-	server_params.device_name = _strdup(settings->name.c_str());
-	server_params.root_dir = _strdup(settings->http_server->root_dir.c_str());
-	server_params.cert_dir = _strdup(settings->http_server->cert_dir.c_str());
-	server_params.http_port = settings->http_server->http_port;
-	server_params.https_port = settings->http_server->https_port;
-	server_params.home_page = _strdup(settings->http_server->home_page.c_str());
-	server_params.settings_file_path = _strdup(settings->get_file_path());
+	server_params.device_name = _strdup(settings->device_name.c_str());
+	server_params.root_dir = _strdup(settings->root_dir.c_str());
+	server_params.cert_dir = _strdup(settings->cert_dir.c_str());
+	server_params.http_port = settings->http_port;
+	server_params.https_port = settings->https_port;
+	server_params.home_page = _strdup(settings->home_page.c_str());
+	server_params.settings_file_path = _strdup(_arg->settings_file_path.c_str());
 	server_params.callback = credentials_callback;
 	server_params.credentials = credentials;
 

@@ -25,6 +25,7 @@
 
 #include <queue>
 #include <mutex>
+#include <list>
 
 namespace cs
 {

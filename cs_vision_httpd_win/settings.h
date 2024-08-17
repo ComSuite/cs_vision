@@ -27,10 +27,7 @@
 #include <map>
 #include <variant>
 #include <list>
-#include <opencv2/core.hpp>
 #include "JsonWrapper.h"
-#include "types.h"
-#include "fps_counter.h"
 #include "http_server_settings.h"
 
 namespace cs
@@ -67,7 +64,7 @@ namespace cs
 		bool is_draw_detections = false;
 		int results_mapping_rule = 0;
 
-		cv::Scalar color = cv::Scalar(255, 255, 255);
+		std::string color = "";
 
 #ifdef __WITH_SCRIPT_LANG__
 		std::string on_detect = "";
@@ -104,8 +101,8 @@ namespace cs
 
 		int video_stream_port = 0;
 		std::string	video_stream_channel = "";
-		VIDEO_STREAM_MODE video_stream_mode = VIDEO_STREAM_MODE::VIDEO_STREAM_MODE_NONE;
-		VIDEO_STREAM_ENGINE video_stream_engine = VIDEO_STREAM_ENGINE::VIDEO_STREAM_ENGINE_NONE;
+		int video_stream_mode = 0;
+		int video_stream_engine = 0;
 
 		bool is_use_super_resolution = false;
 		std::string super_resolution_name = "";
@@ -119,13 +116,11 @@ namespace cs
 		cs::SCRIPT_EXECUTE_MODE execute_mode = cs::SCRIPT_EXECUTE_MODE::SCRIPT_EXECUTE_MODE_NONE;
 #endif
 
-		INPUT_OUTPUT_DEVICE_KIND input_kind = INPUT_OUTPUT_DEVICE_KIND::INPUT_OUTPUT_DEVICE_KIND_NONE;
-		INPUT_OUTPUT_DEVICE_KIND output_kind = INPUT_OUTPUT_DEVICE_KIND::INPUT_OUTPUT_DEVICE_KIND_NONE;
+		int input_kind = 0;
+		int output_kind = 0;
 
-		cv::Scalar background_color = cv::Scalar(255, 255, 255);
+		std::string background_color = "";
 		std::string aliases_path = "";
-
-		BaseQueue<fps_counter_info>* http_server_queue = nullptr;
 
 		int get_attempts_count() { return attempts_count; };
 		int get_is_convert_to_gray() { return is_convert_to_gray; };
@@ -160,8 +155,9 @@ namespace cs
 		std::string readonly_checker_dictionary = "";
 		std::string secrets_dictionary = "";
 		bool is_create_backup = true;
-
+#ifdef __WITH_MONGOOSE_SERVER__
 		http_server_settings* http_server = nullptr;
+#endif
 	protected:
 		int parse(rapidjson::Document& root) override;
 	};

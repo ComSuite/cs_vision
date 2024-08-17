@@ -59,6 +59,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "linux_specific_lib", "linux
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cs_vision_cred_storage", "cs_vision_cred_storage\cs_vision_cred_storage.vcxitems", "{0AA6DD7A-240A-4A84-99D4-8170ABA8E9E9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cs_vision_httpd_win", "cs_vision_httpd_win\cs_vision_httpd_win.vcxproj", "{3E290B58-6817-4275-804F-754C8F5CEE27}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gsl", "gsl\gsl.vcxitems", "{0DF99D33-0E62-4EDC-9AB6-0ECA33299E34}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -273,6 +277,26 @@ Global
 		{D06E194C-2AA6-44E7-981F-D9A646BD11C5}.Release|x64.Build.0 = Release|x64
 		{D06E194C-2AA6-44E7-981F-D9A646BD11C5}.Release|x86.ActiveCfg = Release|x86
 		{D06E194C-2AA6-44E7-981F-D9A646BD11C5}.Release|x86.Build.0 = Release|x86
+		{3E290B58-6817-4275-804F-754C8F5CEE27}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{3E290B58-6817-4275-804F-754C8F5CEE27}.Debug|Any CPU.Build.0 = Debug|x64
+		{3E290B58-6817-4275-804F-754C8F5CEE27}.Debug|ARM.ActiveCfg = Debug|x64
+		{3E290B58-6817-4275-804F-754C8F5CEE27}.Debug|ARM.Build.0 = Debug|x64
+		{3E290B58-6817-4275-804F-754C8F5CEE27}.Debug|ARM64.ActiveCfg = Debug|x64
+		{3E290B58-6817-4275-804F-754C8F5CEE27}.Debug|ARM64.Build.0 = Debug|x64
+		{3E290B58-6817-4275-804F-754C8F5CEE27}.Debug|x64.ActiveCfg = Debug|x64
+		{3E290B58-6817-4275-804F-754C8F5CEE27}.Debug|x64.Build.0 = Debug|x64
+		{3E290B58-6817-4275-804F-754C8F5CEE27}.Debug|x86.ActiveCfg = Debug|Win32
+		{3E290B58-6817-4275-804F-754C8F5CEE27}.Debug|x86.Build.0 = Debug|Win32
+		{3E290B58-6817-4275-804F-754C8F5CEE27}.Release|Any CPU.ActiveCfg = Release|x64
+		{3E290B58-6817-4275-804F-754C8F5CEE27}.Release|Any CPU.Build.0 = Release|x64
+		{3E290B58-6817-4275-804F-754C8F5CEE27}.Release|ARM.ActiveCfg = Release|x64
+		{3E290B58-6817-4275-804F-754C8F5CEE27}.Release|ARM.Build.0 = Release|x64
+		{3E290B58-6817-4275-804F-754C8F5CEE27}.Release|ARM64.ActiveCfg = Release|x64
+		{3E290B58-6817-4275-804F-754C8F5CEE27}.Release|ARM64.Build.0 = Release|x64
+		{3E290B58-6817-4275-804F-754C8F5CEE27}.Release|x64.ActiveCfg = Release|x64
+		{3E290B58-6817-4275-804F-754C8F5CEE27}.Release|x64.Build.0 = Release|x64
+		{3E290B58-6817-4275-804F-754C8F5CEE27}.Release|x86.ActiveCfg = Release|Win32
+		{3E290B58-6817-4275-804F-754C8F5CEE27}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -295,21 +319,27 @@ Global
 		ChaiScript\ChaiScript.vcxitems*{051bcae7-c9d7-4bf8-940a-66148a6ae8b0}*SharedItemsImports = 9
 		cs_vision_cred_storage\cs_vision_cred_storage.vcxitems*{0aa6dd7a-240a-4a84-99d4-8170aba8e9e9}*SharedItemsImports = 9
 		cs_vision_common\cs_vision_common.vcxitems*{0ab0de66-7e7f-415e-971f-450e6caa04ca}*SharedItemsImports = 9
+		gsl\gsl.vcxitems*{0df99d33-0e62-4edc-9ab6-0eca33299e34}*SharedItemsImports = 9
 		command_line_parcer\command_line_parcer.vcxitems*{23d67dea-dab9-4a42-ac3c-4e1e59a0d3f2}*SharedItemsImports = 9
 		cs_script\cs_script.vcxitems*{2b65107c-da78-4e48-97fe-d14b30b72ce1}*SharedItemsImports = 9
 		cs_vision_yolov5_trt\cs_vision_yolov5_trt.vcxitems*{33be9a1d-49b0-4747-97ef-2c34131fb8ea}*SharedItemsImports = 9
+		cs_vision_common\cs_vision_common.vcxitems*{3e290b58-6817-4275-804f-754c8f5cee27}*SharedItemsImports = 4
+		cs_vision_cred_storage\cs_vision_cred_storage.vcxitems*{3e290b58-6817-4275-804f-754c8f5cee27}*SharedItemsImports = 4
+		mongoose\mongoose.vcxitems*{3e290b58-6817-4275-804f-754c8f5cee27}*SharedItemsImports = 4
 		video_streamer\video_streamer.vcxitems*{423494c3-ef27-45c7-96b8-096b70eefb32}*SharedItemsImports = 9
 		TFAudioSampleRecognizer\TFAudioSampleRecognizer.vcxitems*{4febd55d-309e-4585-8edb-b6687276d547}*SharedItemsImports = 9
 		cs_vision_yolov8_trt\cs_vision_yolov8_trt.vcxitems*{65d302be-4f9b-44f5-a4af-fe415505d32d}*SharedItemsImports = 9
 		ChaiScript\ChaiScript.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4
 		cs_script\cs_script.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4
 		cs_vision_common\cs_vision_common.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4
+		cs_vision_cred_storage\cs_vision_cred_storage.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4
 		cs_vision_haar_cascade\cs_vision_haar_cascade.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4
 		cs_vision_lib\cs_vision_lib.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4
 		cs_vision_portaudio\cs_vision_portaudio.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4
 		cs_vision_yolov5_tflite\cs_vision_yolov5_tflite.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4
 		cs_vision_yolov5_trt\cs_vision_yolov5_trt.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4
 		cs_vision_yolov8_trt\cs_vision_yolov8_trt.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4
+		gsl\gsl.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4
 		linux_specific_lib\linux_specific_lib.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4
 		mongoose\mongoose.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4
 		rapidjson\rapidjson.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4

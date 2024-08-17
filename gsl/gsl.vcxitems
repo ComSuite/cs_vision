@@ -3,7 +3,7 @@
   <PropertyGroup Label="Globals">
     <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <HasSharedItems>true</HasSharedItems>
-    <ItemsProjectGuid>{a22ef9e6-3884-4a39-a3d9-5cbb4a8a4fa7}</ItemsProjectGuid>
+    <ItemsProjectGuid>{0df99d33-0e62-4edc-9ab6-0eca33299e34}</ItemsProjectGuid>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -14,14 +14,14 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)mongoose.c" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)mongoose_loop.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)net.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)http_server_settings.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)mongoose.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)mongoose_loop.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)net.h" />
+    <None Include="$(MSBuildThisFileDirectory)gsl" />
+    <None Include="$(MSBuildThisFileDirectory)gsl_algorithm" />
+    <None Include="$(MSBuildThisFileDirectory)gsl_assert" />
+    <None Include="$(MSBuildThisFileDirectory)gsl_byte" />
+    <None Include="$(MSBuildThisFileDirectory)gsl_util" />
+    <None Include="$(MSBuildThisFileDirectory)multi_span" />
+    <None Include="$(MSBuildThisFileDirectory)pointers" />
+    <None Include="$(MSBuildThisFileDirectory)span" />
+    <None Include="$(MSBuildThisFileDirectory)string_span" />
   </ItemGroup>
 </Project>

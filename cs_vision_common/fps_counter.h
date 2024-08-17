@@ -26,6 +26,9 @@
 #include <chrono>
 #include <cstdio>
 #include <iostream>
+#include <stdint.h>
+#include <cstdint>
+#include <string>
 #include "BaseQueue.h"
 
 #ifndef __LINUX__
@@ -44,8 +47,8 @@ namespace cs
 	class fps_counter_info
 	{
 	public:
-		std::string id;
-		uint counter;
+		std::string id = "";
+		unsigned int counter = 0;
 	};
 
 	class fps_counter
@@ -62,7 +65,7 @@ namespace cs
 				std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 				auto diff = std::chrono::duration_cast<std::chrono::seconds>(end - begin).count();
 				if (diff != 0) {
-					uint val = static_cast<int>(counter / diff);
+					unsigned int val = static_cast<unsigned int>(counter / diff);
 					if (queue != nullptr) {
 						fps_counter_info* info = new fps_counter_info();
 						if (info != nullptr) {
@@ -80,7 +83,7 @@ namespace cs
 				ticker++;
 		}
 
-		void init(uint step = default_fps_counter_step)
+		void init(unsigned int step = default_fps_counter_step)
 		{
 			this->step = step;
 			counter = 0;
@@ -89,7 +92,7 @@ namespace cs
 			is_init = true;
 		}
 	private:
-		uint step = default_fps_counter_step;
+		unsigned int step = default_fps_counter_step;
 		__int128_t counter = 0;
 		std::chrono::steady_clock::time_point begin;
 		int ticker = 0;
