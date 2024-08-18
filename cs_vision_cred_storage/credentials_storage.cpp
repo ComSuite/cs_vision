@@ -103,6 +103,20 @@ bool credentials_storage::add_token(const char* token, const char* login)
 	return false;
 }
 
+bool credentials_storage::del_token(const char* token)
+{
+	for (auto i : tokens)
+		cout << i.first << "    " << i.second << endl;
+	if (check_token(token, NULL, 0)) {
+		tokens.erase(token);
+		return true;
+	}
+
+	cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!" << tokens.size() << endl;
+
+	return false;
+}
+
 bool credentials_storage::change(const std::string& login, const std::string& password)
 {
 	credential* cred = credentials.at(login);

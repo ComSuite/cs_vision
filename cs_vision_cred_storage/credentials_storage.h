@@ -67,6 +67,8 @@ namespace cs
 
 		bool check_token(const char* token, char* login, size_t length);
 		bool add_token(const char* token, const char* login);
+		bool del_token(const char* token);
+
 
 		bool save();
 	private:

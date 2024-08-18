@@ -57,7 +57,7 @@ static uuids::uuid get_uuid()
 static bool credentials_callback(int operation, void* credentials, const char* login, int login_max_len, const char* password, char** token)
 {
 	credentials_storage* cred = (credentials_storage*)credentials;
-	if (cred == NULL || login == NULL || token == NULL)
+	if (cred == NULL || token == NULL) //login == NULL ||
 		return false;
 
 	switch (operation) {
@@ -71,11 +71,12 @@ static bool credentials_callback(int operation, void* credentials, const char* l
 		break;
 	case CREDENTIALS_OPERATION_CHECK_TOKEN:
 		return cred->check_token(*token, (char*)login, login_max_len);
-		break;
 	case CREDENTIALS_OPERATION_ADD_USER:
 		break;
 	case CREDENTIALS_OPERATION_CHANGE_PASSWORD:
 		break;
+	case CREDENTIALS_OPERATION_REMOVE_TOKEN:
+		return cred->del_token(*token);
 	}
 
 	cout << "login: " << login << "password: " << password << endl;

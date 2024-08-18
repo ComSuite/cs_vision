@@ -103,14 +103,19 @@ static void handle_login(struct mg_connection *c, struct user *u) {
     }
 }
 
-static void handle_logout(struct mg_connection *c) {
+static void handle_logout(struct mg_connection* c, const char* token, struct http_server_params* server_params) {
   char cookie[256];
+
   mg_snprintf(cookie, sizeof(cookie),
               "Set-Cookie: access_token=; Path=/; "
               "Expires=Thu, 01 Jan 1970 00:00:00 UTC; "
               "%sHttpOnly; Max-Age=0; \r\n",
               c->is_tls ? "Secure; " : "");
   mg_http_reply(c, 200, cookie, "true\n");
+
+  if (server_params != NULL && token != NULL) {
+      server_params->callback(CREDENTIALS_OPERATION_REMOVE_TOKEN, server_params->credentials, NULL, 0, NULL, &token);
+  }
 }
 
 static void handle_debug(struct mg_connection *c, struct mg_http_message *hm) {
@@ -326,7 +331,7 @@ static void fn(struct mg_connection *c, int ev, void *ev_data, struct http_serve
     } else if (mg_match(hm->uri, mg_str("/api/status/get"), NULL)) {
         handle_status(c, server_params);
     } else if (mg_match(hm->uri, mg_str("/api/logout"), NULL)) {
-      handle_logout(c);
+      handle_logout(c, u->access_token, server_params);
     } else if (mg_match(hm->uri, mg_str("/api/debug"), NULL)) {
       handle_debug(c, hm);
     } else if (mg_match(hm->uri, mg_str("/api/stats/get"), NULL)) {
