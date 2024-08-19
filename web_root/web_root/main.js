@@ -46,6 +46,7 @@ function Sidebar({url, show}) {
     <div class="flex flex-1 flex-col">
       <${NavLink} title="Dashboard" icon=${Icons.home} href="/" url=${url} />
       <${NavLink} title="Settings" icon=${Icons.cog} href="/settings" url=${url} />
+      <${NavLink} title="Scripts" icon=${Icons.doc} href="/scripts" url=${url} />
       <${NavLink} title="Firmware Update" icon=${Icons.download} href="/update" url=${url} />
       <${NavLink} title="Events" icon=${Icons.alert} href="/events" url=${url} />
     <//>
@@ -54,6 +55,11 @@ function Sidebar({url, show}) {
 };
 
 function Events({}) {
+  if (intervalID != -1) {
+    clearInterval(intervalID);
+	intervalID= -1;
+  }
+	
   const [events, setEvents] = useState([]);
   const [page, setPage] = useState(1);
 
@@ -161,32 +167,50 @@ function DeveloperNote({text, children}) {
 //Alex
 function Video({text, children}) {
   var host = window.location.protocol + "//" + window.location.hostname + ":8088";
-	
+  var contName = "container" + text;
+  var labelName = "labelFPS" + text;
   return html`
-<div id="container">
-  <img src="${host}/camera1" />
+<div id=${contName}>
+  <img src="static.jpg" />
 </div>
-<div>
-  <label id="labelFPS">00</label>  
+<div class="p-2 flex flex-col bg-white border shadow-sm rounded-xl dark:bg-slate-900 dark:border-gray-800">
+  <h3 id=${labelName} class="text-xl truncate font-semibold tracking-tight">
+	FPS:
+  </>
 </div>`;
 };
 
 //Alex
 function LoadFPS() {
 	fetch("/api/status/get").then(function(response) {
-	  response.json().then(function(r){
-		document.getElementById('labelFPS').innerHTML = r.fps;
-	  })
+      if (response.status === 403) {
+        clearInterval(intervalID);
+	    intervalID= -1;
+		 
+        logout();
+       //throw new Error(`HTTP error! status: ${response.status}`);
+      }
+	  else {
+	    response.json().then(function(r){
+          for (var i=0; i < r.length; i++) {
+		    document.getElementById("labelFPS" + r[i].camera_id).innerHTML = "FPS: " + r[i].fps;
+          }			
+	    })
+	  }
 	  return;
 	}).then(function(data) {
 	  console.log(data);
 	}).catch(function(err) {
-	  console.log('Fetch Error :-S', err);
+		location.reload();
+		console.log('Fetch Error :-S', err);
 	});	
 }
 
+var intervalID = -1;
+
 function Main({}) {
-  setInterval(LoadFPS, 1000); //Alex
+  if (intervalID == -1)
+    intervalID = setInterval(LoadFPS, 1000); //Alex
   
   const [stats, setStats] = useState(null);
   const refresh = () => fetch('api/stats/get').then(r => r.json()).then(r => setStats(r));
@@ -195,26 +219,33 @@ function Main({}) {
   return html`
 <div class="p-2">
   <div class="p-4 sm:p-2 mx-auto grid grid-cols-2 lg:grid-cols-4 gap-4">
-    <${Stat} title="Temperature" text="${stats.temperature} °C" tipText="good" tipIcon=${Icons.ok} tipColors=${tipColors.green} />
-    <${Stat} title="Humidity" text="${stats.humidity} %" tipText="warn" tipIcon=${Icons.warn} tipColors=${tipColors.yellow} />
+    <${Stat} title="CPU Temperature" text="${stats.temperature} °C" tipText="good" tipIcon=${Icons.ok} tipColors=${tipColors.green} />
+    <${Stat} title="Free memory" text="${stats.humidity} %" tipText="warn" tipIcon=${Icons.warn} tipColors=${tipColors.yellow} />
     <div class="bg-white col-span-2 border rounded-md shadow-lg" role="alert">
       <${DeveloperNote} text="Stats data is received from the Mongoose backend" />
     <//>
   <//>
   <div class="p-4 sm:p-2 mx-auto grid grid-cols-1 lg:grid-cols-2 gap-4">
 
-    <${Chart} data=${stats.points} />
+    <div class="my-4 hx-24 bg-white border rounded-md shadow-lg" role="alert">
+      <${Video} 
+        text="1" />
+    <//>
 
     <div class="my-4 hx-24 bg-white border rounded-md shadow-lg" role="alert">
-      <${Video} //Alex
-        text="This chart is an SVG image, generated on the fly from the
-        data returned by the api/stats/get API call" />
+      <${Video} 
+        text="2" />
     <//>
   <//>
 <//>`;
 };
 
 function FirmwareStatus({title, info, children}) {
+  if (intervalID != -1) {
+    clearInterval(intervalID);
+	intervalID= -1;
+  }
+	
   const state = ['UNAVAILABLE', 'FIRST_BOOT', 'NOT_COMMITTED', 'COMMITTED'][(info.status || 0) % 4];
   const valid = info.status > 0;
   return html`
@@ -234,6 +265,11 @@ function FirmwareStatus({title, info, children}) {
 
 
 function FirmwareUpdate({}) {
+  if (intervalID != -1) {
+    clearInterval(intervalID);
+	intervalID= -1;
+  }
+	
   const [info, setInfo] = useState([{}, {}]);
   const refresh = () => fetch('api/firmware/status').then(r => r.json()).then(r => setInfo(r));
   useEffect(refresh, []);
@@ -320,7 +356,19 @@ function FirmwareUpdate({}) {
 <//>`;
 };
 
+function Scripts({}) {
+  if (intervalID != -1) {
+    clearInterval(intervalID);
+	intervalID= -1;
+  }
+}
+
 function Settings({}) {
+  if (intervalID != -1) {
+    clearInterval(intervalID);
+	intervalID= -1;
+  }
+	
   const [settings, setSettings] = useState(null);
   const [saveResult, setSaveResult] = useState(null);
   const refresh = () => fetch('api/settings/get')
@@ -395,6 +443,7 @@ const App = function({}) {
     <${Router} onChange=${ev => setUrl(ev.url)} history=${History.createHashHistory()} >
       <${Main} default=${true} />
       <${Settings} path="settings" />
+      <${Scripts} path="scripts" />
       <${FirmwareUpdate} path="update" />
       <${Events} path="events" />
     <//>
