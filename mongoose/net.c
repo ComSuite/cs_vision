@@ -306,7 +306,8 @@ static void handle_device_eraselast(struct mg_connection *c) {
 
 static void handle_status(struct mg_connection* c, struct http_server_params* server_params)
 {
-    mg_http_reply(c, 200, s_json_header, "{\"fps\": %d, \"memory\" : 1020}\n", server_params->fps);
+    const char* json = "[{\"camera_id\": \"1\",\"fps\": %d, \"memory\" : 1020},{\"camera_id\": \"2\",\"fps\": %d, \"memory\" : 1020}]\n";
+    mg_http_reply(c, 200, s_json_header, json, server_params->fps, server_params->fps + 5);
 }
 
 // HTTP request handler function
