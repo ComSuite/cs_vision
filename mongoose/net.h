@@ -34,6 +34,20 @@ struct ui_event {
 #define CREDENTIALS_OPERATION_CHANGE_PASSWORD 4
 #define CREDENTIALS_OPERATION_REMOVE_TOKEN 5
 
+struct http_fps_item
+{
+	char* id;
+	unsigned int counter;
+};
+
+struct http_system_info
+{
+	char* device_name;
+	unsigned int cpu;
+	unsigned int memory;
+	int temp;
+};
+
 struct http_server_params
 {
 	char* device_name;
@@ -44,7 +58,9 @@ struct http_server_params
 	char* home_page;
 	char* settings_file_path;
 
-	uint fps;
+	struct http_system_info system_info;
+	int num_counter;
+	struct http_fps_item* counters;
 
 	void* credentials;
 	bool (*callback)(int operation, void* credentials, const char* login, int login_max_len, const char* password, char** token);

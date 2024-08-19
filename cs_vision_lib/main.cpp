@@ -281,6 +281,8 @@ int main(int argc, char* argv[])
     pthread_t http_thread;
 
     if (http_arg != nullptr) {
+        http_arg->camera_count = settings->cameras.size();
+
         pthread_create(&http_thread, NULL, mongoose_thread_func, http_arg);
         pthread_detach(http_thread);
     }

@@ -36,6 +36,7 @@ namespace cs
 		std::string settings_file_path = "";
 		http_server_settings* settings = nullptr;
 		BaseQueue<fps_counter_info>* queue = nullptr;
+		int camera_count = 0;
 	};
 
 	void* mongoose_thread_func(void* arg);

@@ -306,8 +306,32 @@ static void handle_device_eraselast(struct mg_connection *c) {
 
 static void handle_status(struct mg_connection* c, struct http_server_params* server_params)
 {
-    const char* json = "[{\"camera_id\": \"1\",\"fps\": %d, \"memory\" : 1020},{\"camera_id\": \"2\",\"fps\": %d, \"memory\" : 1020}]\n";
-    mg_http_reply(c, 200, s_json_header, json, server_params->fps, server_params->fps + 5);
+    if (server_params == NULL) {
+        mg_http_reply(c, 404, s_json_header, "");
+        return;
+    }
+
+    int buf_size = 1000;
+    char* json = (char*)malloc(buf_size + 1);
+    if (json == NULL) {
+        mg_http_reply(c, 404, s_json_header, "");
+        return;
+    }
+
+    strcpy(json, "[");
+
+    char* p = json + strlen(json);
+    for (int i = 0; i < server_params->num_counter; i++) {
+        sprintf(json + strlen(json), "{\"camera_id\": \"%s\",\"fps\": %d}", server_params->counters[i].id, server_params->counters[i].counter);
+        if (i < server_params->num_counter - 1) {
+            strcat(json, ",");
+        }
+    }
+
+    strcat(json, "]");
+
+    mg_http_reply(c, 200, s_json_header, json);
+    free(json);
 }
 
 // HTTP request handler function
@@ -327,8 +351,6 @@ static void fn(struct mg_connection *c, int ev, void *ev_data, struct http_serve
       mg_http_reply(c, 403, "", "Not Authorized\n");
     } else if (mg_match(hm->uri, mg_str("/api/login"), NULL)) {
       handle_login(c, u);
-    //} else if (mg_match(hm->uri, mg_str("/api/login"), NULL)) {
-    //  handle_login(c, u);
     } else if (mg_match(hm->uri, mg_str("/api/status/get"), NULL)) {
         handle_status(c, server_params);
     } else if (mg_match(hm->uri, mg_str("/api/logout"), NULL)) {

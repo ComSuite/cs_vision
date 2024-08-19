@@ -165,13 +165,13 @@ function DeveloperNote({text, children}) {
 };
 
 //Alex
-function Video({text, children}) {
+function Video({text, video_uri, children}) {
   var host = window.location.protocol + "//" + window.location.hostname + ":8088";
   var contName = "container" + text;
   var labelName = "labelFPS" + text;
   return html`
 <div id=${contName}>
-  <img src="static.jpg" />
+  <img src="${video_uri}" />
 </div>
 <div class="p-2 flex flex-col bg-white border shadow-sm rounded-xl dark:bg-slate-900 dark:border-gray-800">
   <h3 id=${labelName} class="text-xl truncate font-semibold tracking-tight">
@@ -229,12 +229,12 @@ function Main({}) {
 
     <div class="my-4 hx-24 bg-white border rounded-md shadow-lg" role="alert">
       <${Video} 
-        text="1" />
+        text="1" video_uri="http://localhost:8088/camera" />
     <//>
 
     <div class="my-4 hx-24 bg-white border rounded-md shadow-lg" role="alert">
       <${Video} 
-        text="2" />
+        text="2" video_uri="http://localhost:8089/camera" />
     <//>
   <//>
 <//>`;

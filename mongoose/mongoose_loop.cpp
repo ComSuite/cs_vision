@@ -79,10 +79,27 @@ static bool credentials_callback(int operation, void* credentials, const char* l
 		return cred->del_token(*token);
 	}
 
-	cout << "login: " << login << "password: " << password << endl;
 	return false;
 }
 
+http_fps_item* find_counter(http_fps_item* counters, int num_counters, const char* id)
+{
+	for (int i = 0; i < num_counters; i++) {
+		if (counters[i].id != NULL) {
+			if (strcmp(counters[i].id, id) == 0)
+				return &counters[i];
+		}
+	}
+
+	for (int i = 0; i < num_counters; i++) {
+		if (counters[i].id == NULL) {
+			counters[i].id = _strdup(id);
+			return &counters[i];
+		}
+	}
+
+	return NULL;
+}
 
 void* cs::mongoose_thread_func(void* arg)
 {
@@ -114,9 +131,20 @@ void* cs::mongoose_thread_func(void* arg)
 	server_params.settings_file_path = _strdup(_arg->settings_file_path.c_str());
 	server_params.callback = credentials_callback;
 	server_params.credentials = credentials;
-	server_params.fps = 0;
 
-	mg_log_set(MG_LL_DEBUG);  // Set debug log level
+	server_params.counters = (http_fps_item*)malloc(_arg->camera_count * sizeof(http_fps_item));
+	if (server_params.counters != NULL) {
+		server_params.num_counter = _arg->camera_count;
+		for (int i = 0; i < server_params.num_counter; i++) {
+			server_params.counters[i].counter = 0;
+			server_params.counters[i].id = NULL;
+		}
+	}
+	else {
+		server_params.num_counter = 0;
+	}
+
+	mg_log_set(MG_LL_ERROR);
 	mg_mgr_init(&mgr);
 	mgr.userdata = &server_params;
 
@@ -125,7 +153,12 @@ void* cs::mongoose_thread_func(void* arg)
 		if (queue != nullptr) {
 			auto info = queue->try_pop();
 			if (info != nullptr) {
-				server_params.fps = info->counter;
+				http_fps_item* counter = find_counter(server_params.counters, server_params.num_counter, info->id.c_str());
+				if (counter != NULL) {
+					counter->counter = info->counter;
+				}
+
+				delete info;
 			}
 		}
 
