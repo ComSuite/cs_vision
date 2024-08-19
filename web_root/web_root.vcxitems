@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{48fdac42-74ac-47f7-9eb2-7b0eeb68d9e3}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)bundle.js" />
+    <None Include="$(MSBuildThisFileDirectory)certs\server_cert.pem" />
+    <None Include="$(MSBuildThisFileDirectory)certs\server_key.pem" />
+    <None Include="$(MSBuildThisFileDirectory)components.js" />
+    <None Include="$(MSBuildThisFileDirectory)history.min.js" />
+    <None Include="$(MSBuildThisFileDirectory)index.html" />
+    <None Include="$(MSBuildThisFileDirectory)main.css" />
+    <None Include="$(MSBuildThisFileDirectory)main.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="$(MSBuildThisFileDirectory)logo_v_0.1.png" />
+    <Image Include="$(MSBuildThisFileDirectory)logo_v_0.1_small.png" />
+    <Image Include="$(MSBuildThisFileDirectory)static.jpg" />
+  </ItemGroup>
+</Project>
