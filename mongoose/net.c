@@ -321,7 +321,7 @@ static void handle_status(struct mg_connection* c, struct http_server_params* se
         return;
     }
 
-    sprintf(json, "{\"cpu\": %d, \"mem\": %d, \"temp\": %d, \"counters\": [", server_params->system_info.cpu, server_params->system_info.memory, server_params->system_info.temp);
+    sprintf(json, "{\"gpu\": %d, \"cpu\": %d, \"mem\": %d, \"temp\": %d, \"counters\": [", server_params->system_info.gpu, server_params->system_info.cpu, server_params->system_info.memory, server_params->system_info.temp);
 
     char* p = json + strlen(json);
     for (int i = 0; i < server_params->num_counter; i++) {

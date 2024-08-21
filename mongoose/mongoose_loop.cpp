@@ -27,6 +27,7 @@
 #include "net.h"
 #include "uuid.h"
 #include "system_usage.h"
+#include <chrono>
 
 using namespace std;
 using namespace cs;
@@ -153,6 +154,7 @@ void* cs::mongoose_thread_func(void* arg)
 	mgr.userdata = &server_params;
 
 	web_init(&mgr, &server_params);
+	auto begin_time = std::chrono::steady_clock::now();
 	while (s_sig_num == 0) {
 		if (queue != nullptr) {
 			auto info = queue->try_pop();
@@ -166,7 +168,13 @@ void* cs::mongoose_thread_func(void* arg)
 			}
 
 			server_params.system_info.memory = sys.get_free_memory();
-			server_params.system_info.cpu = sys.get_cpu_usage();
+			server_params.system_info.gpu = sys.get_gpu_usage();
+
+
+			if (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - begin_time).count() > 1500) {
+				server_params.system_info.cpu = sys.get_cpu_usage();
+				begin_time = std::chrono::steady_clock::now();
+			}
 		}
 
 		mg_mgr_poll(&mgr, 50);

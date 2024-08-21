@@ -185,7 +185,7 @@ function LoadFPS() {
     fetch("/api/status/get").then(function(response) {
         if (response.status === 403) {
             clearInterval(intervalID);
-	        intervalID= -1;
+	        intervalID = -1;
 		 
             logout();
             //throw new Error(`HTTP error! status: ${response.status}`);
@@ -195,6 +195,7 @@ function LoadFPS() {
                 document.getElementById("statCPUTemperature").innerHTML = r.temp + "°C";
                 document.getElementById("statFreeMemory").innerHTML = r.mem + "%";
                 document.getElementById("statCPUUsage").innerHTML = r.cpu + "%";
+                document.getElementById("statGPUUsage").innerHTML = r.gpu + "%";
 
                 for (var i = 0; i < r.counters.length; i++) {
                     document.getElementById("labelFPS" + r.counters[i].camera_id).innerHTML = "FPS: " + r.counters[i].fps;
@@ -226,6 +227,7 @@ function Main({}) {
     <${Stat} title="CPU Temperature" id="statCPUTemperature" text="${stats.temp} °C" tipText="good" tipIcon=${Icons.ok} tipColors=${tipColors.green} />
     <${Stat} title="Free memory" id="statFreeMemory" text="${stats.mem} %" tipText="warn" tipIcon=${Icons.warn} tipColors=${tipColors.yellow} />
     <${Stat} title="CPU usage" id="statCPUUsage" text="${stats.cpu} %" tipText="warn" tipIcon=${Icons.warn} tipColors=${tipColors.yellow} />
+    <${Stat} title="GPU usage" id="statGPUUsage" text="${stats.gpu} %" tipText="warn" tipIcon=${Icons.warn} tipColors=${tipColors.yellow} />
   <//>
   <div class="p-4 sm:p-2 mx-auto grid grid-cols-1 lg:grid-cols-2 gap-4">
 

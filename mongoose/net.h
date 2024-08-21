@@ -46,6 +46,7 @@ struct http_system_info
 	unsigned int cpu;
 	unsigned int memory;
 	int temp;
+	unsigned int gpu;
 };
 
 struct http_server_params

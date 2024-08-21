@@ -34,6 +34,5 @@ unsigned int system_usage::get_cpu_usage()
 
 	PdhCollectQueryData(cpuQuery);
 	PdhGetFormattedCounterValue(cpuTotal, PDH_FMT_DOUBLE, NULL, &counterVal);
-
 	return static_cast<unsigned int>(counterVal.doubleValue);
 }
