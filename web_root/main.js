@@ -182,22 +182,26 @@ function Video({text, video_uri, children}) {
 
 //Alex
 function LoadFPS() {
-	fetch("/api/status/get").then(function(response) {
-      if (response.status === 403) {
-        clearInterval(intervalID);
-	    intervalID= -1;
+    fetch("/api/status/get").then(function(response) {
+        if (response.status === 403) {
+            clearInterval(intervalID);
+	        intervalID= -1;
 		 
-        logout();
-       //throw new Error(`HTTP error! status: ${response.status}`);
-      }
-	  else {
-	    response.json().then(function(r){
-          for (var i=0; i < r.length; i++) {
-		    document.getElementById("labelFPS" + r[i].camera_id).innerHTML = "FPS: " + r[i].fps;
-          }			
-	    })
-	  }
-	  return;
+            logout();
+            //throw new Error(`HTTP error! status: ${response.status}`);
+        }
+	    else {
+            response.json().then(function (r) {
+                document.getElementById("statCPUTemperature").innerHTML = r.temp + "°C";
+                document.getElementById("statFreeMemory").innerHTML = r.mem + "%";
+                document.getElementById("statCPUUsage").innerHTML = r.cpu + "%";
+
+                for (var i = 0; i < r.counters.length; i++) {
+                    document.getElementById("labelFPS" + r.counters[i].camera_id).innerHTML = "FPS: " + r.counters[i].fps;
+                }			
+	        })
+        }
+	    return;
 	}).then(function(data) {
 	  console.log(data);
 	}).catch(function(err) {
@@ -219,11 +223,9 @@ function Main({}) {
   return html`
 <div class="p-2">
   <div class="p-4 sm:p-2 mx-auto grid grid-cols-2 lg:grid-cols-4 gap-4">
-    <${Stat} title="CPU Temperature" text="${stats.temperature} °C" tipText="good" tipIcon=${Icons.ok} tipColors=${tipColors.green} />
-    <${Stat} title="Free memory" text="${stats.humidity} %" tipText="warn" tipIcon=${Icons.warn} tipColors=${tipColors.yellow} />
-    <div class="bg-white col-span-2 border rounded-md shadow-lg" role="alert">
-      <${DeveloperNote} text="Stats data is received from the Mongoose backend" />
-    <//>
+    <${Stat} title="CPU Temperature" id="statCPUTemperature" text="${stats.temp} °C" tipText="good" tipIcon=${Icons.ok} tipColors=${tipColors.green} />
+    <${Stat} title="Free memory" id="statFreeMemory" text="${stats.mem} %" tipText="warn" tipIcon=${Icons.warn} tipColors=${tipColors.yellow} />
+    <${Stat} title="CPU usage" id="statCPUUsage" text="${stats.cpu} %" tipText="warn" tipIcon=${Icons.warn} tipColors=${tipColors.yellow} />
   <//>
   <div class="p-4 sm:p-2 mx-auto grid grid-cols-1 lg:grid-cols-2 gap-4">
 

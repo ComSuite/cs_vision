@@ -45,6 +45,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)OpenCVCamera_GPU.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SampleImageWriter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)settings.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)system_usage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)types.h" />
   </ItemGroup>
 </Project>

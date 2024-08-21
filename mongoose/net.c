@@ -133,11 +133,14 @@ static size_t print_int_arr(void (*out)(char, void *), void *ptr, va_list *ap) {
   return len;
 }
 
-static void handle_stats_get(struct mg_connection *c) {
-  int points[] = {21, 22, 22, 19, 18, 20, 23, 23, 22, 22, 22, 23, 22};
-  mg_http_reply(c, 200, s_json_header, "{%m:%d,%m:%d,%m:[%M]}\n",
-                MG_ESC("temperature"), 21,  //
-                MG_ESC("humidity"), 67,     //
+static void handle_stats_get(struct mg_connection *c, struct http_server_params* server_params) 
+{
+    int points[] = {21, 22, 22, 19, 18, 20, 23, 23, 22, 22, 22, 23, 22};
+    
+    mg_http_reply(c, 200, s_json_header, "{%m:%d,%m:%d,%m:%d,%m:[%M]}\n",
+                MG_ESC("temp"), server_params->system_info.temp,
+                MG_ESC("mem"), server_params->system_info.memory,
+                MG_ESC("cpu"), server_params->system_info.cpu,
                 MG_ESC("points"), print_int_arr,
                 sizeof(points) / sizeof(points[0]), points);
 }
@@ -318,7 +321,7 @@ static void handle_status(struct mg_connection* c, struct http_server_params* se
         return;
     }
 
-    strcpy(json, "[");
+    sprintf(json, "{\"cpu\": %d, \"mem\": %d, \"temp\": %d, \"counters\": [", server_params->system_info.cpu, server_params->system_info.memory, server_params->system_info.temp);
 
     char* p = json + strlen(json);
     for (int i = 0; i < server_params->num_counter; i++) {
@@ -328,7 +331,7 @@ static void handle_status(struct mg_connection* c, struct http_server_params* se
         }
     }
 
-    strcat(json, "]");
+    strcat(json, "]}");
 
     mg_http_reply(c, 200, s_json_header, json);
     free(json);
@@ -358,7 +361,7 @@ static void fn(struct mg_connection *c, int ev, void *ev_data, struct http_serve
     } else if (mg_match(hm->uri, mg_str("/api/debug"), NULL)) {
       handle_debug(c, hm);
     } else if (mg_match(hm->uri, mg_str("/api/stats/get"), NULL)) {
-      handle_stats_get(c);
+      handle_stats_get(c, server_params);
     } else if (mg_match(hm->uri, mg_str("/api/events/get"), NULL)) {
       handle_events_get(c, hm);
     } else if (mg_match(hm->uri, mg_str("/api/settings/get"), NULL)) {

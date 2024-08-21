@@ -87,6 +87,8 @@ int OpenCVCamera::open(std::variant<std::string, int> device)
 	else if (std::holds_alternative<std::string>(device)) {
 		return open(std::get<string>(device).c_str());
 	}
+
+	return 0;
 }
 
 int OpenCVCamera::open(const char* name)

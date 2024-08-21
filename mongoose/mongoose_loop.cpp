@@ -26,6 +26,7 @@
 #include "mongoose.h"
 #include "net.h"
 #include "uuid.h"
+#include "system_usage.h"
 
 using namespace std;
 using namespace cs;
@@ -144,6 +145,9 @@ void* cs::mongoose_thread_func(void* arg)
 		server_params.num_counter = 0;
 	}
 
+	system_usage sys;
+	sys.init();
+
 	mg_log_set(MG_LL_ERROR);
 	mg_mgr_init(&mgr);
 	mgr.userdata = &server_params;
@@ -160,6 +164,9 @@ void* cs::mongoose_thread_func(void* arg)
 
 				delete info;
 			}
+
+			server_params.system_info.memory = sys.get_free_memory();
+			server_params.system_info.cpu = sys.get_cpu_usage();
 		}
 
 		mg_mgr_poll(&mgr, 50);

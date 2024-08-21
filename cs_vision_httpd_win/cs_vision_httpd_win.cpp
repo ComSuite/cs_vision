@@ -53,6 +53,8 @@ int main(int argc, char* argv[])
 
     pthread_t http_thread;
     if (http_arg != nullptr) {
+        http_arg->camera_count = settings.cameras.size();
+
         pthread_create(&http_thread, NULL, mongoose_thread_func, http_arg);
         pthread_detach(http_thread);
     }
@@ -64,7 +66,10 @@ int main(int argc, char* argv[])
         current = info->counter;
         info->id = "1";
         http_arg->queue->push(info);
-        
+        info->id = "2";
+        info->counter += 5;
+        http_arg->queue->push(info);
+
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 

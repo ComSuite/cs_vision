@@ -146,16 +146,16 @@ export function Login({loginFn, logoIcon, title, tipText}) {
 <//>`;
 };
 
-export function Colored({icon, text, colors}) {
+export function Colored({id, icon, text, colors}) {
   colors ||= 'bg-slate-100 text-slate-900';
   return html`
 <span class="inline-flex items-center gap-1.5 py-0.5">
   ${icon && html`<${icon} class="w-5 h-5" />`}
-  <span class="inline-block font-medium rounded-md px-2 py-1 text-xs ring-1 ring-inset ${colors}">${text}<//>
+  <span id=${id} class="inline-block font-medium rounded-md px-2 py-1 text-xs ring-1 ring-inset ${colors}">${text}<//>
 <//>`;
 };
 
-export function Stat({title, text, tipText, tipIcon, tipColors, colors}) {
+export function Stat({id, title, text, tipText, tipIcon, tipColors, colors}) {
   return html`
 <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-slate-900 dark:border-gray-800">
   <div class="overflow-auto rounded-lg bg-white px-4 py-2 ">
@@ -163,7 +163,7 @@ export function Stat({title, text, tipText, tipIcon, tipColors, colors}) {
       <p class="text-sm truncate text-gray-500 font-medium"> ${title} </p>
     <//>
     <div class="mt-1 flex items-center gap-x-2">
-      <h3 class="text-xl truncate font-semibold tracking-tight ${colors || 'text-gray-800 dark:text-gray-200'}">
+      <h3 id=${id} class="text-xl truncate font-semibold tracking-tight ${colors || 'text-gray-800 dark:text-gray-200'}">
         ${text}
       <//>
       <span class="flex items-center ${tipText || 'hidden'}">
