@@ -239,7 +239,7 @@
         {
             "id": 39,
             "score": 0.5,
-			"color": "0x00FF0000",
+			"color": "0x00FF00FF",
             "description": "bottle"
         },
         {
@@ -365,7 +365,7 @@
         {
             "id": 60,
             "score": 0.5,
-			"color": "0x00FF0000",
+			"color": "0x00FF9900",
             "description": "diningtable"
         },
         {

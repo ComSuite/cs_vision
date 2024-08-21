@@ -76,7 +76,9 @@ namespace cs
 						}
 					}
 
+#ifdef _DEBUG
 					std::cout << prompt << val << std::endl;
+#endif
 				}
 			}
 			else
