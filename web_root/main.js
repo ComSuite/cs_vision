@@ -244,7 +244,7 @@ function Main({}) {
     if (!stats)
         return '';
 
-    var host = window.location.protocol + "//" + window.location.host + ":";
+    var host = window.location.protocol + "//" + window.location.hostname + ":";
     const range = (start, size, step) => Array.from({ length: size }, (_, i) => i * (step || 1) + start);
 
     return html`
@@ -423,10 +423,42 @@ function Settings({}) {
       ${saveResult && html`<${Notification} ok=${saveResult.status}
         text=${saveResult.message} close=${() => setSaveResult(null)} />`}
 
+      <${Setting} title="Version high" value=${settings_json.config_version_high}  type="" />
+      <${Setting} title="Version low" value=${settings_json.config_version_low}  type="" />
+      <${Setting} title="Device kind" value=${settings_json.device_kind}  type="" />
+
+      <${Setting} title="Device Name" value=${settings_json.settings.name} setfn=${mksetfn('name')} type="" />
+      <${Setting} title="Device ID" value=${settings_json.settings.id} setfn=${mksetfn('id')} type="" />
+
+      <${Setting} title="MQTT broker host IP" value=${settings_json.settings.mqtt_broker_ip} type="" />
+      <${Setting} title="MQTT broker host  port" value=${settings_json.settings.mqtt_broker_port} type="" />
+      <${Setting} title="MQTT client name" value=${settings_json.settings.mqtt_client_name} type="" />
+      <${Setting} title="MQTT command topic" value=${settings_json.settings.mqtt_command_topic} type="" />
+      <${Setting} title="MQTT connection type" value=${settings_json.settings.mqtt_connection_type} type="" />
+      <${Setting} title="MQTT error topic" value=${settings_json.settings.mqtt_error_topic} type="" />
+      <${Setting} title="MQTT client login" value=${settings_json.settings.mqtt_login} type="" />
+      <${Setting} title="MQTT client password" value=${settings_json.settings.mqtt_password} type="" />
+      <${Setting} title="MQTT ping interval" value=${settings_json.settings.mqtt_ping_interval} type="" />
+      <${Setting} title="MQTT ping topic" value=${settings_json.settings.mqtt_ping_topic} type="" />
+      <${Setting} title="MQTT response topic" value=${settings_json.settings.mqtt_response_topic} type="" />
+      <${Setting} title="MQTT settings_get topic" value=${settings_json.settings.mqtt_settings_get_topic} type="" />
+      <${Setting} title="MQTT settings_set topic" value=${settings_json.settings.mqtt_settings_set_topic} type="" />
+      <${Setting} title="MQTT TLS certificate path" value=${settings_json.settings.mqtt_tls_cert_file} type="" />
+      <${Setting} title="Use readonly checker" value=${settings_json.settings.is_use_readonly_checker} type="switch" />
+      <${Setting} title="Read only dictionary path" value=${settings_json.settings.readonly_checker_dictionary} type="" />
+      <${Setting} title="Create backups" value=${settings_json.settings.is_create_backup} type="switch" />
+      <${Setting} title="Backup files directory" value=${settings_json.settings.settings_backup_path} type="" />
+      <${Setting} title="Secrets dictionary path" value=${settings_json.settings.secrets_dictionary} type="" />
+
+      <${Setting} title="Web server root path" value=${settings_json.settings.http_server.root_dir} type="" />
+      <${Setting} title="Web server http port" value=${settings_json.settings.http_server.http_port} type="" />
+      <${Setting} title="Web server https port" value=${settings_json.settings.http_server.https_port} type="" />
+      <${Setting} title="Web server cert dir" value=${settings_json.settings.http_server.cert_dir} type="" />
+      <${Setting} title="Web server home page name" value=${settings_json.settings.http_server.home_page} type="" />
+
       <${Setting} title="Enable Logs" value=${settings.log_enabled} setfn=${mksetfn('log_enabled')} type="switch" />
       <${Setting} title="Log Level" value=${settings.log_level} setfn=${mksetfn('log_level')} type="select" addonLeft="0-3" disabled=${!settings.log_enabled} options=${logOptions}/>
       <${Setting} title="Brightness" value=${settings.brightness} setfn=${mksetfn('brightness')} type="number" addonRight="%" />
-      <${Setting} title="Device Name" value=${settings.device_name} setfn=${mksetfn('device_name')} type="" />
       <div class="mb-1 mt-3 flex place-content-end"><${Button} icon=${Icons.save} onclick=${onsave} title="Save Settings" /><//>
     <//>
   <//>
