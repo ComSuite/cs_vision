@@ -212,17 +212,42 @@ function LoadFPS() {
 	});	
 }
 
+function loadConfig() {
+    fetch("/api/settings/get").then(function (response) {
+        if (response.status === 403) {
+        }
+        else {
+            response.json().then(function (r) {
+                settings_json = r;
+            })
+        }
+        return;
+    }).then(function (data) {
+        console.log(data);
+    }).catch(function (err) {
+        location.reload();
+        console.log('Fetch Error :-S', err);
+    });	
+
+}
+
 var intervalID = -1;
+var settings_json;
 
 function Main({}) {
-  if (intervalID == -1)
-    intervalID = setInterval(LoadFPS, 1000); //Alex
+    if (intervalID == -1)
+        intervalID = setInterval(LoadFPS, 1000); //Alex
   
-  const [stats, setStats] = useState(null);
-  const refresh = () => fetch('api/stats/get').then(r => r.json()).then(r => setStats(r));
-  useEffect(refresh, []);
-  if (!stats) return '';
-  return html`
+    const [stats, setStats] = useState(null);
+    const refresh = () => fetch('api/stats/get').then(r => r.json()).then(r => setStats(r));
+    useEffect(refresh, []);
+    if (!stats)
+        return '';
+
+    var host = window.location.protocol + "//" + window.location.host + ":";
+    const range = (start, size, step) => Array.from({ length: size }, (_, i) => i * (step || 1) + start);
+
+    return html`
 <div class="p-2">
   <div class="p-4 sm:p-2 mx-auto grid grid-cols-2 lg:grid-cols-4 gap-4">
     <${Stat} title="CPU Temperature" id="statCPUTemperature" text="${stats.temp} °C" tipText="good" tipIcon=${Icons.ok} tipColors=${tipColors.green} />
@@ -231,16 +256,13 @@ function Main({}) {
     <${Stat} title="GPU usage" id="statGPUUsage" text="${stats.gpu} %" tipText="warn" tipIcon=${Icons.warn} tipColors=${tipColors.yellow} />
   <//>
   <div class="p-4 sm:p-2 mx-auto grid grid-cols-1 lg:grid-cols-2 gap-4">
-
+    ${range(0, settings_json.settings.cameras.length).map(i => html`
     <div class="my-4 hx-24 bg-white border rounded-md shadow-lg" role="alert">
       <${Video} 
-        text="1" video_uri="http://localhost:8088/camera" />
+        text="${settings_json.settings.cameras[i].id}" 
+        video_uri="${host + settings_json.settings.cameras[i].video_stream_port + settings_json.settings.cameras[i].video_stream_channel}" />
     <//>
-
-    <div class="my-4 hx-24 bg-white border rounded-md shadow-lg" role="alert">
-      <${Video} 
-        text="2" video_uri="http://localhost:8089/camera" />
-    <//>
+    `)}
   <//>
 <//>`;
 };
@@ -439,6 +461,8 @@ const App = function({}) {
     if (!user) return html`<${Login} loginFn=${login} logoIcon="${Logo}"
     title="Device Dashboard Login" 
     tipText="To first time login, use: admin/admin" />`; // If not logged in, show login screen
+
+    loadConfig();
 
   return html`
 <div class="min-h-screen bg-slate-100">

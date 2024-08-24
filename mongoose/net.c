@@ -414,7 +414,8 @@ static void fn(struct mg_connection *c, int ev, void *ev_data, struct http_serve
   }
 }
 
-void web_init(struct mg_mgr *mgr, struct http_server_params* params) {
+void web_init(struct mg_mgr *mgr, struct http_server_params* params) 
+{
     if (params != NULL && params->device_name != NULL)
         s_settings.device_name = strdup(params->device_name);
     else
@@ -422,8 +423,7 @@ void web_init(struct mg_mgr *mgr, struct http_server_params* params) {
 
   mg_http_listen(mgr, HTTP_URL, fn, NULL, params);
   mg_http_listen(mgr, HTTPS_URL, fn, (void *) 1, params);
-  mg_timer_add(mgr, 3600 * 1000, MG_TIMER_RUN_NOW | MG_TIMER_REPEAT,
-               timer_sntp_fn, mgr);
+  mg_timer_add(mgr, 3600 * 1000, MG_TIMER_RUN_NOW | MG_TIMER_REPEAT, timer_sntp_fn, mgr);
 }
 
 void init_http_server_params(struct http_server_params* params, const char* device_name, const char* root_dir, const int http_port, const int https_port, const char* cert_dir, const char* home_page)

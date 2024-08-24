@@ -149,7 +149,7 @@ void* cs::mongoose_thread_func(void* arg)
 	system_usage sys;
 	sys.init();
 
-	mg_log_set(MG_LL_ERROR);
+	mg_log_set(MG_LL_DEBUG); //MG_LL_ERROR
 	mg_mgr_init(&mgr);
 	mgr.userdata = &server_params;
 

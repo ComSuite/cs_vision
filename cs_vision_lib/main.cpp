@@ -25,6 +25,8 @@
 #include <iostream>
 #include <thread>
 #include <pthread.h>
+#include <semaphore.h>
+#include <fcntl.h>
 #ifdef __LINUX__
 #include <unistd.h>
 #include <sys/reboot.h>
@@ -77,7 +79,7 @@ void send_settings(MQTTClient* mqtt, device_settings* settings, command_processo
 
     JsonWriter* json_writer = new JsonWriter();
     if (json_writer == nullptr) {
-        send_response(mqtt, settings, command, error_codes::ERROR_NOT_ENOUGH_MEMORY);
+        send_response(mqtt, settings, command, cs::error_codes::ERROR_NOT_ENOUGH_MEMORY);
         delete mqtt;
         return;
     }
@@ -113,14 +115,14 @@ void set_settings(MQTTClient* mqtt, device_settings* settings, command_processor
     if (writer != nullptr) {
         writer->load(settings->get_file_path());
         if (command->execute(writer, checker, settings->get_file_path(), settings->is_create_backup))
-            send_response(mqtt, settings, command, error_codes::ERROR_NO_ERROR);
+            send_response(mqtt, settings, command, cs::error_codes::ERROR_NO_ERROR);
         else
-            send_response(mqtt, settings, command, error_codes::ERROR_INTERNAL_ERROR);
+            send_response(mqtt, settings, command, cs::error_codes::ERROR_INTERNAL_ERROR);
 
         delete writer;
     }
     else
-        send_response(mqtt, settings, command, error_codes::ERROR_NOT_ENOUGH_MEMORY);
+        send_response(mqtt, settings, command, cs::error_codes::ERROR_NOT_ENOUGH_MEMORY);
 
     if (checker != nullptr)
         delete checker;
@@ -210,11 +212,29 @@ int pthread_exists(pthread_t tid) {
         return 1;
 }
 
+bool check_process_instance(sem_t** semaphore)
+{
+    *semaphore = sem_open("cs_vision_instance", O_CREAT | O_EXCL, 0644, 1);
+    if (*semaphore == SEM_FAILED)
+    {
+        if (errno == EEXIST)
+            return false;
+    }
+
+    return true;
+}
+
 int main(int argc, char* argv[])
 {
     if (argc != 2)
     {
         cout << "\nError! Usage: <path to settings file>" << endl << endl;
+        return 1;
+    }
+
+    sem_t* semaphore;
+    if (!check_process_instance(&semaphore)) {
+        cout << "\nError! Only one instance of this application available." << endl << endl;
         return 1;
     }
 
@@ -281,7 +301,7 @@ int main(int argc, char* argv[])
     pthread_t http_thread;
 
     if (http_arg != nullptr) {
-        http_arg->camera_count = settings->cameras.size();
+        http_arg->camera_count = static_cast<int>(settings->cameras.size());
 
         pthread_create(&http_thread, NULL, mongoose_thread_func, http_arg);
         pthread_detach(http_thread);
