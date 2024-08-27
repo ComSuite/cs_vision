@@ -141,7 +141,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;_DEBUG_;__HAS_CUDA__;_CRT_SECURE_NO_WARNINGS;__WITH_FILESYSTEM_CXX__;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;__USE_POSIX199309;DBUILD_ZLIB=ON;YOLOV5_OPENCV_HAS_CUDA;__WITH_MONGOOSE_SERVER__;_WITH_VPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;_DEBUG_;__HAS_CUDA__;_CRT_SECURE_NO_WARNINGS;__WITH_FILESYSTEM_CXX__;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;__USE_POSIX199309;DBUILD_ZLIB=ON;YOLOV5_OPENCV_HAS_CUDA;__WITH_MONGOOSE_SERVER__;__WITH_NVML__;_WITH_VPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>

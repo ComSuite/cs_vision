@@ -26,6 +26,10 @@ function Header({logout, user, setShowSidebar, showSidebar}) {
 <//>`;
 };
 
+function open_corporate_site() {
+    window.open('https://www.aigloballab.com', '_blank').focus();
+}
+
 function Sidebar({url, show}) {
   const NavLink = ({title, icon, href, url}) => html`
   <div>
@@ -42,7 +46,9 @@ function Sidebar({url, show}) {
             ${show && 'translate-x-0'} right-auto bottom-0">
   <div class="flex flex-col m-4 gap-y-6">
     <div class="flex shrink-0 items-center gap-x-4 font-bold text-xl text-slate-500">
-      <img src="logo_v_0.1.png" alt="AIGlobalLab" /> 
+      <a href="https://aigloballab.com" target="_blank">
+        <img src="logo_v_0.1.png" alt="AIGlobalLab" /> 
+      </a>
     <//>
     <div class="flex flex-1 flex-col">
       <${NavLink} title="Dashboard" icon=${Icons.home} href="/" url=${url} />
@@ -165,6 +171,10 @@ function DeveloperNote({text, children}) {
 <//>`;
 };
 
+function device_settings() {
+
+}
+
 //Alex
 function Video({text, video_uri, children}) {
   var host = window.location.protocol + "//" + window.location.hostname + ":8088";
@@ -174,10 +184,17 @@ function Video({text, video_uri, children}) {
 <div id=${contName}>
   <img src="${video_uri}" />
 </div>
-<div class="p-2 flex flex-col bg-white border shadow-sm rounded-xl dark:bg-slate-900 dark:border-gray-800">
-  <h3 id=${labelName} class="text-xl truncate font-semibold tracking-tight">
-	FPS:
-  </>
+<div class="p-4 sm:p-2 mx-auto grid grid-cols-2 lg:grid-cols-4 gap-4">
+  <div class="p-2 flex flex-col bg-white border shadow-sm rounded-xl dark:bg-slate-900 dark:border-gray-800">
+    <h3 id=${labelName} class="text-xl truncate font-semibold tracking-tight">
+      FPS:
+    </>
+  </div>
+
+  <div class="p-2 flex flex-col bg-white rounded-xl dark:bg-slate-900 dark:border-gray-800">
+    <${Button} title="Settings" icon=${Icons.settingsV} onclick=${device_settings} />
+  </div>
+
 </div>`;
 };
 
@@ -444,9 +461,9 @@ function Settings({}) {
       <${Setting} title="MQTT settings_get topic" value=${settings_json.settings.mqtt_settings_get_topic} type="" />
       <${Setting} title="MQTT settings_set topic" value=${settings_json.settings.mqtt_settings_set_topic} type="" />
       <${Setting} title="MQTT TLS certificate path" value=${settings_json.settings.mqtt_tls_cert_file} type="" />
-      <${Setting} title="Use readonly checker" value=${settings_json.settings.is_use_readonly_checker} type="switch" />
+      <${Setting} title="Use readonly checker" value=${settings_json.settings.is_use_readonly_checker} setfn=${mksetfn('log_enabled')} type="switch" />
       <${Setting} title="Read only dictionary path" value=${settings_json.settings.readonly_checker_dictionary} type="" />
-      <${Setting} title="Create backups" value=${settings_json.settings.is_create_backup} type="switch" />
+      <${Setting} title="Create backups" value=${settings_json.settings.is_create_backup} setfn=${mksetfn(settings_json.settings.is_create_backup)} type="switch" />
       <${Setting} title="Backup files directory" value=${settings_json.settings.settings_backup_path} type="" />
       <${Setting} title="Secrets dictionary path" value=${settings_json.settings.secrets_dictionary} type="" />
 

@@ -137,10 +137,11 @@ static void handle_stats_get(struct mg_connection *c, struct http_server_params*
 {
     int points[] = {21, 22, 22, 19, 18, 20, 23, 23, 22, 22, 22, 23, 22};
     
-    mg_http_reply(c, 200, s_json_header, "{%m:%d,%m:%d,%m:%d,%m:[%M]}\n",
+    mg_http_reply(c, 200, s_json_header, "{%m:%d,%m:%d,%m:%d,%m:%d,%m:[%M]}\n",
                 MG_ESC("temp"), server_params->system_info.temp,
                 MG_ESC("mem"), server_params->system_info.memory,
                 MG_ESC("cpu"), server_params->system_info.cpu,
+                MG_ESC("gpu"), server_params->system_info.gpu,
                 MG_ESC("points"), print_int_arr,
                 sizeof(points) / sizeof(points[0]), points);
 }

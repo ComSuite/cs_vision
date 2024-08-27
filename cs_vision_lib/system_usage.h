@@ -14,7 +14,8 @@ namespace cs
 		unsigned int get_free_memory();
 		unsigned int get_gpu_usage()
 		{
-#ifdef __HAS_CUDA__
+#ifdef __HAS_CUDA__ 
+#ifdef __WITH_NVML__
 			nvmlInit();
 			nvmlDevice_t device;
 			nvmlDeviceGetHandleByIndex(0, &device);
@@ -25,10 +26,9 @@ namespace cs
 
 			return static_cast<unsigned int>(utilization.gpu);
 			//std::cout << "Memory Utilization: " << utilization.memory << "%" << std::endl;
-
-#else
-			return 0;
 #endif
+#endif
+			return 0;
 		}
 	private:
 	};
