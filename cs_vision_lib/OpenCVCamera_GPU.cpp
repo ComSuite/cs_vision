@@ -67,6 +67,7 @@ int OpenCVCamera_GPU::open(const int id)
 	if (capture == nullptr)
 		return 0;
 
+	return 1;
 }
 
 int OpenCVCamera_GPU::open(const char* name)

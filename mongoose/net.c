@@ -59,7 +59,7 @@ static struct user* authenticate(struct mg_http_message *hm, struct http_server_
     MG_VERBOSE(("user [%s] pass [%s]", login, pass));
 
     char* token = NULL;
-    if (server_params->callback(CREDENTIALS_OPERATION_CHECK_CREDENTIALS, server_params->credentials, login, 63, pass, &token)) {
+    if (server_params->credentials_callback(CREDENTIALS_OPERATION_CHECK_CREDENTIALS, server_params->credentials, login, 63, pass, &token)) {
         result = (struct user*)malloc(sizeof(struct user));
         if (result != NULL) {
             result->access_token = strdup(token);
@@ -72,7 +72,7 @@ static struct user* authenticate(struct mg_http_message *hm, struct http_server_
         if (token != NULL) {
             memset(pass, 0x00, sizeof(pass));
             memset(login, 0x00, sizeof(login));
-            if (server_params->callback(CREDENTIALS_OPERATION_CHECK_TOKEN, server_params->credentials, login, 63, pass, &token)) {
+            if (server_params->credentials_callback(CREDENTIALS_OPERATION_CHECK_TOKEN, server_params->credentials, login, 63, pass, &token)) {
                 result = (struct user*)malloc(sizeof(struct user));
                 if (result != NULL) {
                     result->access_token = strdup(token);
@@ -114,7 +114,7 @@ static void handle_logout(struct mg_connection* c, const char* token, struct htt
   mg_http_reply(c, 200, cookie, "true\n");
 
   if (server_params != NULL && token != NULL) {
-      server_params->callback(CREDENTIALS_OPERATION_REMOVE_TOKEN, server_params->credentials, NULL, 0, NULL, &token);
+      server_params->credentials_callback(CREDENTIALS_OPERATION_REMOVE_TOKEN, server_params->credentials, NULL, 0, NULL, &token);
   }
 }
 
@@ -233,14 +233,18 @@ char* load_file(const char* path) {
     return buffer;
 }
 
-static void handle_settings_get(struct mg_connection *c, struct http_server_params* server_params) {
-    char* json = load_file(server_params->settings_file_path);
-    if (json == NULL)
-        return;
+static void handle_settings_get(struct mg_connection *c, struct http_server_params* server_params) 
+{
+    if (server_params == NULL || server_params->settings_callback == NULL)
+		return;
 
-    mg_http_reply(c, 200, s_json_header, json);
-
-    free(json);
+    char* json = NULL;
+    if (server_params->settings_callback(SETTINGS_GET_SETTINGS, server_params->settings_file_path, server_params->secrets_file_path,  &json)) {
+		if (json != NULL) {
+			mg_http_reply(c, 200, s_json_header, json);
+			free(json);
+		}
+    }
 }
 
 static void handle_firmware_upload(struct mg_connection *c,

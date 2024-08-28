@@ -34,6 +34,7 @@ namespace cs
 	{
 	public:
 		std::string settings_file_path = "";
+		std::string secrets_file_path = "";
 		http_server_settings* settings = nullptr;
 		BaseQueue<fps_counter_info>* queue = nullptr;
 		int camera_count = 0;

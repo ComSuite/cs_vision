@@ -79,7 +79,7 @@ void send_settings(MQTTClient* mqtt, device_settings* settings, command_processo
 
     JsonWriter* json_writer = new JsonWriter();
     if (json_writer == nullptr) {
-        send_response(mqtt, settings, command, cs::error_codes::ERROR_NOT_ENOUGH_MEMORY);
+        send_response(mqtt, settings, command, cs::error_codes::__ERROR_NOT_ENOUGH_MEMORY);
         delete mqtt;
         return;
     }
@@ -92,10 +92,10 @@ void send_settings(MQTTClient* mqtt, device_settings* settings, command_processo
         command->hide_secrets(json_writer, secrets, json);
         mqtt->send(settings->mqtt_settings_get_topic.c_str(), json.c_str());
 
-        send_response(mqtt, settings, command, cs::error_codes::ERROR_NO_ERROR);
+        send_response(mqtt, settings, command, cs::error_codes::__ERROR_NO_ERROR);
     }
     else
-        send_response(mqtt, settings, command, cs::error_codes::ERROR_INTERNAL_ERROR);
+        send_response(mqtt, settings, command, cs::error_codes::__ERROR_INTERNAL_ERROR);
 
     delete json_writer;
 }
@@ -115,14 +115,14 @@ void set_settings(MQTTClient* mqtt, device_settings* settings, command_processor
     if (writer != nullptr) {
         writer->load(settings->get_file_path());
         if (command->execute(writer, checker, settings->get_file_path(), settings->is_create_backup))
-            send_response(mqtt, settings, command, cs::error_codes::ERROR_NO_ERROR);
+            send_response(mqtt, settings, command, cs::error_codes::__ERROR_NO_ERROR);
         else
-            send_response(mqtt, settings, command, cs::error_codes::ERROR_INTERNAL_ERROR);
+            send_response(mqtt, settings, command, cs::error_codes::__ERROR_INTERNAL_ERROR);
 
         delete writer;
     }
     else
-        send_response(mqtt, settings, command, cs::error_codes::ERROR_NOT_ENOUGH_MEMORY);
+        send_response(mqtt, settings, command, cs::error_codes::__ERROR_NOT_ENOUGH_MEMORY);
 
     if (checker != nullptr)
         delete checker;
@@ -165,7 +165,7 @@ void process_command(MQTTClient* mqtt, device_settings* settings)
 
         switch (command->command_id) {
         case command_processor::COMMAND_ID_RESTART:
-            send_response(mqtt, settings, command, error_codes::ERROR_NO_ERROR);
+            send_response(mqtt, settings, command, error_codes::__ERROR_NO_ERROR);
             this_thread::sleep_for(chrono::milliseconds(100));
             exit(0);
             break;
@@ -183,15 +183,15 @@ void process_command(MQTTClient* mqtt, device_settings* settings)
             break;
         case command_processor::COMMAND_ID_RESTORE_FROM_BACKUP:
             if (FileBackup::restore(settings->get_file_path(), FileBackup::default_backup_extension.c_str()))
-                send_response(mqtt, settings, command, error_codes::ERROR_NO_ERROR);
+                send_response(mqtt, settings, command, error_codes::__ERROR_NO_ERROR);
             else
-                send_response(mqtt, settings, command, error_codes::ERROR_CAN_NOT_RESTORE_FROM_BACKUP);
+                send_response(mqtt, settings, command, error_codes::__ERROR_CAN_NOT_RESTORE_FROM_BACKUP);
             break;
         case command_processor::COMMAND_ID_PING:
             send_ping(mqtt, settings, command);
             break;
         default:
-            send_response(mqtt, settings, command, error_codes::ERROR_BAD_COMMAND_ID);
+            send_response(mqtt, settings, command, error_codes::__ERROR_BAD_COMMAND_ID);
             break;
         }
 
@@ -224,6 +224,13 @@ bool check_process_instance(sem_t** semaphore)
     return true;
 }
 
+static void signal_handler(int sig_num)
+{
+    exit(0);
+    //signal(sig_num, signal_handler);
+    //s_sig_num = sig_num;
+}
+
 int main(int argc, char* argv[])
 {
     if (argc != 2)
@@ -235,7 +242,7 @@ int main(int argc, char* argv[])
     sem_t* semaphore;
     if (!check_process_instance(&semaphore)) {
         cout << "\nError! Only one instance of this application available." << endl << endl;
-        return 1;
+        //return 1;
     }
 
 #ifndef _DEBUG_
@@ -244,6 +251,8 @@ int main(int argc, char* argv[])
 
 #ifdef __LINUX__
     signal(SIGPIPE, SIG_IGN);
+    signal(SIGINT, signal_handler);
+    signal(SIGTERM, signal_handler);
 #endif
 
     device_settings* settings = new device_settings();
@@ -261,6 +270,7 @@ int main(int argc, char* argv[])
     http_server_thread_arg* http_arg = new http_server_thread_arg();
     if (http_arg != nullptr) {
         http_arg->settings_file_path = settings->get_file_path();
+		http_arg->secrets_file_path = settings->secrets_dictionary;
         http_arg->settings = settings->http_server;
         http_arg->queue = new BaseQueue<fps_counter_info>();
     }

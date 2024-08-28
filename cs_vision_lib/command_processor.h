@@ -35,13 +35,13 @@ namespace cs
 	class error_codes 
 	{
 	public:
-		static const int ERROR_NO_ERROR = 0;
-		static const int ERROR_INTERNAL_ERROR = 1;
-		static const int ERROR_NOT_ENOUGH_MEMORY = 2;
-		static const int ERROR_INVALID_SETTINGS_VERSION = 3;
-		static const int ERROR_INVALID_COMMAND_VERSION = 4;
-		static const int ERROR_BAD_COMMAND_ID = 5;
-		static const int ERROR_CAN_NOT_RESTORE_FROM_BACKUP = 6;
+		static const int __ERROR_NO_ERROR = 0;
+		static const int __ERROR_INTERNAL_ERROR = 1;
+		static const int __ERROR_NOT_ENOUGH_MEMORY = 2;
+		static const int __ERROR_INVALID_SETTINGS_VERSION = 3;
+		static const int __ERROR_INVALID_COMMAND_VERSION = 4;
+		static const int __ERROR_BAD_COMMAND_ID = 5;
+		static const int __ERROR_CAN_NOT_RESTORE_FROM_BACKUP = 6;
 	};
 
 	class item_value 

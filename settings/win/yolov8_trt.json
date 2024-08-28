@@ -169,9 +169,9 @@
         "mqtt_tls_cert_file": "",
         "name": "Jetson Nanao",
 		"is_use_readonly_checker": false,
-		"readonly_checker_dictionary": "G:/Projects/comsuite/sources/cs_vision/settings/read_only_settings.txt",
+		"readonly_checker_dictionary": "G:/Projects/comsuite/sources/cs_vision/settings/read_only.settings",
 		"settings_backup_path": "G:/Projects/comsuite/sources/cs_vision/settings/",
-		"secrets_dictionary": "G:/Projects/comsuite/sources/cs_vision/settings/secret_settings.txt",
+		"secrets_dictionary": "G:/Projects/comsuite/sources/cs_vision/settings/secret.settings",
 		"is_create_backup": true,
 		"http_server": {
 			"root_dir": "G:\\Projects\\comsuite\\sources\\cs_vision\\web_root",

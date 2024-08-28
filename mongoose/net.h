@@ -33,6 +33,8 @@ struct ui_event {
 #define CREDENTIALS_OPERATION_ADD_USER 3
 #define CREDENTIALS_OPERATION_CHANGE_PASSWORD 4
 #define CREDENTIALS_OPERATION_REMOVE_TOKEN 5
+#define SETTINGS_GET_SETTINGS 6
+#define SETTINGS_SET_SETTINGS 7
 
 struct http_fps_item
 {
@@ -58,13 +60,15 @@ struct http_server_params
 	char* cert_dir;
 	char* home_page;
 	char* settings_file_path;
+	char* secrets_file_path;
 
 	struct http_system_info system_info;
 	int num_counter;
 	struct http_fps_item* counters;
 
 	void* credentials;
-	bool (*callback)(int operation, void* credentials, const char* login, int login_max_len, const char* password, char** token);
+	bool (*credentials_callback)(int operation, void* credentials, const char* login, int login_max_len, const char* password, char** token);
+	bool (*settings_callback)(int operation, const char* settings_file_path, const char* secrets_file_path, char** settings);
 };
 
 void web_init(struct mg_mgr *mgr, struct http_server_params* params);

@@ -28,6 +28,9 @@
 #include "uuid.h"
 #include "system_usage.h"
 #include <chrono>
+#include <JsonWriter.h>
+#include "std_utils.h"
+#include "command_processor.h"
 
 using namespace std;
 using namespace cs;
@@ -84,6 +87,50 @@ static bool credentials_callback(int operation, void* credentials, const char* l
 	return false;
 }
 
+static bool load_settings(const char* settings_file_path, const char* secrets_file_path, char** settings)
+{
+	JsonWriter* json_writer = new JsonWriter();
+	if (json_writer == nullptr) {
+		return false;
+	}
+
+	command_processor* command = new command_processor();
+	if (command == nullptr) {
+		delete json_writer;
+		return false;
+	}
+
+	int ret = json_writer->load(settings_file_path);
+	if (ret) {
+		string json = "";
+		list<string> secrets;
+		txt_load_to<list>(secrets_file_path, secrets);
+
+		command->hide_secrets(json_writer, secrets, json);
+		*settings = _strdup(json.c_str());
+	}
+
+	delete json_writer;
+	delete command;
+
+	return *settings != nullptr;
+}
+
+static bool settings_callback(int operation, const char* settings_file_path, const char* secrets_file_path, char** settings)
+{
+	if (settings == NULL)
+		return false;
+
+	switch (operation) {
+	case SETTINGS_GET_SETTINGS:
+		return load_settings(settings_file_path, secrets_file_path, settings);
+	case SETTINGS_SET_SETTINGS:
+		break;
+	}
+
+	return false;
+}
+
 http_fps_item* find_counter(http_fps_item* counters, int num_counters, const char* id)
 {
 	for (int i = 0; i < num_counters; i++) {
@@ -118,8 +165,6 @@ void* cs::mongoose_thread_func(void* arg)
 
 	struct mg_mgr mgr;
 	signal(SIGPIPE, SIG_IGN);
-	//signal(SIGINT, signal_handler);
-	//signal(SIGTERM, signal_handler);
 
 	credentials_storage* credentials = new credentials_storage();
 
@@ -131,7 +176,9 @@ void* cs::mongoose_thread_func(void* arg)
 	server_params.https_port = settings->https_port;
 	server_params.home_page = _strdup(settings->home_page.c_str());
 	server_params.settings_file_path = _strdup(_arg->settings_file_path.c_str());
-	server_params.callback = credentials_callback;
+	server_params.secrets_file_path = _strdup(_arg->secrets_file_path.c_str());
+	server_params.credentials_callback = credentials_callback;
+	server_params.settings_callback = settings_callback;
 	server_params.credentials = credentials;
 
 	server_params.counters = (http_fps_item*)malloc(_arg->camera_count * sizeof(http_fps_item));
@@ -149,7 +196,7 @@ void* cs::mongoose_thread_func(void* arg)
 	system_usage sys;
 	sys.init();
 
-	mg_log_set(MG_LL_DEBUG); //MG_LL_ERROR
+	mg_log_set(MG_LL_ERROR); 
 	mg_mgr_init(&mgr);
 	mgr.userdata = &server_params;
 
@@ -169,7 +216,7 @@ void* cs::mongoose_thread_func(void* arg)
 
 			server_params.system_info.memory = sys.get_free_memory();
 			server_params.system_info.gpu = sys.get_gpu_usage();
-
+			server_params.system_info.temp = sys.get_cpu_temp();
 
 			if (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - begin_time).count() > 1500) {
 				server_params.system_info.cpu = sys.get_cpu_usage();
