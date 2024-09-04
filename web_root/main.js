@@ -172,7 +172,11 @@ function DeveloperNote({text, children}) {
 };
 
 function device_settings() {
+    document.getElementById("camera_settings").style.display = "block";
+}
 
+function closePopup() {
+    document.getElementById("camera_settings").style.display = "none";
 }
 
 //Alex
@@ -431,7 +435,6 @@ function Settings({}) {
   const logOptions = [[0, 'Disable'], [1, 'Error'], [2, 'Info'], [3, 'Debug']];
   return html`
 <div class="m-4 grid grid-cols-1 gap-4 md:grid-cols-2">
-
   <div class="py-1 divide-y border rounded bg-white flex flex-col">
     <div class="font-light uppercase flex items-center text-gray-600 px-4 py-2">
       Device Settings
@@ -440,7 +443,7 @@ function Settings({}) {
       ${saveResult && html`<${Notification} ok=${saveResult.status}
         text=${saveResult.message} close=${() => setSaveResult(null)} />`}
 
-      <${Setting} title="Version high" value=${settings_json.config_version_high}  type="" />
+      <${Setting} title="Version high" value=${settings_json.config_version_high} type="" />
       <${Setting} title="Version low" value=${settings_json.config_version_low}  type="" />
       <${Setting} title="Device kind" value=${settings_json.device_kind}  type="" />
 
@@ -476,7 +479,8 @@ function Settings({}) {
       <${Setting} title="Enable Logs" value=${settings.log_enabled} setfn=${mksetfn('log_enabled')} type="switch" />
       <${Setting} title="Log Level" value=${settings.log_level} setfn=${mksetfn('log_level')} type="select" addonLeft="0-3" disabled=${!settings.log_enabled} options=${logOptions}/>
       <${Setting} title="Brightness" value=${settings.brightness} setfn=${mksetfn('brightness')} type="number" addonRight="%" />
-      <div class="mb-1 mt-3 flex place-content-end"><${Button} icon=${Icons.save} onclick=${onsave} title="Save Settings" /><//>
+      <div class="mb-1 mt-3 flex place-content-end"><${Button} icon=${Icons.save} onclick=${onsave} title="Save Settings" />
+      <//>
     <//>
   <//>
 
@@ -489,9 +493,50 @@ function Settings({}) {
           Clicking on the save button calls api/settings/set
           API call" />
   <//>
-
 <//>`;
 };
+
+function cameraSettings({}) {
+    loadConfig();
+
+    return html`
+  <div id="camera_settings" class="popup m-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+    <div class="popup-content">
+      <span class="close"><${Button} icon=${Icons.ok} onclick=${closePopup} title="Save Settings" /></span>
+      <div class="font-light uppercase flex items-center text-gray-600 px-4 py-2">
+          Camera Settings
+      <//>
+
+      <div class="py-2 px-5 flex-1 flex flex-col relative">
+        <${Setting} title="Version high" value="1"  type="" />
+        <${Setting} title="Version low" value="1" type="" />
+        <${Setting} title="Device kind" value="1" type="" />
+        <${Setting} title="Version high" value="1"  type="" />
+        <${Setting} title="Version low" value="1" type="" />
+        <${Setting} title="Device kind" value="1" type="" />
+        <${Setting} title="Version high" value="1"  type="" />
+        <${Setting} title="Version low" value="1" type="" />
+        <${Setting} title="Device kind" value="1" type="" />
+        <${Setting} title="Version high" value="1"  type="" />
+        <${Setting} title="Version low" value="1" type="" />
+        <${Setting} title="Device kind" value="1" type="" />
+        <${Setting} title="Version high" value="1"  type="" />
+        <${Setting} title="Version low" value="1" type="" />
+        <${Setting} title="Device kind" value="1" type="" />
+        <${Setting} title="Version high" value="1"  type="" />
+        <${Setting} title="Version low" value="1" type="" />
+        <${Setting} title="Device kind" value="1" type="" />
+        <${Setting} title="Version high" value="1"  type="" />
+        <${Setting} title="Version low" value="1" type="" />
+        <${Setting} title="Device kind" value="1" type="" />
+        <${Setting} title="Version high" value="1"  type="" />
+        <${Setting} title="Version low" value="1" type="" />
+        <${Setting} title="Device kind" value="1" type="" />
+      <//>
+    <//>
+  <//>`;
+}
+
 
 const App = function({}) {
   const [loading, setLoading] = useState(true);
@@ -526,6 +571,7 @@ const App = function({}) {
       <${Events} path="events" />
     <//>
   <//>
+  <${cameraSettings} />
 <//>`;
 };
 

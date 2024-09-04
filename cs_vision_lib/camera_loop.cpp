@@ -239,8 +239,10 @@ public:
 
 	virtual ~detecting_image()
 	{
-		if (image != nullptr)
+		if (image != nullptr) {
 			delete image;
+			image = nullptr;
+		}
 	}
 
 	int predecessor_id = -1;
@@ -331,14 +333,14 @@ void detect_func(DetectorEnvironment* env)
 	if (env == nullptr)
 		return;
 
-#ifdef __HAS_CUDA__
-	cv::cuda::GpuMat* detect_frame = env->queue.pop();
-#else
-	cv::Mat* detect_frame = env->queue.pop();
-#endif
+//#ifdef __HAS_CUDA__
+//	cv::cuda::GpuMat* detect_frame = env->queue.pop();
+//#else
+//	cv::Mat* detect_frame = env->queue.pop();
+//#endif
 
-	if (detect_frame == nullptr)
-		return;
+//	if (detect_frame == nullptr)
+//		return;
 
 	std::list<DetectionItem*> detections;
 	int id = 0;
@@ -350,7 +352,7 @@ void detect_func(DetectorEnvironment* env)
 		scale_factor = 1;
 
 		if (detector->predecessor_id < 0 || detector->predecessor_class < 0) {
-			di = new detecting_image(detect_frame, 0, 0, -1, 1);
+			di = new detecting_image(&env->detect_frame, 0, 0, -1, 1);
 			images.push_back(di);
 		}
 		else {
@@ -363,13 +365,13 @@ void detect_func(DetectorEnvironment* env)
 						if (env->super_resolution != nullptr) {
 							img = new GpuMat();
 							Mat src, dst;
-							(*(detect_frame))(item->box).download(src);
+							env->detect_frame(item->box).download(src);
 							env->super_resolution->upsample(src, dst);
 							img->upload(dst);
 							scale_factor = detector->scale_factor;
 						}
 						else
-							img = new GpuMat((*(detect_frame))(item->box));
+							img = new GpuMat(env->detect_frame(item->box));
 #else
 						Mat* img = nullptr;
 						if (env->super_resolution != nullptr) {
@@ -389,31 +391,33 @@ void detect_func(DetectorEnvironment* env)
 		}
 
 		for (auto& img : images) {
-			if (detector->detect(img->image, id, false) == 1) {
-				for (auto& d : detector->last_detections) {
-					DetectionItem* detection_item = new DetectionItem(d);
+			if (img != NULL && img->image != NULL && !img->image->empty()) {
+				if (detector->detect(img->image, id, false) == 1) { 
+					for (auto& d : detector->last_detections) {
+						DetectionItem* detection_item = new DetectionItem(d);
 
-					detection_item->predecessor_detector_id = detector->predecessor_id;
-					detection_item->predecessor_class = detector->predecessor_class;
-					detection_item->predecessor_id = img->predecessor_id;
+						detection_item->predecessor_detector_id = detector->predecessor_id;
+						detection_item->predecessor_class = detector->predecessor_class;
+						detection_item->predecessor_id = img->predecessor_id;
 
-					detection_item->original_x = img->original_x;
-					detection_item->original_y = img->original_y;
+						detection_item->original_x = img->original_x;
+						detection_item->original_y = img->original_y;
 
-					detection_item->is_draw = detector->is_draw_detections;
-					detection_item->frame_w = detect_frame->cols;
-					detection_item->frame_h = detect_frame->rows;
-					detection_item->mapping_rule = detector->results_mapping_rule;
-					detection_item->scale_factor = img->scale_factor;
-					detection_item->is_send_result = detector->is_send_results;
+						detection_item->is_draw = detector->is_draw_detections;
+						detection_item->frame_w = env->detect_frame.cols;
+						detection_item->frame_h = env->detect_frame.rows;
+						detection_item->mapping_rule = detector->results_mapping_rule;
+						detection_item->scale_factor = img->scale_factor;
+						detection_item->is_send_result = detector->is_send_results;
 
-					detections.push_back(detection_item);
+						detections.push_back(detection_item);
+					}
 				}
 			}
 		}
 
 #ifdef __WITH_SCRIPT_LANG__
-		execute_script(env, detect_frame, detector->execute_mode, detector->execute_always, detector->on_detect.c_str(), &detector->last_detections);
+		execute_script(env, &env->detect_frame, detector->execute_mode, detector->execute_always, detector->on_detect.c_str(), &detector->last_detections);
 #endif
 
 		if (detector->predecessor_id >= 0 && detector->predecessor_class >= 0)
@@ -432,7 +436,7 @@ void detect_func(DetectorEnvironment* env)
 	}
 
 #ifdef __WITH_SCRIPT_LANG__
-	execute_script(env, detect_frame, env->execute_mode, env->execute_always, env->on_postprocess.c_str(), &detections);
+	execute_script(env, &env->detect_frame, env->execute_mode, env->execute_always, env->on_postprocess.c_str(), &detections);
 #endif
 
 #ifdef _DEBUG_
@@ -446,12 +450,12 @@ void detect_func(DetectorEnvironment* env)
 	}
 
 	if (env->video_stream_mode == VIDEO_STREAM_MODE::VIDEO_STREAM_MODE_DETECTOR && env->video_streamer != nullptr) {
-		draw_detections(env, detect_frame, detections, env->is_show_mask);
-		stream_frame_(detect_frame, env);
+		draw_detections(env, &env->detect_frame, detections, env->is_show_mask);
+		stream_frame_(&env->detect_frame, env);
 	}
 
 	clear<DetectionItem, std::list>(detections);
-	delete detect_frame;
+	//delete detect_frame;
 }
 
 void thread_func(DetectorEnvironment* env)
@@ -462,46 +466,45 @@ void thread_func(DetectorEnvironment* env)
 #ifdef _DEBUG_
 			env->fps.tick("##########Output FPS: ", env->camera_id.c_str(), env->http_server_queue);
 #endif
+			//env->detector_mutex.unlock();
 			env->detector_ready = true;
 		}
 	}
 }
 
-#ifdef __HAS_CUDA__
-void process_frame(ICamera* capture, cs::camera_settings* set, DetectorEnvironment* environment, Mat* frame)
+void process_frame(ICamera* capture, cs::camera_settings* set, DetectorEnvironment* environment, Mat& frame)
 {
-	cv::cuda::GpuMat* image = new cv::cuda::GpuMat();
-#else
-void process_frame(cs::camera_settings* set, DetectorEnvironment* environment, Mat* frame, Mat* image)
-{
-	cv::Mat* image = new cv::Mat();
-#endif
 	if (environment->detector_ready) {
-		environment->original_size = frame->size();
+		environment->original_size = frame.size();
 
 #ifdef __HAS_CUDA__
+		//cv::cuda::GpuMat* image = new cv::cuda::GpuMat();
+
 		if (set->is_use_gpu)
-			gpu_preprocessing(*frame, set, *image, environment->border_dims);
+			gpu_preprocessing(frame, set, environment->detect_frame, environment->border_dims);
 		else {
 			Mat img;
-			cpu_preprocessing(*frame, set, img, environment->border_dims);
-			image->upload(img);
+			cpu_preprocessing(frame, set, img, environment->border_dims);
+			environment->detect_frame.upload(img);
 		}
 #else
+		//cv::Mat* image = new cv::Mat();
+
 		if (set->is_use_gpu) {
-			gpu_preprocessing(*frame, set, *image, environment->border_dims);
+			gpu_preprocessing(frame, set, environment->detect_frame, environment->border_dims);
 		}
 		else {
-			cpu_preprocessing(*frame, set, *image, environment->border_dims);
+			cpu_preprocessing(frame, set, environment->detect_frame, environment->border_dims);
 		}
 #endif
 		if (set->video_stream_mode == VIDEO_STREAM_MODE::VIDEO_STREAM_MODE_SOURCE && environment->video_streamer != nullptr) {
-			stream_frame_(image, environment);
+			stream_frame_(&environment->detect_frame, environment);
 		}
 
 		capture->set_ready(false);
 
-		environment->queue.push(image);
+		//environment->queue.push(image);
+		//environment->detector_mutex.unlock();
 		environment->detector_ready = false;
 	}
 }
@@ -549,65 +552,74 @@ void* camera_loop(void* arg)
 	}
 	capture->prepare();
 
-	DetectorEnvironment* environment = new DetectorEnvironment();
-	if (environment == nullptr) {
-		delete capture;
-		return 0;
-	}
+	DetectorEnvironment environment; // = new DetectorEnvironment();
+	//if (environment == nullptr) {
+	//	delete capture;
+	//	return 0;
+	//}
 
-	if (!init_detectors_environment(environment, set)) {
+	if (!init_detectors_environment(&environment, set)) {
 		delete capture;
-		delete environment;
+		//delete environment;
 		return NULL;
 	}
 
 	gpu_setup_device();
 
-	for (auto detector : environment->detectors) {
+	for (auto detector : environment.detectors) {
 		capture->set_detector_buffer(detector->width * detector->height);
 	}
 
-	int is_open = capture->open(set->device);
-	if (!is_open || capture->get_height() <= 0 || capture->get_width() <= 0) {
+	if (!capture->open(set->device) || capture->get_height() <= 0 || capture->get_width() <= 0) {
 		cout << "Can not open capture: " << get<string>(set->device).c_str() << endl;
-		delete environment;
+		//delete environment;
 		delete capture;
 		return NULL;
 	}
 
 	Mat frame(capture->get_height(), capture->get_width(), CV_8UC3);
+	Mat fake(capture->get_height(), capture->get_width(), CV_8UC3);
 
-	environment->mqtt_client->loop();
+	environment.mqtt_client->loop();
 
 #ifdef _DEBUG_
 	fps_counter fps;
 	if (set->input_kind == INPUT_OUTPUT_DEVICE_KIND::INPUT_OUTPUT_DEVICE_KIND_CAMERA) {
-		environment->fps.init();
-		environment->kpi.init();
+		environment.fps.init();
+		environment.kpi.init();
 
 		fps.init();
 	}
 #endif
-	environment->detector_ready = true;
+	environment.detector_ready = true;
 
-	thread detect_tread(thread_func, environment);
+	thread detect_tread(thread_func, &environment);
 	detect_tread.detach();
 
-	thread stream_tread(stream_thread_func, environment); //show_frame, 
+	thread stream_tread(stream_thread_func, &environment); //show_frame, 
 	stream_tread.detach();
 
 	for (;;) {
 		if (!capture->is_ready())
 			continue;
 
-		if (capture->get_frame(frame, set->get_is_convert_to_gray() != 0)) {
+		int ret = 0;
+		if (environment.detector_ready) {
+			ret = capture->get_frame(frame, set->get_is_convert_to_gray());
+		}
+		else {
+			capture->get_frame(fake, false);
+		}
+
 #ifdef _DEBUG_
-			if (set->input_kind == INPUT_OUTPUT_DEVICE_KIND::INPUT_OUTPUT_DEVICE_KIND_CAMERA) {
-				fps.tick("!!!!!!!!!Input FPS: ", "", nullptr);
-			}
+		if (set->input_kind == INPUT_OUTPUT_DEVICE_KIND::INPUT_OUTPUT_DEVICE_KIND_CAMERA) {
+			fps.tick("!!!!!!!!!Input FPS: ", "", nullptr);
+		}
 #endif
+
+		if (ret != 0) {
 			if (!frame.empty()) {
-				process_frame(capture, set, environment, &frame);
+				process_frame(capture, set, &environment, frame);
 			}
 
 			if (capture->source_is_file && capture->is_end_of_file()) {
@@ -618,12 +630,10 @@ void* camera_loop(void* arg)
 			if (capture->source_is_file)
 				std::this_thread::sleep_for(std::chrono::milliseconds(1000 / capture->get_fps()));
 		}
-		else
-			break;
 	}
 	
 	delete capture;
-	delete environment;
+	//delete environment;
 
 	return NULL;
 }

@@ -68,17 +68,20 @@ namespace cs
 				delete image_writer;
 		}
 
-		std::atomic<bool> detector_ready = true;
+		std::atomic_bool detector_ready = true;
+		std::mutex detector_mutex;
 
 		std::list<IObjectDetector*> detectors; //to do: shold be changed to map<int, IObjectDetector*>?
 
-		std::atomic<bool> is_can_show = true;
+		std::atomic_bool is_can_show = true;
 
 #ifdef __HAS_CUDA__
-		BaseQueue<cv::cuda::GpuMat> queue;
+		//BaseQueue<cv::cuda::GpuMat> queue;
+		cv::cuda::GpuMat detect_frame;
 		cv::cuda::GpuMat show_frame;
 #else
-		BaseQueue<cvMat> queue;
+		//BaseQueue<cvMat> queue;
+		cv::Mat detect_frame;
 		cv::Mat show_frame;
 #endif
 		std::string topic = "";

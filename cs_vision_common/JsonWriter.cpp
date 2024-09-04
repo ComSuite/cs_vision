@@ -57,8 +57,8 @@ int JsonWriter::set_json_value(const char* path, json_value value)
 
 int JsonWriter::get_json_element_index(string& name)
 {
-	int i = name.find_last_of('[');
-	int j = name.find_last_of(']');
+	size_t i = name.find_last_of('[');
+	size_t j = name.find_last_of(']');
 	if (i == string::npos || j == string::npos || i >= j)
 		return -1;	
 

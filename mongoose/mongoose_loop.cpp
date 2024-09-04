@@ -89,6 +89,9 @@ static bool credentials_callback(int operation, void* credentials, const char* l
 
 static bool load_settings(const char* settings_file_path, const char* secrets_file_path, char** settings)
 {
+	if (settings == NULL)
+		return false;
+
 	JsonWriter* json_writer = new JsonWriter();
 	if (json_writer == nullptr) {
 		return false;

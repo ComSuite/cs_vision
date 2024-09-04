@@ -26,6 +26,9 @@
 #include <pdh.h>
 #include <cstdio>
 #include <iostream>
+#ifdef __HAS_CUDA__
+#include <nvml.h>
+#endif
 
 using namespace cs;
 using namespace std;
@@ -61,5 +64,24 @@ unsigned int system_usage::get_cpu_usage()
 
 int system_usage::get_cpu_temp()
 {
+	return 0;
+}
+
+unsigned int system_usage::get_gpu_usage()
+{
+#ifdef __HAS_CUDA__ 
+#ifdef __WITH_NVML__
+	nvmlInit();
+	nvmlDevice_t device;
+	nvmlDeviceGetHandleByIndex(0, &device);
+
+	nvmlUtilization_t utilization;
+	nvmlDeviceGetUtilizationRates(device, &utilization);
+	nvmlShutdown();
+
+	return static_cast<unsigned int>(utilization.gpu);
+	//std::cout << "Memory Utilization: " << utilization.memory << "%" << std::endl;
+#endif
+#endif
 	return 0;
 }

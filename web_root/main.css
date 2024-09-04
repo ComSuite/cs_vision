@@ -1318,6 +1318,40 @@ img, video {
     color: rgb(107 114 128/var(--tw-text-opacity))
 }
 
+.popup {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 400px;
+    top: 100px;
+    width: 70%;
+    height: 70%;
+    overflow: auto;
+    background-color: rgba(0,0,0,1);
+}
+
+.popup-content {
+    background-color: #fff;
+    margin: 3% auto;
+    padding: 3px;
+    border: 1px solid #888;
+    width: 99%;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
 @media (prefers-color-scheme:dark) {
     .dark\:border-gray-800 {
         --tw-border-opacity: 1;

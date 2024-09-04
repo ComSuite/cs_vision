@@ -53,7 +53,7 @@ namespace cs
             if (!q.empty()) {
                 elem = q.front();
                 q.pop_front();
-            }
+            }                             
             m.unlock();
 
             return elem;

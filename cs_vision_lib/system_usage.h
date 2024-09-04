@@ -23,10 +23,6 @@
 
 #pragma once
 
-#ifdef __HAS_CUDA__
-#include <nvml.h>
-#endif
-
 namespace cs
 {
 	class system_usage
@@ -36,24 +32,7 @@ namespace cs
 		unsigned int get_cpu_usage();
 		unsigned int get_free_memory();
 		int get_cpu_temp();
-		unsigned int get_gpu_usage()
-		{
-#ifdef __HAS_CUDA__ 
-#ifdef __WITH_NVML__
-			nvmlInit();
-			nvmlDevice_t device;
-			nvmlDeviceGetHandleByIndex(0, &device);
-
-			nvmlUtilization_t utilization;
-			nvmlDeviceGetUtilizationRates(device, &utilization);
-			nvmlShutdown();
-
-			return static_cast<unsigned int>(utilization.gpu);
-			//std::cout << "Memory Utilization: " << utilization.memory << "%" << std::endl;
-#endif
-#endif
-			return 0;
-		}
+		unsigned int get_gpu_usage();
 	private:
 	};
 }

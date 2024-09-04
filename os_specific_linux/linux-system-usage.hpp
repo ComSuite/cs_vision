@@ -68,6 +68,22 @@ namespace get_system_usage_linux
 
     };
 
+	inline unsigned int read_gpu_load()
+	{
+		std::ifstream gpu_file("/sys/devices/gpu.0/load");
+
+		if (gpu_file.good())
+		{
+			std::string line;
+			getline(gpu_file, line);
+
+			double gpu_load = std::stod(line) / 10;
+			return static_cast<unsigned int>(gpu_load);
+		}
+
+		return 0;
+	}
+
     inline CPU_stats read_cpu_data()
     {
         CPU_stats result;

@@ -60,3 +60,8 @@ int system_usage::get_cpu_temp()
 	double temp = get_system_usage_linux::get_thermalzone_temperature(0);
 	return static_cast<int>(temp / 1000);
 }
+
+unsigned int system_usage::get_gpu_usage()
+{
+	return get_system_usage_linux::read_gpu_load();
+}
