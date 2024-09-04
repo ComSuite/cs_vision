@@ -172,6 +172,7 @@ function DeveloperNote({text, children}) {
 };
 
 function device_settings() {
+    loadConfig();
     document.getElementById("camera_settings").style.display = "block";
 }
 
@@ -233,7 +234,21 @@ function LoadFPS() {
 	});	
 }
 
-function loadConfig() {
+async function loadConfig() {
+    try {
+        const response = await fetch('/api/settings/get');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        settings_json = await response.json();
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+
+/*
+
+
     fetch("/api/settings/get").then(function (response) {
         if (response.status === 403) {
         }
@@ -249,7 +264,7 @@ function loadConfig() {
         location.reload();
         console.log('Fetch Error :-S', err);
     });	
-
+*/
 }
 
 var intervalID = -1;
@@ -496,8 +511,15 @@ function Settings({}) {
 <//>`;
 };
 
-function cameraSettings({}) {
-    loadConfig();
+function cameraSettings({ }) {
+    const [settings, setSettings] = useState(null);
+    const refresh = () => fetch('api/settings/get')
+        .then(r => r.json())
+        .then(r => setSettings(r));
+    useEffect(refresh, []);
+
+    if (!settings)
+        return '';
 
     return html`
   <div id="camera_settings" class="popup m-4 grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -508,35 +530,55 @@ function cameraSettings({}) {
       <//>
 
       <div class="py-2 px-5 flex-1 flex flex-col relative">
-        <${Setting} title="Version high" value="1"  type="" />
-        <${Setting} title="Version low" value="1" type="" />
-        <${Setting} title="Device kind" value="1" type="" />
-        <${Setting} title="Version high" value="1"  type="" />
-        <${Setting} title="Version low" value="1" type="" />
-        <${Setting} title="Device kind" value="1" type="" />
-        <${Setting} title="Version high" value="1"  type="" />
-        <${Setting} title="Version low" value="1" type="" />
-        <${Setting} title="Device kind" value="1" type="" />
-        <${Setting} title="Version high" value="1"  type="" />
-        <${Setting} title="Version low" value="1" type="" />
-        <${Setting} title="Device kind" value="1" type="" />
-        <${Setting} title="Version high" value="1"  type="" />
-        <${Setting} title="Version low" value="1" type="" />
-        <${Setting} title="Device kind" value="1" type="" />
-        <${Setting} title="Version high" value="1"  type="" />
-        <${Setting} title="Version low" value="1" type="" />
-        <${Setting} title="Device kind" value="1" type="" />
-        <${Setting} title="Version high" value="1"  type="" />
-        <${Setting} title="Version low" value="1" type="" />
-        <${Setting} title="Device kind" value="1" type="" />
-        <${Setting} title="Version high" value="1"  type="" />
-        <${Setting} title="Version low" value="1" type="" />
-        <${Setting} title="Device kind" value="1" type="" />
+        <${Setting} title="Version high" value=${settings_json.settings.cameras[0].device} type="" />
+        <${Setting} title="ID" value=${settings_json.settings.cameras[0].id} type="" />
+        <${Setting} title="Convert to gray" value=${settings_json.settings.cameras[0].is_convert_to_gray} type="" />
+        <${Setting} title="Use display" value=${settings_json.settings.cameras[0].is_display}  type="" />
+        <${Setting} title="Flip" value=${settings_json.settings.cameras[0].is_flip} type="" />
+        <${Setting} title="Show mask" value=${settings_json.settings.cameras[0].is_show_mask} type="" />
+        <${Setting} title="Use GPU" value=${settings_json.settings.cameras[0].is_use_gpu}  type="" />
+        <${Setting} title="MQTT broker IP" value=${settings_json.settings.cameras[0].mqtt_broker_ip} type="" />
+        <${Setting} title="MQTT broker port" value=${settings_json.settings.cameras[0].mqtt_broker_port} type="" />
+        <${Setting} title="MQTT client name" value=${settings_json.settings.cameras[0].mqtt_client_name}  type="" />
+        <${Setting} title="MQTT connection type" value=${settings_json.settings.cameras[0].mqtt_connection_type} type="" />
+        <${Setting} title="MQTT detection topic" value=${settings_json.settings.cameras[0].mqtt_detection_topic} type="" />
+        <${Setting} title="MQTT error topic" value=${settings_json.settings.cameras[0].mqtt_error_topic}  type="" />
+        <${Setting} title="MQTT login" value=${settings_json.settings.cameras[0].mqtt_login} type="" />
+        <${Setting} title="MQTT password" value=${settings_json.settings.cameras[0].mqtt_password} type="" />
+        <${Setting} title="MQTT ping interval" value=${settings_json.settings.cameras[0].mqtt_ping_interval}  type="" />
+        <${Setting} title="MQTT ping topic" value=${settings_json.settings.cameras[0].mqtt_ping_topic}  type="" />
+
+
+        <${Setting} title="MQTT tls cert file path" value=${settings_json.settings.cameras[0].mqtt_tls_cert_file} type="" />
+        <${Setting} title="MQTT is send emty" value=${settings_json.settings.cameras[0].mqtt_is_send_empty} type="" />
+        <${Setting} title="Connection attempts count" value=${settings_json.settings.cameras[0].connection_attempts_count}  type="" />
+        <${Setting} title="Name" value=${settings_json.settings.cameras[0].name} type="" />
+        <${Setting} title="Object detector kind" value=${settings_json.settings.cameras[0].object_detector_kind} type="" />
+        <${Setting} title="Resize X" value=${settings_json.settings.cameras[0].resize_x}  type="" />
+        <${Setting} title="Resize Y" value=${settings_json.settings.cameras[0].resize_y} type="" />
+        <${Setting} title="Rotate angel" value=${settings_json.settings.cameras[0].rotate_angle} type="" />
+
+        <${Setting} title="Video stream channel" value=${settings_json.settings.cameras[0].video_stream_channel} type="" />
+        <${Setting} title="Video stream engine" value=${settings_json.settings.cameras[0].video_stream_engine} type="" />
+        <${Setting} title="Video stream login" value=${settings_json.settings.cameras[0].video_stream_login} type="" />
+        <${Setting} title="Video stream password" value=${settings_json.settings.cameras[0].video_stream_password} type="" />
+        <${Setting} title="Video stream mode" value=${settings_json.settings.cameras[0].video_stream_mode} type="" />
+        <${Setting} title="Video stream port" value=${settings_json.settings.cameras[0].video_stream_port} type="" />
+        <${Setting} title="Use superresolution DNN" value=${settings_json.settings.cameras[0].is_use_super_resolution} type="" />
+        <${Setting} title="Super resolution name" value=${settings_json.settings.cameras[0].super_resolution_name} type="" />
+        <${Setting} title="Superresoltion model file path" value=${settings_json.settings.cameras[0].super_resolution_model_path} type="" />
+        <${Setting} title="Superresolution factor" value=${settings_json.settings.cameras[0].super_resolution_factor} type="" />
+        <${Setting} title="OnPreporcess" value=${settings_json.settings.cameras[0].on_preprocess} type="" />
+        <${Setting} title="OnPostprocess" value=${settings_json.settings.cameras[0].on_postprocess} type="" />
+        <${Setting} title="Execute always" value=${settings_json.settings.cameras[0].execute_always} type="" />
+        <${Setting} title="Execute mode" value=${settings_json.settings.cameras[0].execute_mode} type="" />
+        <${Setting} title="Input kind" value=${settings_json.settings.cameras[0].input_kind} type="" />
+        <${Setting} title="Output kind" value=${settings_json.settings.cameras[0].output_kind} type="" />
+
       <//>
     <//>
   <//>`;
 }
-
 
 const App = function({}) {
   const [loading, setLoading] = useState(true);
@@ -552,7 +594,8 @@ const App = function({}) {
   useEffect(() => fetch('api/login').then(login), []);
 
   if (loading) return '';  // Show blank page on initial load
-    if (!user) return html`<${Login} loginFn=${login} logoIcon="${Logo}"
+    if (!user) return html`
+    <${Login} loginFn=${login} logoIcon="${Logo}"
     title="Device Dashboard Login" 
     tipText="To first time login, use: admin/admin" />`; // If not logged in, show login screen
 
