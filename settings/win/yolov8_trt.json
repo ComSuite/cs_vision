@@ -88,7 +88,7 @@
                         "is_use_gpu": true,
                         "kind": 5,
                         "labels_path": "G:/Projects/comsuite/sources/cs_vision/settings/coco.names",
-                        "model_path": "G:/Projects/comsuite/sources/cs_vision/models/yolov8m.onnx",
+                        "model_path": "G:/Projects/comsuite/sources/cs_vision/models/yolov5n.onnx",
                         "name": "Yolo Objects",
                         "neural_network_id": 1,
                         "output_tensor_name": "output0",

@@ -511,15 +511,22 @@ function Settings({}) {
 <//>`;
 };
 
+function set_settings(json_val, x)
+{
+
+}
+
 function cameraSettings({ }) {
-    const [settings, setSettings] = useState(null);
+    const [settings_json, setSettings] = useState(null);
     const refresh = () => fetch('api/settings/get')
         .then(r => r.json())
         .then(r => setSettings(r));
     useEffect(refresh, []);
 
-    if (!settings)
+    if (!settings_json)
         return '';
+
+    const mksetfn = k => (v => setSettings(x => Object.assign({}, x, {[k]: v })));
 
     return html`
   <div id="camera_settings" class="popup m-4 grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -532,7 +539,7 @@ function cameraSettings({ }) {
       <div class="py-2 px-5 flex-1 flex flex-col relative">
         <${Setting} title="Version high" value=${settings_json.settings.cameras[0].device} type="" />
         <${Setting} title="ID" value=${settings_json.settings.cameras[0].id} type="" />
-        <${Setting} title="Convert to gray" value=${settings_json.settings.cameras[0].is_convert_to_gray} type="" />
+        <${Setting} title="Convert to gray" value=${settings_json.settings.cameras[0].is_convert_to_gray} type="switch" setfn=${mksetfn(settings_json.settings.cameras[0].is_convert_to_gray)}/>
         <${Setting} title="Use display" value=${settings_json.settings.cameras[0].is_display}  type="" />
         <${Setting} title="Flip" value=${settings_json.settings.cameras[0].is_flip} type="" />
         <${Setting} title="Show mask" value=${settings_json.settings.cameras[0].is_show_mask} type="" />

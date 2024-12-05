@@ -53,7 +53,6 @@ T1 nearest_key(const std::map<T1, T2>& data, T1 key)
 	return lower->first;
 }
 
-
 template<typename T, template<class> class C>
 void clear(C<T*>& lst)
 {
@@ -74,18 +73,6 @@ void clear(std::map<T, C*>& lst)
 
 	lst.clear();
 }
-
-/*
-template <typename T>
-void clear(list<T*>& lst)
-{
-	while (!lst.empty()) {
-		if (lst.front() != nullpter)
-			delete lst.front();
-		lst.pop_front();
-	}
-}
-*/
 
 template <typename T>
 constexpr auto to_underlying(T t) noexcept
