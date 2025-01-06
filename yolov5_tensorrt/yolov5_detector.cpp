@@ -682,7 +682,8 @@ void Detector::_printBindings(
             const std::unique_ptr<nvinfer1::ICudaEngine>& engine) 
             const noexcept
 {
-    const int32_t nbBindings = engine->getNbBindings();
+	const int32_t nbBindings = engine->getNbIOTensors();
+        //getNbBindings();
 
     for(int i = 0; i < nbBindings; ++i)
     {
@@ -775,13 +776,18 @@ Result Detector::_detectBatch(const int& nrImages,
 Result Detector::_inference(const char* logid)
 {
     /*  Enqueue for inference   */
-    if(!_trtExecutionContext->enqueueV2(_deviceMemory.begin(),
-                                        _preprocessor->cudaStream(), nullptr))
+    //_deviceMemory.begin(), _preprocessor->cudaStream(), nullptr)
+
+    printf("000000000000000000\n");
+    _trtExecutionContext->setTensorAddress("images", _deviceMemory.begin());
+    _trtExecutionContext->setTensorAddress("output0", _deviceMemory.at(_outputBinding.index()));
+    printf("1111111111111111111\n");
+    if(!_trtExecutionContext->enqueueV3(_preprocessor->cudaStream()))
     {
-        _logger->logf(LOGGING_ERROR, "[Detector] %s failure: could not enqueue "
-                    "data for inference", logid);
+        _logger->logf(LOGGING_ERROR, "[Detector] %s failure: could not enqueue data for inference", logid);
         return RESULT_FAILURE_TENSORRT_ERROR;
     }
+    printf("222222222222\n");
 
     /*  Copy output back from device memory to host memory  */
     /*

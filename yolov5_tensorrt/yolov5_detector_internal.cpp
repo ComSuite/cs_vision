@@ -39,6 +39,7 @@
 #endif
 
 #include <cuda_runtime_api.h>
+#include <NvInferRuntime.h>
 
 namespace yolov5
 {
@@ -163,6 +164,23 @@ void EngineBinding::toString(std::string* out) const noexcept
     }
 }
 
+int _getBindingIndex(const std::unique_ptr<nvinfer1::ICudaEngine>& engine, const std::string& name) noexcept
+{
+	for (int i = 0; i < engine->getNbIOTensors(); ++i)
+	{
+		const char* n = engine->getIOTensorName(i);
+		if (n == nullptr) {
+			continue;
+		}
+
+		if (name == n) {
+			return i;
+		}
+	}
+
+	return -1;
+}
+
 bool EngineBinding::setup(const std::unique_ptr<nvinfer1::ICudaEngine>& engine,
                     const std::string& name, EngineBinding* binding) noexcept
 {
@@ -175,16 +193,18 @@ bool EngineBinding::setup(const std::unique_ptr<nvinfer1::ICudaEngine>& engine,
         return false;
     }
 
-    binding->_index = engine->getBindingIndex(name.c_str());
+    binding->_index = _getBindingIndex(engine, name);
     if(binding->_index == -1)
     {
         return false;
     }
 
-    binding->_dims = engine->getBindingDimensions(binding->_index);
+    binding->_dims = engine->getTensorShape(name.c_str());
+        //engine->getBindingDimensions(binding->_index);
     binding->_volume = dimsVolume(binding->_dims);
 
-    binding->_isInput = engine->bindingIsInput(binding->_index);
+    //binding->_isInput = engine->bindingIsInput(binding->_index);
+	binding->_isInput = engine->getTensorIOMode(name.c_str()) == nvinfer1::TensorIOMode::kINPUT;
 
     return true;
 }
@@ -193,7 +213,7 @@ bool EngineBinding::setup(const std::unique_ptr<nvinfer1::ICudaEngine>& engine,
                     const int& index, EngineBinding* binding) noexcept
 {
     binding->_index = index;
-    const char* name = engine->getBindingName(index);
+    const char* name = engine->getIOTensorName(index);
     if(name == nullptr)
     {
         return false;
@@ -208,10 +228,13 @@ bool EngineBinding::setup(const std::unique_ptr<nvinfer1::ICudaEngine>& engine,
         return false;
     }
 
-    binding->_dims = engine->getBindingDimensions(binding->_index);
+    binding->_dims = engine->getTensorShape(name);
+        //engine->getBindingDimensions(binding->_index);
     binding->_volume = dimsVolume(binding->_dims);
 
-    binding->_isInput = engine->bindingIsInput(binding->_index);
+    //binding->_isInput = engine->bindingIsInput(binding->_index);
+    binding->_isInput = engine->getTensorIOMode(name) == nvinfer1::TensorIOMode::kINPUT;
+
 
     return true;
 }
@@ -251,10 +274,12 @@ Result DeviceMemory::setup(const std::shared_ptr<Logger>& logger,
                     std::unique_ptr<nvinfer1::ICudaEngine>& engine,
                     DeviceMemory* output) noexcept
 {
-    const int32_t nbBindings = engine->getNbBindings();
+	const int32_t nbBindings = engine->getNbIOTensors();
+        //getNbBindings();
     for(int i = 0; i < nbBindings; ++i)
     {
-        const nvinfer1::Dims dims = engine->getBindingDimensions(i); 
+        const nvinfer1::Dims dims = engine->getTensorShape(engine->getIOTensorName(i));
+            //engine->getBindingDimensions(i); 
         const int volume = dimsVolume(dims);
 
         try
@@ -268,7 +293,7 @@ Result DeviceMemory::setup(const std::shared_ptr<Logger>& logger,
         }
 
         void** ptr = &output->_memory.back();
-        if (engine->bindingIsInput(i)) {
+        if (engine->getTensorIOMode(engine->getIOTensorName(i)) == nvinfer1::TensorIOMode::kINPUT) {
             auto r = cudaMalloc(ptr, volume * sizeof(float));
             if(r != 0 || *ptr == nullptr) {
                 logger->logf(LOGGING_ERROR, "[DeviceMemory] setup() failure: could not allocate device memory: %s", cudaGetErrorString(r));

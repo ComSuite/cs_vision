@@ -188,36 +188,29 @@ Result Builder::_buildEngine(const std::string& inputFilePath,
     const char* precisionStr = precision_to_string(precision);
     if(std::strlen(precisionStr) == 0)
     {
-        _logger->log(LOGGING_ERROR, "[Builder] buildEngine() failure: "
-                    "invalid precision specified");
+        _logger->log(LOGGING_ERROR, "[Builder] buildEngine() failure: invalid precision specified");
         return RESULT_FAILURE_INVALID_INPUT;
     }
 
     try
     {
-        std::unique_ptr<nvinfer1::IBuilder> builder(
-                        nvinfer1::createInferBuilder(*_trtLogger));
+        std::unique_ptr<nvinfer1::IBuilder> builder(nvinfer1::createInferBuilder(*_trtLogger));
 
-        const auto explicitBatch = 1U << static_cast<uint32_t>(
-                nvinfer1::NetworkDefinitionCreationFlag::kEXPLICIT_BATCH);
-        std::unique_ptr<nvinfer1::INetworkDefinition> network(
-                        builder->createNetworkV2(explicitBatch));
+        const auto explicitBatch = 1U << static_cast<uint32_t>(nvinfer1::NetworkDefinitionCreationFlag::kEXPLICIT_BATCH);
+        std::unique_ptr<nvinfer1::INetworkDefinition> network(builder->createNetworkV2(explicitBatch));
 
-        builder->setMaxBatchSize(1);
+        //builder->setMaxBatchSize(1);
 
-        std::unique_ptr<nvonnxparser::IParser> parser(
-                        nvonnxparser::createParser(*network, *_trtLogger));
-        if(!parser->parseFromFile(inputFilePath.c_str(),
-                        (int)nvinfer1::ILogger::Severity::kWARNING))
+        std::unique_ptr<nvonnxparser::IParser> parser(nvonnxparser::createParser(*network, *_trtLogger));
+        if(!parser->parseFromFile(inputFilePath.c_str(), (int)nvinfer1::ILogger::Severity::kWARNING))
         {
             _logger->log(LOGGING_ERROR, "[Builder] buildEngine() failure: "
                     "could not parse ONNX model from file");
             return RESULT_FAILURE_MODEL_ERROR;
         }
 
-        std::unique_ptr<nvinfer1::IBuilderConfig> config(
-                        builder->createBuilderConfig());
-        config->setMaxWorkspaceSize(1 << 20);
+        std::unique_ptr<nvinfer1::IBuilderConfig> config(builder->createBuilderConfig());
+        //config->setMaxWorkspaceSize(1 << 20);
 
         if(precision == PRECISION_FP32)
         {
@@ -239,8 +232,7 @@ Result Builder::_buildEngine(const std::string& inputFilePath,
                 "serializing engine at %s precision. This may take a while",
                 precisionStr);
 
-        std::shared_ptr<nvinfer1::IHostMemory> serialized(
-            builder->buildSerializedNetwork(*network, *config));
+        std::shared_ptr<nvinfer1::IHostMemory> serialized(builder->buildSerializedNetwork(*network, *config));
         if(!serialized)
         {
             _logger->log(LOGGING_ERROR, "[Builder] buildEngine() failure: "
