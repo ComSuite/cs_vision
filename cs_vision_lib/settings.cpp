@@ -103,6 +103,7 @@ int camera_settings::parse(rapidjson::Value& root)
 	resize_y = json_get_int(root, "resize_y", resize_y);
 	is_show_mask = json_get_bool(root, "is_show_mask", is_show_mask);
 
+	mqtt = json_get_bool(root, "mqtt", mqtt);
 	mqtt_client_name = json_get_string(root, "mqtt_client_name", mqtt_client_name.c_str());
 	mqtt_broker_ip = json_get_string(root, "mqtt_broker_ip", mqtt_broker_ip.c_str());
 	mqtt_broker_port = json_get_int(root, "mqtt_broker_port", mqtt_broker_port);
@@ -186,6 +187,7 @@ int device_settings::parse(Document& root)
 		id = json_get_string(settings, "id", id.c_str());
 		name = json_get_string(settings, "name", name.c_str());
 
+		mqtt = json_get_bool(settings, "mqtt", mqtt);
 		mqtt_client_name = json_get_string(settings, "mqtt_client_name", mqtt_client_name.c_str());
 		mqtt_broker_ip = json_get_string(settings, "mqtt_broker_ip", mqtt_broker_ip.c_str());
 		mqtt_broker_port = json_get_int(settings, "mqtt_broker_port", mqtt_broker_port);

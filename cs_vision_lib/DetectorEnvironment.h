@@ -107,6 +107,7 @@ namespace cs
 
 		cv::dnn_superres::DnnSuperResImpl* super_resolution = nullptr;
 
+		bool mqtt = false;
 		MQTTClient* mqtt_client = nullptr;
 		std::string mqtt_detection_topic = "";
 		bool mqtt_is_send_empty = false;

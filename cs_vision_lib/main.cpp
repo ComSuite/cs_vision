@@ -295,7 +295,7 @@ int main(int argc, char* argv[])
     }
 
     MQTTClient* mqtt = nullptr;
-    if (settings->mqtt_broker_ip.size() > 0 && settings->mqtt_broker_port > 0) {
+    if (settings->mqtt && settings->mqtt_broker_ip.size() > 0 && settings->mqtt_broker_port > 0) {
         mqtt = new MQTTClient();
         if (mqtt != nullptr) {
             if (!mqtt->connect(settings->mqtt_client_name.c_str(), settings->mqtt_broker_ip.c_str(), settings->mqtt_broker_port)) {

@@ -96,6 +96,7 @@ namespace cs
 		int resize_y = 0;
 		bool is_show_mask = false;
 
+		bool mqtt = true; // to do: should be changed to false
 		std::string mqtt_client_name = "";
 		std::string mqtt_broker_ip = "";
 		int mqtt_broker_port = 0;
@@ -147,6 +148,8 @@ namespace cs
 		std::string name = "";
 		int device_kind = 0;
 		std::list<camera_settings*> cameras;
+
+		bool mqtt = true; // to do: should be changed to false
 		std::string mqtt_client_name = "";
 		std::string mqtt_broker_ip = "";
 		int mqtt_broker_port = 0;

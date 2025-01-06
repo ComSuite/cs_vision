@@ -120,7 +120,7 @@ bool init_detectors_environment(DetectorEnvironment* environment, camera_setting
 	if (!set)
 		return false;
 
-	environment->camera_id = set->id;
+	environment->mqtt = set->mqtt;
 	environment->mqtt_detection_topic = set->mqtt_detection_topic;
 	environment->mqtt_is_send_empty = set->mqtt_is_send_empty;
 	environment->background_color = set->background_color;
