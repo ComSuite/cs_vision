@@ -48,7 +48,7 @@
 #include "OpenCVCamera.h"
 #include "OpenCVCamera_GPU.h"
 #ifdef __WITH_AUDIO_PROCESSING__
-#include "PortAudioMicrophone.h"
+//#include "PortAudioMicrophone.h"
 #endif
 #include "cv_utils.h"
 #include "std_utils.h"
@@ -526,11 +526,11 @@ ICamera* create_input_device(cs::camera_settings* set)
 		return new OpenCVCamera();
 #endif
 		break;
-#ifdef __WITH_AUDIO_PROCESSING__
-	case INPUT_OUTPUT_DEVICE_KIND::INPUT_OUTPUT_DEVICE_KIND_MICROPHONE:
-		return new PortAudioMicrophone();
-		break;
-#endif
+//#ifdef __WITH_AUDIO_PROCESSING__
+//	case INPUT_OUTPUT_DEVICE_KIND::INPUT_OUTPUT_DEVICE_KIND_MICROPHONE:
+//		return new PortAudioMicrophone();
+//		break;
+//#endif
 	}
 
 	return nullptr;

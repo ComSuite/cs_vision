@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{a4be7f00-e53d-4e24-bb1b-e2188e5321c4}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)common.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)cuda_utils.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)logging.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)macros.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)preprocess.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TRTYOLOv11ObjectDetector.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yolov11.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="$(MSBuildThisFileDirectory)preprocess.cu" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)TRTYOLOv11ObjectDetector.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)yolov11.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="$(MSBuildThisFileDirectory)yolov11-tensorrt_generated_preprocess.cu.o" />
+  </ItemGroup>
+</Project>

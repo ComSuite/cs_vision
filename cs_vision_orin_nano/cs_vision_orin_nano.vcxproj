@@ -81,16 +81,13 @@
     <Import Project="..\user_interface\user_interface.vcxitems" Label="Shared" />
     <Import Project="..\video_streamer\video_streamer.vcxitems" Label="Shared" />
     <Import Project="..\yolov5_tensorrt\yolov5_tensorrt.vcxitems" Label="Shared" />
-    <Import Project="..\yolov8_ocvdnn\yolov8_ocvdnn.vcxitems" Label="Shared" />
     <Import Project="..\cs_vision_yolov5_tflite\cs_vision_yolov5_tflite.vcxitems" Label="Shared" />
     <Import Project="..\cs_vision_yolov8_trt\cs_vision_yolov8_trt.vcxitems" Label="Shared" />
-    <Import Project="..\TFAudioSampleRecognizer\TFAudioSampleRecognizer.vcxitems" Label="Shared" />
-    <Import Project="..\cs_vision_portaudio\cs_vision_portaudio.vcxitems" Label="Shared" />
-    <Import Project="..\cs_vision_haar_cascade\cs_vision_haar_cascade.vcxitems" Label="Shared" />
     <Import Project="..\mongoose\mongoose.vcxitems" Label="Shared" />
     <Import Project="..\cs_vision_cred_storage\cs_vision_cred_storage.vcxitems" Label="Shared" />
     <Import Project="..\gsl\gsl.vcxitems" Label="Shared" />
     <Import Project="..\os_specific_linux\os_specific_linux.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_yolov11_trt\cs_vision_yolov11_trt.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
@@ -114,12 +111,20 @@
     <ClCompile Include="camera_loop_utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Update="G:\Projects\comsuite\sources\cs_vision\cs_vision_yolov11_trt\preprocess.cu">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Update="G:\Projects\comsuite\sources\cs_vision\mongoose\mongoose.c">
       <FileType>CppCode</FileType>
     </ClCompile>
     <ClCompile Update="G:\Projects\comsuite\sources\cs_vision\mongoose\net.c">
       <FileType>CppCode</FileType>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Update="G:\Projects\comsuite\sources\cs_vision\cs_vision_yolov11_trt\preprocess.cu">
+      <FileType>Document</FileType>
+    </CudaCompile>
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

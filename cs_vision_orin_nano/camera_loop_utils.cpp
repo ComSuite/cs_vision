@@ -24,10 +24,11 @@
 #include "camera_loop_utils.h"
 #include "TRTYOLOv5ObjectDetector.h"
 #include "TRTYOLOv8ObjectDetector.h"
-#include "OCVYOLOv8ObjectDetector.h"
+//#include "OCVYOLOv8ObjectDetector.h"
 #include "TFYOLOv5ObjectDetector.h"
-#include "TFAudioSampleRecognizer.h"
-#include "HaarCascadeClassifier.h"
+//#include "TFAudioSampleRecognizer.h"
+//#include "HaarCascadeClassifier.h"
+#include "TRTYOLOv11ObjectDetector.h"
 #include "cv_utils.h"
 #ifdef __HAS_CUDA__
 #include <opencv2/core/cuda.hpp>
@@ -46,11 +47,12 @@ IObjectDetector* create_detector(int kind)
 	switch (static_cast<ObjectDetectorKind>(kind)) {
 	case ObjectDetectorKind::OBJECT_DETECTOR_TENSORRT_YOLOv5: return new TRTYOLOv5ObjectDetector();
 	case ObjectDetectorKind::OBJECT_DETECTOR_OPENCV_YOLOv5: return nullptr;
-	case ObjectDetectorKind::OBJECT_DETECTOR_OPENCV_YOLOv8: return new OCVYOLOv8ObjectDetector();
+	//case ObjectDetectorKind::OBJECT_DETECTOR_OPENCV_YOLOv8: return new OCVYOLOv8ObjectDetector();
 	case ObjectDetectorKind::OBJECT_DETECTOR_TENSORFLOW_YOLOv5: return new TFYOLOv5ObjectDetector();
 	case ObjectDetectorKind::OBJECT_DETECTOR_TENSORRT_YOLOv8: return new TRTYOLOv8ObjectDetector();
-	case ObjectDetectorKind::AUDIO_RECOGNIZER_TFLITE: return new TFAudioSampleRecognizer();
-	case ObjectDetectorKind::HAAR_CASCADE_CLASSIFIER: return new HaarCascadeClassifier();
+	//case ObjectDetectorKind::AUDIO_RECOGNIZER_TFLITE: return new TFAudioSampleRecognizer();
+	//case ObjectDetectorKind::HAAR_CASCADE_CLASSIFIER: return new HaarCascadeClassifier();
+	case ObjectDetectorKind::OBJECT_DETECTOR_TENSORRT_YOLOv11: return new TRTYOLOv11ObjectDetector();
 	}
 
 	return nullptr;
