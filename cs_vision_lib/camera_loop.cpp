@@ -58,6 +58,7 @@
 #include "DetectorEnvironment.h"
 #include "HTTPVideoStreamer.h"
 #include "SimpleGStreamerVideoStreamer.h"
+#include "RTSPVideoStreamer.h"
 #include "camera_loop_utils.h"
 #ifdef __WITH_SCRIPT_LANG__
 #include "CSScript.h"
@@ -81,6 +82,9 @@ void create_video_streamer(DetectorEnvironment* environment, camera_settings* se
 			break;
 		case VIDEO_STREAM_ENGINE::VIDEO_STREAM_ENGINE_SIMPLE_GSTREAMER:
 			environment->video_streamer = new SimpleGStreamerVideoStreamer(); 
+			break;
+		case VIDEO_STREAM_ENGINE::VIDEO_STREAM_ENGINE_LIVE555:
+			environment->video_streamer = new RTSPVideoStreamer();
 			break;
 		}
 

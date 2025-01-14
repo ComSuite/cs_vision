@@ -75,8 +75,8 @@ namespace cs
 							queue->try_push(info);
 						}
 					}
-
-#ifdef _DEBUG
+//delete last "_" to print fps
+#ifdef _DEBUG__
 					std::cout << prompt << val << std::endl;
 #endif
 				}
