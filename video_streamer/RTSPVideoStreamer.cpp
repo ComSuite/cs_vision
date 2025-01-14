@@ -41,34 +41,14 @@ public:
 
 	FFmpegH264Source(UsageEnvironment& env) : FramedSource(env)
 	{
-		create_encoder();
+		//create_encoder();
 	}
 
 	~FFmpegH264Source() {}
 
-private:
-	static void deliverFrameStub(void* clientData) { ((FFmpegH264Source*)clientData)->deliverFrame(); };
-	
-	virtual void doGetNextFrame()
+	bool create_encoder(int width = 1280, int height = 720, int fps = 30)
 	{
-		std::cout << " doGetNextFrame " << std::endl;
-
-		deliverFrame();
-	}
-
-	AVFrame* frame = nullptr;
-	AVCodecContext* context = nullptr;
-	AVCodec* codec = nullptr;
-	SwsContext* swsContext = nullptr;
-	AVPacket packet;
-
-	int bytesPerPixel = 0;
-	int64_t frameIdx = 1;
-	bool isKeyFrame = true;
-
-	bool create_encoder()
-	{
-		codec = avcodec_find_encoder(AV_CODEC_ID_H264); //AVCodecID(27)
+		codec = avcodec_find_encoder(AV_CODEC_ID_H264);
 		if (!codec) {
 			std::cerr << "Codec with specified id not found" << std::endl;
 			return false;
@@ -79,10 +59,6 @@ private:
 			std::cerr << "Can't allocate video codec context" << std::endl;
 			return false;
 		}
-
-		int height = 720;
-		int width = 1280;
-		int fps = 30;
 
 		/// Resolution must be a multiple of two
 		context->height = height;
@@ -154,6 +130,24 @@ private:
 
 		return true;
 	}
+private:
+	static void deliverFrameStub(void* clientData) { ((FFmpegH264Source*)clientData)->deliverFrame(); };
+	
+	virtual void doGetNextFrame()
+	{
+		deliverFrame();
+	}
+
+	AVFrame* frame = nullptr;
+	AVCodecContext* context = nullptr;
+	AVCodec* codec = nullptr;
+	SwsContext* swsContext = nullptr;
+	AVPacket packet;
+
+	int bytesPerPixel = 0;
+	int64_t frameIdx = 1;
+	bool isKeyFrame = true;
+
 
 	void encode()
 	{
@@ -266,41 +260,41 @@ RTSPVideoStreamer::~RTSPVideoStreamer()
 	//Medium::close(inputDevice);
 }
 
-int RTSPVideoStreamer::open(int port)
+void RTSPVideoStreamer::init(int port, const char* channel_name, int width, int height, int fps)
 {
-	TaskScheduler* scheduler;
-	UsageEnvironment* env;
-	char RTSP_Address[1024];
-	RTSP_Address[0] = 0x00;
-
+	cout << "!!!!!!!!!!" << width << " " << height << " " << fps << endl;
 	scheduler = BasicTaskScheduler::createNew();
 	env = BasicUsageEnvironment::createNew(*scheduler);
-	
+
 	UserAuthenticationDatabase* authDB = NULL;
 	// 	authDB = new UserAuthenticationDatabase;
 	// 	authDB->addUserRecord(UserN, PassW);
-	
+
 	OutPacketBuffer::maxSize = 10000000;
-	RTSPServer* rtspServer = RTSPServer::createNew(*env, port, authDB);
+	rtspServer = RTSPServer::createNew(*env, port, authDB);
 
 	//if (httpTunnelingPort)
 	//{
 	//	rtspServer->setUpTunnelingOverHTTP(httpTunnelingPort);
 	//}
 
-	char const* descriptionString = "CSVision RTSP Stream";
+	//char const* descriptionString = "CSVision RTSP Stream";
 
 	source = FFmpegH264Source::createNew(*env);
+	source->create_encoder(width, height, fps);
 	StreamReplicator* inputDevice = StreamReplicator::createNew(*env, source, false);
 
-	ServerMediaSession* sms = ServerMediaSession::createNew(*env, "cam1", RTSP_Address, descriptionString);
+	ServerMediaSession* sms = ServerMediaSession::createNew(*env, channel_name);
 	sms->addSubsession(LiveServerMediaSubsession::createNew(*env, inputDevice));
 	rtspServer->addServerMediaSession(sms);
 
 	char* url = rtspServer->rtspURL(sms);
 	*env << "Play this stream using the URL \"" << url << "\"\n";
-	delete[] url;
+	delete url;
+}
 
+int RTSPVideoStreamer::open(int port, int tunneling_port)
+{
 	EventLoopWatchVariable quit;
 
 	std::thread rtsp_loop_thread(rtsp_loop_thread_func, env, &quit);

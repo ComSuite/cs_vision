@@ -73,7 +73,7 @@ using namespace cs;
 
 void cpu_preprocessing(Mat& frame, camera_settings* set, Mat& image, Size& border_dims);
 
-void create_video_streamer(DetectorEnvironment* environment, camera_settings* set)
+void create_video_streamer(DetectorEnvironment* environment, camera_settings* set, ICamera* capture)
 {
 	if (set->video_stream_mode != VIDEO_STREAM_MODE::VIDEO_STREAM_MODE_NONE) {
 		switch (set->video_stream_engine) {
@@ -89,6 +89,7 @@ void create_video_streamer(DetectorEnvironment* environment, camera_settings* se
 		}
 
 		if (environment->video_streamer != nullptr) {
+			environment->video_streamer->init(set->video_stream_port, set->video_stream_channel.c_str(), capture->get_width(), capture->get_height(), capture->get_fps());
 			environment->video_streamer->open(set->video_stream_port);
 
 			cout << "[Video Streamer] Publishing to port: " << set->video_stream_port << " Channel: " << set->video_stream_channel << " Mode: " << static_cast<int>(set->video_stream_mode) << endl;
@@ -116,7 +117,7 @@ bool connect_to_mqtt_broker(camera_settings* settings, DetectorEnvironment* env)
 	return true;
 }
 
-bool init_detectors_environment(DetectorEnvironment* environment, camera_settings* set)
+bool init_detectors_environment(DetectorEnvironment* environment, camera_settings* set, ICamera* capture)
 {
 	if (!environment)
 		return false;
@@ -138,7 +139,7 @@ bool init_detectors_environment(DetectorEnvironment* environment, camera_setting
 
 	environment->http_server_queue = set->http_server_queue;
 
-	create_video_streamer(environment, set);
+	create_video_streamer(environment, set, capture);
 	connect_to_mqtt_broker(set, environment);
 
 #ifdef __WITH_SCRIPT_LANG__
@@ -556,15 +557,16 @@ void* camera_loop(void* arg)
 	}
 	capture->prepare();
 
-	DetectorEnvironment environment; // = new DetectorEnvironment();
-	//if (environment == nullptr) {
-	//	delete capture;
-	//	return 0;
-	//}
-
-	if (!init_detectors_environment(&environment, set)) {
+	if (!capture->open(set->device) || capture->get_height() <= 0 || capture->get_width() <= 0) {
+		cout << "Can not open capture: " << get<string>(set->device).c_str() << endl;
 		delete capture;
-		//delete environment;
+		return NULL;
+	}
+
+
+	DetectorEnvironment environment;
+	if (!init_detectors_environment(&environment, set, capture)) {
+		delete capture;
 		return NULL;
 	}
 
@@ -574,12 +576,11 @@ void* camera_loop(void* arg)
 		capture->set_detector_buffer(detector->width * detector->height);
 	}
 
-	if (!capture->open(set->device) || capture->get_height() <= 0 || capture->get_width() <= 0) {
-		cout << "Can not open capture: " << get<string>(set->device).c_str() << endl;
-		//delete environment;
-		delete capture;
-		return NULL;
-	}
+	//if (!capture->open(set->device) || capture->get_height() <= 0 || capture->get_width() <= 0) {
+	//	cout << "Can not open capture: " << get<string>(set->device).c_str() << endl;
+	//	delete capture;
+	//	return NULL;
+	//}
 
 	Mat frame(capture->get_height(), capture->get_width(), CV_8UC3);
 	Mat fake(capture->get_height(), capture->get_width(), CV_8UC3);

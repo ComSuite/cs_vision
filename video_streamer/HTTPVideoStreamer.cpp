@@ -37,7 +37,7 @@ HTTPVideoStreamer::~HTTPVideoStreamer()
 
 }
 
-int HTTPVideoStreamer::open(int port)
+int HTTPVideoStreamer::open(int port, int tunneling_port)
 {
     int ret = 0;
 

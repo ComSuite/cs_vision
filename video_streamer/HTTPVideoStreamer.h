@@ -42,7 +42,8 @@ namespace cs
 		HTTPVideoStreamer();
 		virtual ~HTTPVideoStreamer();
 
-		virtual int open(int port) override;
+		virtual void init(int port, const char* channel_name, int width = 0, int height = 0, int fps = 0) override {};
+		virtual int open(int port, int tunneling_port = 0) override;
 		virtual void show_frame(cv::Mat& frame, const char* channel) override;
 	private:
 		std::vector<int> params = {cv::IMWRITE_JPEG_QUALITY, 95};
