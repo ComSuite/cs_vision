@@ -31,8 +31,9 @@ using namespace cs;
 int SimpleGStreamerVideoStreamer::open(int port, int tunneling_port)
 {
     //gst - launch - 1.0 nvarguscamerasrc !'video/x-raw(memory:NVMM),width=1920, height=1080, framerate=30/1, format=NV12' !nvvidconv flip - method = 2 !nvv4l2h264enc insert - sps - pps = true bitrate = 16000000 !rtph264pay !udpsink port = 5000 host = $HOST
-    cv::String outUrl = "gst-launch-1.0 -v v4l2src ! video/x-raw,format=YUY2,width=640,height=640 ! jpegenc ! rtpjpegpay ! udpsink port=" + to_string(port);
-    writer.open(outUrl.c_str(), CAP_GSTREAMER, 0, 15.0, Size(640, 480));
+    cv::String outUrl = "appsrc ! videoconvert ! videoscale ! video/x-raw, width=1280, height=720 ! x264enc ! mpegtsmux !udpsink host=127.0.0.1 port=5000 sync=false";
+        //"gst-launch-1.0 -v v4l2src ! video/x-raw,format=YUY2,width=640,height=640 ! jpegenc ! rtpjpegpay ! udpsink port=" + to_string(port);
+    writer.open(outUrl.c_str(), CAP_GSTREAMER, 0, 30.0, Size(1280, 720), true);
     if (!writer.isOpened()) {
         cout << "[SimpleGStreamerVideoStreamer] Cannot open stream" << endl;
         return 0;
@@ -43,6 +44,6 @@ int SimpleGStreamerVideoStreamer::open(int port, int tunneling_port)
 
 void SimpleGStreamerVideoStreamer::show_frame(cv::Mat& frame, const char* channel)
 {
-    writer.write(frame);
+    writer << frame;
 }
 

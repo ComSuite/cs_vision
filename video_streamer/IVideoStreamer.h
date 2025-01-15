@@ -36,6 +36,7 @@ namespace cs
 		virtual void init(int port, const char* channel_name, int width = 0, int heigth = 0, int fps = 0) = 0;
 		virtual int open(int port, int tunneling_port = 0) = 0;
 		virtual void show_frame(cv::Mat& frame, const char* channel) = 0;
+		virtual void add_user_credentials(const char* user, const char* password) {};
 	};
 }
 

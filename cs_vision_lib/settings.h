@@ -105,6 +105,8 @@ namespace cs
 
 		int video_stream_port = 0;
 		std::string	video_stream_channel = "";
+		std::string video_stream_login = "";
+		std::string video_stream_password = "";
 		VIDEO_STREAM_MODE video_stream_mode = VIDEO_STREAM_MODE::VIDEO_STREAM_MODE_NONE;
 		VIDEO_STREAM_ENGINE video_stream_engine = VIDEO_STREAM_ENGINE::VIDEO_STREAM_ENGINE_NONE;
 

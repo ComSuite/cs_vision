@@ -1,3 +1,27 @@
+/**
+ * @file
+ *
+ * @author      Alexander Epstine
+ * @mail        a@epstine.com
+ * @brief
+ *
+ **************************************************************************************
+ * Copyright (c) 2025, Alexander Epstine (a@epstine.com)
+ **************************************************************************************
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
+ */
+
+
 #include "RTSPVideoStreamer.h"
 #include <thread>
 #include <iostream>
@@ -260,25 +284,22 @@ RTSPVideoStreamer::~RTSPVideoStreamer()
 	//Medium::close(inputDevice);
 }
 
+void RTSPVideoStreamer::add_user_credentials(const char* user, const char* password)
+{
+	if (authDB == nullptr) {
+		authDB = new UserAuthenticationDatabase();
+	}
+	cout << "Adding user: " << user << " with password: " << password << endl;
+	authDB->addUserRecord(user, password);
+}
+
 void RTSPVideoStreamer::init(int port, const char* channel_name, int width, int height, int fps)
 {
-	cout << "!!!!!!!!!!" << width << " " << height << " " << fps << endl;
 	scheduler = BasicTaskScheduler::createNew();
 	env = BasicUsageEnvironment::createNew(*scheduler);
 
-	UserAuthenticationDatabase* authDB = NULL;
-	// 	authDB = new UserAuthenticationDatabase;
-	// 	authDB->addUserRecord(UserN, PassW);
-
 	OutPacketBuffer::maxSize = 10000000;
 	rtspServer = RTSPServer::createNew(*env, port, authDB);
-
-	//if (httpTunnelingPort)
-	//{
-	//	rtspServer->setUpTunnelingOverHTTP(httpTunnelingPort);
-	//}
-
-	//char const* descriptionString = "CSVision RTSP Stream";
 
 	source = FFmpegH264Source::createNew(*env);
 	source->create_encoder(width, height, fps);

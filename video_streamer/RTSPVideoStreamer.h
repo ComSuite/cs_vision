@@ -29,6 +29,7 @@ class FFmpegH264Source;
 class RTSPServer;
 class TaskScheduler;
 class UsageEnvironment;
+class UserAuthenticationDatabase;
 
 namespace cs
 {
@@ -41,12 +42,14 @@ namespace cs
 		virtual void init(int port, const char* channel_name, int width = 0, int height = 0, int fps = 0) override;
 		virtual int open(int port, int tunneling_port = 0) override;
 		virtual void show_frame(cv::Mat& frame, const char* channel) override;
+		virtual void add_user_credentials(const char* user, const char* password) override;
 
 	private:
 		FFmpegH264Source* source = nullptr;
 		RTSPServer* rtspServer = nullptr;
-		TaskScheduler* scheduler;
-		UsageEnvironment* env;
+		TaskScheduler* scheduler = nullptr;
+		UsageEnvironment* env = nullptr;
+		UserAuthenticationDatabase* authDB = nullptr;
 	};
 }
 

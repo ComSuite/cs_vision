@@ -240,11 +240,11 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    sem_t* semaphore;
-    if (!check_process_instance(&semaphore)) {
-        cout << "\nError! Only one instance of this application available." << endl << endl;
+    //sem_t* semaphore;
+    //if (!check_process_instance(&semaphore)) {
+    //    cout << "\nError! Only one instance of this application available." << endl << endl;
         //return 1;
-    }
+    //}
 
 #ifndef _DEBUG_
     cv::utils::logging::setLogLevel(cv::utils::logging::LogLevel::LOG_LEVEL_SILENT);

@@ -89,9 +89,10 @@ void create_video_streamer(DetectorEnvironment* environment, camera_settings* se
 		}
 
 		if (environment->video_streamer != nullptr) {
+			if (set->video_stream_login.length() > 0 && set->video_stream_password.length() > 0)
+				environment->video_streamer->add_user_credentials(set->video_stream_login.c_str(), set->video_stream_password.c_str());
 			environment->video_streamer->init(set->video_stream_port, set->video_stream_channel.c_str(), capture->get_width(), capture->get_height(), capture->get_fps());
 			environment->video_streamer->open(set->video_stream_port);
-
 			cout << "[Video Streamer] Publishing to port: " << set->video_stream_port << " Channel: " << set->video_stream_channel << " Mode: " << static_cast<int>(set->video_stream_mode) << endl;
 			environment->video_stream_channel = set->video_stream_channel;
 			environment->video_stream_mode = set->video_stream_mode;
@@ -563,7 +564,6 @@ void* camera_loop(void* arg)
 		return NULL;
 	}
 
-
 	DetectorEnvironment environment;
 	if (!init_detectors_environment(&environment, set, capture)) {
 		delete capture;
@@ -575,12 +575,6 @@ void* camera_loop(void* arg)
 	for (auto detector : environment.detectors) {
 		capture->set_detector_buffer(detector->width * detector->height);
 	}
-
-	//if (!capture->open(set->device) || capture->get_height() <= 0 || capture->get_width() <= 0) {
-	//	cout << "Can not open capture: " << get<string>(set->device).c_str() << endl;
-	//	delete capture;
-	//	return NULL;
-	//}
 
 	Mat frame(capture->get_height(), capture->get_width(), CV_8UC3);
 	Mat fake(capture->get_height(), capture->get_width(), CV_8UC3);

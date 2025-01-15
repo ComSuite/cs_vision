@@ -112,6 +112,9 @@ int camera_settings::parse(rapidjson::Value& root)
 
 	video_stream_port = json_get_int(root, "video_stream_port", video_stream_port);
 	video_stream_channel = json_get_string(root, "video_stream_channel", video_stream_channel.c_str());
+	video_stream_login = json_get_string(root, "video_stream_login", video_stream_login.c_str());
+	video_stream_password = json_get_string(root, "video_stream_password", video_stream_password.c_str());
+
 	video_stream_mode = static_cast<VIDEO_STREAM_MODE>(json_get_int(root, "video_stream_mode", static_cast<int>(video_stream_mode)));
 	video_stream_engine = static_cast<VIDEO_STREAM_ENGINE>(json_get_int(root, "video_stream_engine", static_cast<int>(video_stream_engine)));
 
