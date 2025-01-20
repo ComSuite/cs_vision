@@ -26,6 +26,7 @@
 #include <thread>
 #include <iostream>
 #include "BaseQueue.h"
+#include "std_utils.h"
 
 #include <UsageEnvironment.hh>
 #include <BasicUsageEnvironment.hh>
@@ -305,7 +306,12 @@ void RTSPVideoStreamer::init(int port, const char* channel_name, int width, int 
 	source->create_encoder(width, height, fps);
 	StreamReplicator* inputDevice = StreamReplicator::createNew(*env, source, false);
 
-	ServerMediaSession* sms = ServerMediaSession::createNew(*env, channel_name);
+	std::string channel = channel_name;
+	channel = trim(channel);
+	if (channel.at(0) == '/') {
+		channel = channel.substr(1);
+	}
+	ServerMediaSession* sms = ServerMediaSession::createNew(*env, channel.c_str());
 	sms->addSubsession(LiveServerMediaSubsession::createNew(*env, inputDevice));
 	rtspServer->addServerMediaSession(sms);
 

@@ -22,6 +22,7 @@
  */
 
 #include "HTTPVideoStreamer.h"
+#include "std_utils.h"
 
 using namespace std;
 using namespace cv;
@@ -56,11 +57,17 @@ int HTTPVideoStreamer::open(int port, int tunneling_port)
     return ret;
 }
 
-void HTTPVideoStreamer::show_frame(Mat& frame, const char* channel)
+void HTTPVideoStreamer::show_frame(Mat& frame, const char* channel_name)
 {
     if (streamer != NULL) {
         vector<uchar> buff_bgr;
         if (imencode(".jpg", frame, buff_bgr, params)) {
+			std::string channel = channel_name;
+			channel = trim(channel);
+            if (channel.at(0) != '/') {
+                channel = "/" + channel;
+            }
+
             streamer->publish(channel, string(buff_bgr.begin(), buff_bgr.end()));
         }
     }
