@@ -23,22 +23,45 @@
 
 #include "SimpleGStreamerVideoStreamer.h"
 #include <iostream>
+#include <thread>
+#include <gst/gst.h>
+#include <gst/rtsp-server/rtsp-server.h>
+#include "std_utils.h"
 
 using namespace std;
 using namespace cv;
 using namespace cs;
 
-int SimpleGStreamerVideoStreamer::open(int port, int tunneling_port)
+void SimpleGStreamerVideoStreamer::init(int port, const char* channel_name, int width, int height, int fps)
 {
-    //gst - launch - 1.0 nvarguscamerasrc !'video/x-raw(memory:NVMM),width=1920, height=1080, framerate=30/1, format=NV12' !nvvidconv flip - method = 2 !nvv4l2h264enc insert - sps - pps = true bitrate = 16000000 !rtph264pay !udpsink port = 5000 host = $HOST
-    cv::String outUrl = "appsrc ! videoconvert ! videoscale ! video/x-raw, width=1280, height=720 ! x264enc ! mpegtsmux ! tcpsink host=0.0.0.0 port=8088 sync=false";
-        //"gst-launch-1.0 -v v4l2src ! video/x-raw,format=YUY2,width=640,height=640 ! jpegenc ! rtpjpegpay ! udpsink port=" + to_string(port);
-    writer.open(outUrl.c_str(), CAP_GSTREAMER, 0, 30.0, Size(1280, 720), true);
+    gst_init(NULL, NULL);
+    GMainLoop* serverloop = g_main_loop_new(NULL, FALSE);
+    GstRTSPServer* server = gst_rtsp_server_new();
+    g_object_set(server, "service", std::to_string(port).c_str(), NULL);
+    GstRTSPMountPoints* mounts = gst_rtsp_server_get_mount_points(server);
+    GstRTSPMediaFactory* factory = gst_rtsp_media_factory_new();
+    gst_rtsp_media_factory_set_launch(factory, "( udpsrc port=5004 ! application/x-rtp,encoding-name=H264 ! rtph264depay ! h264parse ! rtph264pay name=pay0 )");
+    std::string channel = channel_name;
+    channel = trim(channel);
+    if (channel.at(0) != '/') {
+        channel = "/" + channel;
+    }
+    gst_rtsp_mount_points_add_factory(mounts, channel.c_str(), factory);
+    gst_rtsp_server_attach(server, NULL);
+    std::thread serverloopthread(g_main_loop_run, serverloop);
+
+    std::cout << "stream ready at rtsp://127.0.0.1:" << port << channel << std::endl;
+    serverloopthread.detach();
+
+    cv::String uri = "appsrc ! queue ! videoconvert ! video/x-raw,format=I420 ! x264enc key-int-max=30 insert-vui=1 tune=zerolatency ! h264parse ! rtph264pay ! udpsink host=127.0.0.1 port=5004";
+    writer.open(uri.c_str(), CAP_GSTREAMER, 0, fps, Size(width, height), true);
     if (!writer.isOpened()) {
         cout << "[SimpleGStreamerVideoStreamer] Cannot open stream" << endl;
-        return 0;
     }
+}
 
+int SimpleGStreamerVideoStreamer::open(int port, int tunneling_port)
+{
     return 1;
 }
 
