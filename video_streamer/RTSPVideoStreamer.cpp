@@ -171,7 +171,7 @@ private:
 
 	int bytesPerPixel = 0;
 	int64_t frameIdx = 1;
-	bool isKeyFrame = true;
+	bool isKeyFrame = false;
 
 
 	void encode()
@@ -200,8 +200,8 @@ private:
 		/// Set frame index in range: [1, fps]
 		frame->pts = frameIdx;
 		frameIdx++;
-		if (frameIdx > context->framerate.num)
-			frameIdx = 1;
+		//if (frameIdx > context->framerate.num)
+		//	frameIdx = 1;
 
 		/// Set frame type
 		if (isKeyFrame) {
@@ -212,7 +212,7 @@ private:
 		encode();
 
 		unsigned newFrameSize = packet.size;
-		cout << "New frame size: " << newFrameSize << endl;
+		//cout << "New frame size: " << newFrameSize << endl;
 		if (newFrameSize > fMaxSize) 
 			fFrameSize = fMaxSize;
 		else 
@@ -297,6 +297,10 @@ void RTSPVideoStreamer::add_user_credentials(const char* user, const char* passw
 void RTSPVideoStreamer::init(int port, const char* channel_name, int width, int height, int fps)
 {
 	scheduler = BasicTaskScheduler::createNew();
+	if (scheduler == nullptr) {
+		throw std::runtime_error("BasicTaskScheduler::createNew() failed");
+	}
+
 	env = BasicUsageEnvironment::createNew(*scheduler);
 
 	OutPacketBuffer::maxSize = 10000000;

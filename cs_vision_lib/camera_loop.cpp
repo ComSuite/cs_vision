@@ -91,7 +91,13 @@ void create_video_streamer(DetectorEnvironment* environment, camera_settings* se
 		if (environment->video_streamer != nullptr) {
 			if (set->video_stream_login.length() > 0 && set->video_stream_password.length() > 0)
 				environment->video_streamer->add_user_credentials(set->video_stream_login.c_str(), set->video_stream_password.c_str());
-			environment->video_streamer->init(set->video_stream_port, set->video_stream_channel.c_str(), capture->get_width(), capture->get_height(), capture->get_fps());
+			try {
+				environment->video_streamer->init(set->video_stream_port, set->video_stream_channel.c_str(), capture->get_width(), capture->get_height(), capture->get_fps());
+			}
+			catch (const std::runtime_error& e) {
+				cout << "Error: " << e.what() << endl;
+			}
+
 			environment->video_streamer->open(set->video_stream_port);
 			cout << "[Video Streamer] Publishing to port: " << set->video_stream_port << " Channel: " << set->video_stream_channel << " Mode: " << static_cast<int>(set->video_stream_mode) << endl;
 			environment->video_stream_channel = set->video_stream_channel;
@@ -558,7 +564,7 @@ void* camera_loop(void* arg)
 	}
 	capture->prepare();
 
-	if (!capture->open(set->device) || capture->get_height() <= 0 || capture->get_width() <= 0) {
+	if (!capture->open(set->device, set->frame_width, set->frame_height) || capture->get_height() <= 0 || capture->get_width() <= 0) {
 		cout << "Can not open capture: " << get<string>(set->device).c_str() << endl;
 		delete capture;
 		return NULL;

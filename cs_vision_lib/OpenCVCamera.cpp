@@ -79,10 +79,10 @@ bool OpenCVCamera::is_end_of_file()
 		return false;
 }
 
-int OpenCVCamera::open(std::variant<std::string, int> device)
+int OpenCVCamera::open(std::variant<std::string, int> device, const int frame_width, const int frame_height)
 {
 	if (std::holds_alternative<int>(device)) {
-		return open(std::get<int>(device));
+		return open(std::get<int>(device), frame_width, frame_height);
 	}
 	else if (std::holds_alternative<std::string>(device)) {
 		return open(std::get<string>(device).c_str());
@@ -113,7 +113,7 @@ int OpenCVCamera::open(const char* name)
 	return 0;
 }
 
-int OpenCVCamera::open(int id)
+int OpenCVCamera::open(int id, const int frame_width, const int frame_height)
 {
 	close();
 
@@ -126,6 +126,17 @@ int OpenCVCamera::open(int id)
 #else
 		capture = new VideoCapture(id);
 #endif
+		if (capture == nullptr)
+			return 0;
+
+		cout << "OpenCV backend: " << capture->getBackendName() << endl;
+		if (frame_width > 0 && frame_height > 0) {
+			capture->set(CAP_PROP_FRAME_WIDTH, frame_width);
+			capture->set(CAP_PROP_FRAME_HEIGHT, frame_height);
+		}
+
+		//capture->set(CAP_PROP_FPS, 5);
+		//capture->set(CAP_PROP_MONOCHROME, 1.0);
 		if (capture->isOpened()) {
 			cout << "Video from device: #" << id << endl;
 			return info();
@@ -157,7 +168,7 @@ int OpenCVCamera::close()
 
 int OpenCVCamera::prepare()
 {
-	int ret = 0;
+	int ret = 1;
 
 	return ret;
 }

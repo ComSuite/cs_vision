@@ -99,6 +99,8 @@ int camera_settings::parse(rapidjson::Value& root)
 	is_flip = json_get_bool(root, "is_flip", is_flip);
 	is_convert_to_gray = json_get_int(root, "is_convert_to_gray", is_convert_to_gray);
 	is_use_gpu = json_get_bool(root, "is_use_gpu", is_use_gpu);
+	frame_width = json_get_int(root, "frame_width", frame_width);
+	frame_height = json_get_int(root, "frame_height", frame_height);
 	resize_x = json_get_int(root, "resize_x", resize_x);
 	resize_y = json_get_int(root, "resize_y", resize_y);
 	is_show_mask = json_get_bool(root, "is_show_mask", is_show_mask);

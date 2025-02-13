@@ -52,17 +52,17 @@ int OpenCVCamera_GPU::info()
 	return 1;
 }
 
-int OpenCVCamera_GPU::open(std::variant<std::string, int> device)
+int OpenCVCamera_GPU::open(std::variant<std::string, int> device, const int frame_width, const int frame_height)
 {
 	if (std::holds_alternative<int>(device)) {
-		return open(std::get<int>(device));
+		return open(std::get<int>(device), frame_width, frame_height);
 	}
 	else if (std::holds_alternative<std::string>(device)) {
 		return open(std::get<string>(device).c_str());
 	}
 }
 
-int OpenCVCamera_GPU::open(const int id)
+int OpenCVCamera_GPU::open(const int id, const int frame_width, const int frame_height)
 {
 	if (capture == nullptr)
 		return 0;

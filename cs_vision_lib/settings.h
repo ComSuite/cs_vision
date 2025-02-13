@@ -92,6 +92,8 @@ namespace cs
 		bool is_flip = false;
 		double rotate_angle = 0;
 		int is_convert_to_gray = 0;
+		int frame_width = 0;
+		int frame_height = 0;
 		int resize_x = 0;
 		int resize_y = 0;
 		bool is_show_mask = false;

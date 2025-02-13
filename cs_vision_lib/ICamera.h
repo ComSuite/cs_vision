@@ -37,8 +37,8 @@ namespace cs
 		virtual ~ICamera() { close(); };
 
 		virtual int info() = 0;
-		virtual int open(std::variant<std::string, int> device) = 0;
-		virtual int open(const int id) = 0;
+		virtual int open(std::variant<std::string, int> device, const int frame_width = 0, const int frame_height = 0) = 0;
+		virtual int open(const int id, const int frame_width = 0, const int frame_height = 0) = 0;
 		virtual int open(const char* name) = 0;
 		virtual int open(const int id, int attempts_count);
 		virtual int open(const char* name, int attempts_count);
