@@ -22,6 +22,7 @@
  */
 
 #include "camera_loop_utils.h"
+#include "NullObjectDetector.h"
 #include "TRTYOLOv5ObjectDetector.h"
 #include "TRTYOLOv8ObjectDetector.h"
 //#include "OCVYOLOv8ObjectDetector.h"
@@ -45,6 +46,7 @@ using namespace cv::cuda;
 IObjectDetector* create_detector(int kind)
 {
 	switch (static_cast<ObjectDetectorKind>(kind)) {
+	case ObjectDetectorKind::OBJECT_DETECTOR_NONE: return new NullObjectDetector();
 	case ObjectDetectorKind::OBJECT_DETECTOR_TENSORRT_YOLOv5: return new TRTYOLOv5ObjectDetector();
 	case ObjectDetectorKind::OBJECT_DETECTOR_OPENCV_YOLOv5: return nullptr;
 	//case ObjectDetectorKind::OBJECT_DETECTOR_OPENCV_YOLOv8: return new OCVYOLOv8ObjectDetector();

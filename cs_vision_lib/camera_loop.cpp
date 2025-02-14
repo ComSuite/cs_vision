@@ -204,7 +204,7 @@ bool init_detectors_environment(DetectorEnvironment* environment, camera_setting
 
 	environment->image_writer = new SampleImageWriter("sr_", ".jpg");
 
-	return environment->detectors.size();
+	return 1; // environment->detectors.size();
 }
 
 void send_results_thread(DetectorEnvironment* env, list<DetectionItem*>& detections)
@@ -514,9 +514,6 @@ void process_frame(ICamera* capture, cs::camera_settings* set, DetectorEnvironme
 		}
 
 		capture->set_ready(false);
-
-		//environment->queue.push(image);
-		//environment->detector_mutex.unlock();
 		environment->detector_ready = false;
 	}
 }
