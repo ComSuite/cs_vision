@@ -76,7 +76,7 @@ namespace cs
 						}
 					}
 //delete last "_" to print fps
-#ifdef _DEBUG__
+#ifdef _DEBUG_
 					std::cout << prompt << val << std::endl;
 #endif
 				}

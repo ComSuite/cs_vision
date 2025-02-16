@@ -81,10 +81,12 @@ void YOLOv11::init(std::string engine_path, nvinfer1::ILogger& logger)
 	
 
     // Initialize input buffers
-    cpu_output_buffer = new float[detection_attribute_size * num_detections];
-    CUDA_CHECK(cudaMalloc(&gpu_buffers[0], 3 * input_w * input_h * sizeof(float)));
+    //cpu_output_buffer = new float[detection_attribute_size * num_detections];
+    //CUDA_CHECK(cudaMalloc(&gpu_buffers[0], 3 * input_w * input_h * sizeof(float)));
+    CUDA_CHECK(cudaHostAlloc(&gpu_buffers[0], 3 * input_w * input_h * sizeof(float), cudaHostAllocWriteCombined));
     // Initialize output buffer
-    CUDA_CHECK(cudaMalloc(&gpu_buffers[1], detection_attribute_size * num_detections * sizeof(float)));
+    //CUDA_CHECK(cudaMalloc(&gpu_buffers[1], detection_attribute_size * num_detections * sizeof(float)));
+    CUDA_CHECK(cudaHostAlloc(&gpu_buffers[1], detection_attribute_size * num_detections * sizeof(float), cudaHostAllocPortable));
 	
 	context->setTensorAddress(engine->getIOTensorName(0), gpu_buffers[0]);
 	context->setTensorAddress(engine->getIOTensorName(1), gpu_buffers[1]);
@@ -109,7 +111,7 @@ YOLOv11::~YOLOv11()
     CUDA_CHECK(cudaStreamDestroy(stream));
     for (int i = 0; i < 2; i++)
         CUDA_CHECK(cudaFree(gpu_buffers[i]));
-    delete[] cpu_output_buffer;
+    //delete[] cpu_output_buffer;
 
     // Destroy the engine
     cuda_preprocess_destroy();
@@ -121,7 +123,7 @@ YOLOv11::~YOLOv11()
 void YOLOv11::preprocess(Mat& image) {
     // Preprocessing data on gpu
     cuda_preprocess(image.ptr(), image.cols, image.rows, gpu_buffers[0], input_w, input_h, stream);
-    CUDA_CHECK(cudaStreamSynchronize(stream));
+    //CUDA_CHECK(cudaStreamSynchronize(stream));
 }
 
 void YOLOv11::infer()
@@ -136,27 +138,32 @@ void YOLOv11::infer()
 void YOLOv11::postprocess(vector<Detection>& output)
 {
     // Memcpy from device output buffer to host output buffer
-    CUDA_CHECK(cudaMemcpyAsync(cpu_output_buffer, gpu_buffers[1], num_detections * detection_attribute_size * sizeof(float), cudaMemcpyDeviceToHost, stream));
-    CUDA_CHECK(cudaStreamSynchronize(stream));
+    //CUDA_CHECK(cudaMemcpyAsync(cpu_output_buffer, gpu_buffers[1], num_detections * detection_attribute_size * sizeof(float), cudaMemcpyDeviceToHost, stream));
+    //CUDA_CHECK(cudaStreamSynchronize(stream));
 
-    vector<Rect> boxes;
-    vector<int> class_ids;
-    vector<float> confidences;
+    //vector<Rect> boxes;
+    //vector<int> class_ids;
+    //vector<float> confidences;
+    boxes.clear();
+    class_ids.clear();
+    confidences.clear();
 
-    const Mat det_output(detection_attribute_size, num_detections, CV_32F, cpu_output_buffer);
+    const Mat det_output(detection_attribute_size, num_detections, CV_32F, gpu_buffers[1]);
+
+    Point class_id_point;
+    double score;
+    Rect box;
 
     for (int i = 0; i < det_output.cols; ++i) {
-        const Mat classes_scores = det_output.col(i).rowRange(4, 4 + num_classes);
-        Point class_id_point;
-        double score;
-        minMaxLoc(classes_scores, nullptr, &score, nullptr, &class_id_point);
+        //const Mat classes_scores = det_output.col(i).rowRange(4, 4 + num_classes);
+        minMaxLoc(det_output.col(i).rowRange(4, 4 + num_classes), nullptr, &score, nullptr, &class_id_point);
 
         if (score > conf_threshold) {
             const float cx = det_output.at<float>(0, i);
             const float cy = det_output.at<float>(1, i);
             const float ow = det_output.at<float>(2, i);
             const float oh = det_output.at<float>(3, i);
-            Rect box;
+
             box.x = static_cast<int>((cx - 0.5 * ow));
             box.y = static_cast<int>((cy - 0.5 * oh));
             box.width = static_cast<int>(ow);
@@ -168,11 +175,10 @@ void YOLOv11::postprocess(vector<Detection>& output)
         }
     }
 
-    vector<int> nms_result;
+    nms_result.clear();
     dnn::NMSBoxes(boxes, confidences, conf_threshold, nms_threshold, nms_result);
 
-    for (int i = 0; i < nms_result.size(); i++)
-    {
+    for (int i = 0; i < nms_result.size(); i++) {
         Detection result;
         int idx = nms_result[i];
         result.class_id = class_ids[idx];

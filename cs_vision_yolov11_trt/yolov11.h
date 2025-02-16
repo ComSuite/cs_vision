@@ -2,6 +2,7 @@
 
 #include "NvInfer.h"
 #include <opencv2/opencv.hpp>
+#include <vector>
 
 using namespace nvinfer1;
 using namespace std;
@@ -34,6 +35,11 @@ private:
 
     float* gpu_buffers[2];               //!< The vector of device buffers needed for engine execution
     float* cpu_output_buffer;
+
+    vector<Rect> boxes;
+    vector<int> class_ids;
+    vector<float> confidences;
+    vector<int> nms_result;
 
     cudaStream_t stream;
     IRuntime* runtime;                 //!< The TensorRT runtime used to deserialize the engine
