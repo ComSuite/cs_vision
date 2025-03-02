@@ -4,29 +4,37 @@
 #include "macros.h"
 #include "preprocess.h"
 #include <NvOnnxParser.h>
-#include "common.h"
+//#include "common.h"
 #include <fstream>
 #include <iostream>
-
+#include <filesystem>
+#include "std_utils.h"
 
 static Logger logger;
 #define isFP16 true
 #define warmup true
 
-
 YOLOv11::YOLOv11(string model_path, nvinfer1::ILogger& logger)
 {
-    // Deserialize an engine
-    if (model_path.find(".onnx") == std::string::npos)
-    {
-        init(model_path, logger);
-    }
-    // Build an engine from an onnx model
-    else
-    {
+    if (to_lower(std::filesystem::path(model_path).extension().string()) == "onnx") {
         build(model_path, logger);
         saveEngine(model_path);
     }
+	else {
+		init(model_path, logger);
+	}
+
+    // Deserialize an engine
+    //if (model_path.find(".onnx") == std::string::npos)
+    //{
+    //    init(model_path, logger);
+    //}
+    // Build an engine from an onnx model
+    //else
+    //{
+    //    build(model_path, logger);
+    //    saveEngine(model_path);
+    //}
 
 #if NV_TENSORRT_MAJOR < 10
     // Define input dimensions
@@ -257,7 +265,7 @@ void YOLOv11::draw(Mat& image, const vector<Detection>& output)
         auto box = detection.bbox;
         auto class_id = detection.class_id;
         auto conf = detection.conf;
-        cv::Scalar color = cv::Scalar(COLORS[class_id][0], COLORS[class_id][1], COLORS[class_id][2]);
+        cv::Scalar color;  // = cv::Scalar(COLORS[class_id][0], COLORS[class_id][1], COLORS[class_id][2]);
 
         if (ratio_h > ratio_w)
         {
@@ -277,10 +285,12 @@ void YOLOv11::draw(Mat& image, const vector<Detection>& output)
         rectangle(image, Point(box.x, box.y), Point(box.x + box.width, box.y + box.height), color, 3);
 
         // Detection box text
+        /*
         string class_string = CLASS_NAMES[class_id] + ' ' + to_string(conf).substr(0, 4);
         Size text_size = getTextSize(class_string, FONT_HERSHEY_DUPLEX, 1, 2, 0);
         Rect text_rect(box.x, box.y - 40, text_size.width + 10, text_size.height + 20);
         rectangle(image, text_rect, color, FILLED);
         putText(image, class_string, Point(box.x + 5, box.y - 10), FONT_HERSHEY_DUPLEX, 1, Scalar(0, 0, 0), 2, 0);
+        */
     }
 }

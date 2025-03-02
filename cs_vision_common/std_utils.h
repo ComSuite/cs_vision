@@ -109,5 +109,13 @@ bool txt_load_to(const char* file_path, T<std::string>& out)
 
 std::string read_str_file(const char* filename);
 bool write_str_file(const char* filename, const char* content);
-
 bool is_file_exists(const char* filename);
+
+template <typename T>
+T to_lower(const T& str)
+{
+	T result = str;
+	std::transform(result.begin(), result.end(), result.begin(), [](unsigned char c) { return std::tolower(c); });
+
+	return result;
+}
