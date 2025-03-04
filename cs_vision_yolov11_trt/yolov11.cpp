@@ -16,25 +16,13 @@ static Logger logger;
 
 YOLOv11::YOLOv11(string model_path, nvinfer1::ILogger& logger)
 {
-    if (to_lower(std::filesystem::path(model_path).extension().string()) == "onnx") {
+    if (to_lower(std::filesystem::path(model_path).extension().string()) == ".onnx") {
         build(model_path, logger);
         saveEngine(model_path);
     }
 	else {
 		init(model_path, logger);
 	}
-
-    // Deserialize an engine
-    //if (model_path.find(".onnx") == std::string::npos)
-    //{
-    //    init(model_path, logger);
-    //}
-    // Build an engine from an onnx model
-    //else
-    //{
-    //    build(model_path, logger);
-    //    saveEngine(model_path);
-    //}
 
 #if NV_TENSORRT_MAJOR < 10
     // Define input dimensions
@@ -47,7 +35,6 @@ YOLOv11::YOLOv11(string model_path, nvinfer1::ILogger& logger)
     input_w = input_dims.d[3];
 #endif
 }
-
 
 void YOLOv11::init(std::string engine_path, nvinfer1::ILogger& logger)
 {
