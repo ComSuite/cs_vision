@@ -36,6 +36,38 @@ YOLOv11::YOLOv11(string model_path, nvinfer1::ILogger& logger)
 #endif
 }
 
+std::string datatype_to_string(nvinfer1::DataType type)
+{
+    switch (type)
+    {
+    case nvinfer1::DataType::kFLOAT:
+        return "fp32";
+    case nvinfer1::DataType::kHALF:
+        return "fp16";
+    case nvinfer1::DataType::kINT8:
+        return "INT8";
+    case nvinfer1::DataType::kINT32:
+        return "INT32";
+    case nvinfer1::DataType::kBOOL:
+        return "bool8";
+    case nvinfer1::DataType::kUINT8:
+        return "UINT8";
+    }
+
+	return "unknown";
+}
+
+void print_engine_info(ICudaEngine* engine)
+{
+    cout << "*********************************" << endl;
+    cout << "Engine Info:" << endl;
+	cout << "Tensor: " << engine->getIOTensorName(0) << endl;
+	cout << "Engine Info:" << datatype_to_string(engine->getTensorDataType(engine->getIOTensorName(0))) << endl;
+    cout << "Tensor: " << engine->getIOTensorName(1) << endl;
+    cout << "Engine Info:" << datatype_to_string(engine->getTensorDataType(engine->getIOTensorName(1))) << endl;
+    cout << "*********************************" << endl;
+}
+
 void YOLOv11::init(std::string engine_path, nvinfer1::ILogger& logger)
 {
     // Read the engine file
@@ -50,6 +82,13 @@ void YOLOv11::init(std::string engine_path, nvinfer1::ILogger& logger)
     // Deserialize the tensorrt engine
     runtime = createInferRuntime(logger);
     engine = runtime->deserializeCudaEngine(engineData.get(), modelSize);
+	if (engine == nullptr) {
+		cout << "Failed to deserialize engine" << endl;
+		return;
+	}
+
+    print_engine_info(engine);
+
     context = engine->createExecutionContext();
 
     // Get input and output sizes of the model
@@ -71,7 +110,6 @@ void YOLOv11::init(std::string engine_path, nvinfer1::ILogger& logger)
     detection_attribute_size = output_dims.d[1];
     num_detections = output_dims.d[2];
     num_classes = detection_attribute_size - 4;
-	
 #endif
 	
 
