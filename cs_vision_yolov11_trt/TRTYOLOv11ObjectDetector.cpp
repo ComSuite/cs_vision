@@ -1,5 +1,3 @@
-#include "TRTYOLOv11ObjectDetector.h"
-
 /**
  * @file
  *
@@ -23,7 +21,7 @@
  * IN THE SOFTWARE.
  */
 
-#include "TRTYOLOv8ObjectDetector.h"
+#include "TRTYOLOv11ObjectDetector.h"
 
 using namespace cs;
 using namespace cv;

@@ -215,11 +215,11 @@ void send_results_thread(DetectorEnvironment* env, list<DetectionItem*>& detecti
 	env->mqtt_client->send_detection(env->camera_id.c_str(), env->mqtt_detection_topic.c_str(), detections, env->field_aliases);
 }
 
-#ifdef __HAS_CUDA__
-void draw_detections(DetectorEnvironment* env, cv::cuda::GpuMat* detect_frame, list<DetectionItem*>& detections, bool is_show_mask)
-#else
-void draw_detections(DetectorEnvironment* env, cv::Mat* detect_frame, list<DetectionItem*>& detections)
-#endif
+//#ifdef __HAS_CUDA__
+//void draw_detections(DetectorEnvironment* env, cv::cuda::GpuMat* detect_frame, list<DetectionItem*>& detections, bool is_show_mask)
+//#else
+void draw_detections(DetectorEnvironment* env, cv::Mat* detect_frame, list<DetectionItem*>& detections, bool is_show_mask)
+//#endif
 {
 	if (detect_frame == nullptr || env == nullptr)
 		return;
@@ -236,11 +236,7 @@ void draw_detections(DetectorEnvironment* env, cv::Mat* detect_frame, list<Detec
 
 class detecting_image {
 public:
-#ifdef __HAS_CUDA__
-	detecting_image(cv::cuda::GpuMat* img, int x, int y, int id, int scale)
-#else
 	detecting_image(Mat* img, int x, int y, int id, int scale)
-#endif
 	{
 		predecessor_id = id;
 		image = img;
@@ -258,17 +254,13 @@ public:
 	}
 
 	int predecessor_id = -1;
-#ifdef __HAS_CUDA__
-	cv::cuda::GpuMat* image = nullptr;
-#else
 	Mat* image = nullptr;
-#endif
+
 	int original_x = 0;
 	int original_y = 0;
 	int scale_factor = 1;
 };
 
-#ifdef __HAS_CUDA__
 void stream_thread_func(DetectorEnvironment* env)
 {
 	if (env == nullptr)
@@ -279,40 +271,13 @@ void stream_thread_func(DetectorEnvironment* env)
 
 	while (true) {
 		if (!env->is_can_show && !env->show_frame.empty()) {
-			Mat* image = new Mat();
-			if (image != nullptr) {
-				env->show_frame.download(*image);
-				env->video_streamer->show_frame(*image, env->video_stream_channel.c_str());
-				delete image;
-			}
-
 			env->is_can_show = true;
-		}
-	}
-}
-#else
-void stream_thread_func(DetectorEnvironment* env)
-{
-	if (env == nullptr)
-		return;
-
-	if (env->video_stream_channel.length() == 0 || env->video_streamer == nullptr)
-		return;
-
-	while (true) {
-		if (!env->is_can_show && !env->show_frame.empty()) {
 			env->video_streamer->show_frame(env->show_frame, env->video_stream_channel.c_str());
-			env->is_can_show = true;
 		}
 	}
 }
-#endif
 
-#ifdef __HAS_CUDA__
-void stream_frame_(cv::cuda::GpuMat* frame, DetectorEnvironment* env)
-#else
 void stream_frame_(Mat* frame, DetectorEnvironment* env)
-#endif
 {
 	if (env->is_can_show) {
 		frame->copyTo(env->show_frame);
@@ -345,15 +310,6 @@ void detect_func(DetectorEnvironment* env)
 	if (env == nullptr)
 		return;
 
-//#ifdef __HAS_CUDA__
-//	cv::cuda::GpuMat* detect_frame = env->queue.pop();
-//#else
-//	cv::Mat* detect_frame = env->queue.pop();
-//#endif
-
-//	if (detect_frame == nullptr)
-//		return;
-
 	std::list<DetectionItem*> detections;
 	int id = 0;
 	int scale_factor = 1;
@@ -364,7 +320,7 @@ void detect_func(DetectorEnvironment* env)
 		scale_factor = 1;
 
 		if (detector->predecessor_id < 0 || detector->predecessor_class < 0) {
-			di = new detecting_image(&env->detect_frame, 0, 0, -1, 1);
+			di = new detecting_image(env->detect_frame, 0, 0, -1, 1);
 			images.push_back(di);
 		}
 		else {
@@ -373,17 +329,17 @@ void detect_func(DetectorEnvironment* env)
 				for (auto& item : pred_detector->last_detections) {
 					if (item->class_id == detector->predecessor_class) {
 #ifdef __HAS_CUDA__
-						GpuMat* img = nullptr;
+						Mat* img = nullptr;
 						if (env->super_resolution != nullptr) {
-							img = new GpuMat();
+							img = new Mat();
 							Mat src, dst;
-							env->detect_frame(item->box).download(src);
+							(*env->detect_frame)(item->box).copyTo(src);
 							env->super_resolution->upsample(src, dst);
-							img->upload(dst);
+							dst.copyTo(*img); //  ->upload(dst);
 							scale_factor = detector->scale_factor;
 						}
 						else
-							img = new GpuMat(env->detect_frame(item->box));
+							img = new Mat((*env->detect_frame)(item->box));
 #else
 						Mat* img = nullptr;
 						if (env->super_resolution != nullptr) {
@@ -416,8 +372,8 @@ void detect_func(DetectorEnvironment* env)
 						detection_item->original_y = img->original_y;
 
 						detection_item->is_draw = detector->is_draw_detections;
-						detection_item->frame_w = env->detect_frame.cols;
-						detection_item->frame_h = env->detect_frame.rows;
+						detection_item->frame_w = env->detect_frame->cols;
+						detection_item->frame_h = env->detect_frame->rows;
 						detection_item->mapping_rule = detector->results_mapping_rule;
 						detection_item->scale_factor = img->scale_factor;
 						detection_item->is_send_result = detector->is_send_results;
@@ -429,7 +385,7 @@ void detect_func(DetectorEnvironment* env)
 		}
 
 #ifdef __WITH_SCRIPT_LANG__
-		execute_script(env, &env->detect_frame, detector->execute_mode, detector->execute_always, detector->on_detect.c_str(), &detector->last_detections);
+		//execute_script(env, &env->detect_frame, detector->execute_mode, detector->execute_always, detector->on_detect.c_str(), &detector->last_detections);
 #endif
 
 		if (detector->predecessor_id >= 0 && detector->predecessor_class >= 0)
@@ -448,7 +404,7 @@ void detect_func(DetectorEnvironment* env)
 	}
 
 #ifdef __WITH_SCRIPT_LANG__
-	execute_script(env, &env->detect_frame, env->execute_mode, env->execute_always, env->on_postprocess.c_str(), &detections);
+	//execute_script(env, &env->detect_frame, env->execute_mode, env->execute_always, env->on_postprocess.c_str(), &detections);
 #endif
 
 #ifdef _DEBUG_
@@ -462,12 +418,11 @@ void detect_func(DetectorEnvironment* env)
 	}
 
 	if (env->video_stream_mode == VIDEO_STREAM_MODE::VIDEO_STREAM_MODE_DETECTOR && env->video_streamer != nullptr) {
-		draw_detections(env, &env->detect_frame, detections, env->is_show_mask);
-		stream_frame_(&env->detect_frame, env);
+		draw_detections(env, env->detect_frame, detections, env->is_show_mask);
+		stream_frame_(env->detect_frame, env);
 	}
 
 	clear<DetectionItem, std::list>(detections);
-	//delete detect_frame;
 }
 
 void thread_func(DetectorEnvironment* env)
@@ -492,13 +447,13 @@ void process_frame(ICamera* capture, cs::camera_settings* set, DetectorEnvironme
 #ifdef __HAS_CUDA__
 		//cv::cuda::GpuMat* image = new cv::cuda::GpuMat();
 
-		if (set->is_use_gpu)
-			gpu_preprocessing(frame, set, environment->detect_frame, environment->border_dims);
-		else {
-			Mat img;
-			cpu_preprocessing(frame, set, img, environment->border_dims);
-			environment->detect_frame.upload(img);
-		}
+		//if (set->is_use_gpu)
+		//	gpu_preprocessing(frame, set, environment->detect_frame, environment->border_dims);
+		//else {
+		//	Mat img;
+		//	cpu_preprocessing(frame, set, img, environment->border_dims);
+		//	environment->detect_frame.upload(img);
+		//}
 #else
 		//cv::Mat* image = new cv::Mat();
 
@@ -509,8 +464,10 @@ void process_frame(ICamera* capture, cs::camera_settings* set, DetectorEnvironme
 			cpu_preprocessing(frame, set, environment->detect_frame, environment->border_dims);
 		}
 #endif
+		environment->detect_frame = &frame;
+
 		if (set->video_stream_mode == VIDEO_STREAM_MODE::VIDEO_STREAM_MODE_SOURCE && environment->video_streamer != nullptr) {
-			stream_frame_(&environment->detect_frame, environment);
+			stream_frame_(environment->detect_frame, environment);
 		}
 
 		capture->set_ready(false);

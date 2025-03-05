@@ -74,7 +74,7 @@ namespace cs
 		std::list<IObjectDetector*> detectors; //to do: shold be changed to map<int, IObjectDetector*>?
 
 		std::atomic_bool is_can_show = true;
-
+/*
 #ifdef __HAS_CUDA__
 		//BaseQueue<cv::cuda::GpuMat> queue;
 		cv::cuda::GpuMat detect_frame;
@@ -84,6 +84,11 @@ namespace cs
 		cv::Mat detect_frame;
 		cv::Mat show_frame;
 #endif
+*/
+		cv::Mat* detect_frame;
+		cv::Mat show_frame;
+
+
 		std::string topic = "";
 		std::string camera_id = "";
 		int resize_x = 0;

@@ -76,13 +76,10 @@
     <Import Project="..\cs_script\cs_script.vcxitems" Label="Shared" />
     <Import Project="..\cs_vision_common\cs_vision_common.vcxitems" Label="Shared" />
     <Import Project="..\cs_vision_lib\cs_vision_lib.vcxitems" Label="Shared" />
-    <Import Project="..\cs_vision_yolov5_trt\cs_vision_yolov5_trt.vcxitems" Label="Shared" />
     <Import Project="..\rapidjson\rapidjson.vcxitems" Label="Shared" />
     <Import Project="..\user_interface\user_interface.vcxitems" Label="Shared" />
     <Import Project="..\video_streamer\video_streamer.vcxitems" Label="Shared" />
-    <Import Project="..\yolov5_tensorrt\yolov5_tensorrt.vcxitems" Label="Shared" />
     <Import Project="..\cs_vision_yolov5_tflite\cs_vision_yolov5_tflite.vcxitems" Label="Shared" />
-    <Import Project="..\cs_vision_yolov8_trt\cs_vision_yolov8_trt.vcxitems" Label="Shared" />
     <Import Project="..\mongoose\mongoose.vcxitems" Label="Shared" />
     <Import Project="..\cs_vision_cred_storage\cs_vision_cred_storage.vcxitems" Label="Shared" />
     <Import Project="..\gsl\gsl.vcxitems" Label="Shared" />
@@ -137,7 +134,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
-      <PreprocessorDefinitions>__LINUX__;_DEBUG_;__WITH_FILESYSTEM_CXX__;__WITH_SCRIPT_LANG__;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;__USE_POSIX199309L;_____GPIO_NVIDIA_JETSON____;DBUILD_ZLIB=ON;__HAS_CUDA__;YOLOV5_OPENCV_HAS_CUDA;__WITH_AUDIO_PROCESSING__;__WITH_MONGOOSE_SERVER__;_WITH_VPI</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__LINUX__;_DEBUG_;__WITH_FILESYSTEM_CXX__;__WITH_SCRIPT_LANG__;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;__USE_POSIX199309L;_____GPIO_NVIDIA_JETSON____;DBUILD_ZLIB=ON;__HAS_CUDA__;YOLOV5_OPENCV_HAS_CUDA;__WITH_AUDIO_PROCESSING__;__WITH_MONGOOSE_SERVER___;_WITH_VPI</PreprocessorDefinitions>
       <CppLanguageStandard>c++2a</CppLanguageStandard>
       <CLanguageStandard>gnu11</CLanguageStandard>
     </ClCompile>

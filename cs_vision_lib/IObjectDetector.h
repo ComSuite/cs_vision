@@ -141,13 +141,13 @@ namespace cs
 		int infer(cv::Mat* input, int& current_id, bool show_mean, bool is_draw = true);
 		float get_mean_detect_duration();
 
-#ifdef __HAS_CUDA__
-		virtual void draw_detection(cv::cuda::GpuMat* detect_frame, DetectionItem* detection, cv::Scalar& background_color, bool is_show_mask);
-		void draw_mask(DetectionItem* det, cv::cuda::GpuMat* frame, const cv::Scalar& color = cv::Scalar(255, 255, 255));
-#else
-		virtual void draw_detection(cv::Mat* detect_frame, DetectionItem* detection, bool is_show_mask);
+//#ifdef __HAS_CUDA__
+//		virtual void draw_detection(cv::cuda::GpuMat* detect_frame, DetectionItem* detection, cv::Scalar& background_color, bool is_show_mask);
+//		void draw_mask(DetectionItem* det, cv::cuda::GpuMat* frame, const cv::Scalar& color = cv::Scalar(255, 255, 255));
+//#else
+		virtual void draw_detection(cv::Mat* detect_frame, DetectionItem* detection, cv::Scalar& background_color, bool is_show_mask);
 		void draw_mask(DetectionItem* det, cv::Mat* frame, const cv::Scalar color = cv::Scalar(255, 255, 255));
-#endif
+//#endif
 
 		void draw_label(cv::Mat& input_image, std::string& label, int left, int top, cv::Scalar& background_color, cv::Scalar& text_color);
 

@@ -72,7 +72,6 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
   <ImportGroup Label="Shared">
-    <Import Project="..\yolov5_tensorrt\yolov5_tensorrt.vcxitems" Label="Shared" />
     <Import Project="..\command_line_parcer\command_line_parcer.vcxitems" Label="Shared" />
     <Import Project="..\onnx_trtengine_converter_lib\onnx_trtengine_converter_lib.vcxitems" Label="Shared" />
   </ImportGroup>

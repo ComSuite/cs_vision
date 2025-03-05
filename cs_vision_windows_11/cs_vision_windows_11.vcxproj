@@ -61,7 +61,6 @@
     <Import Project="..\cs_vision_yolov5_tflite\cs_vision_yolov5_tflite.vcxitems" Label="Shared" />
     <Import Project="..\rapidjson\rapidjson.vcxitems" Label="Shared" />
     <Import Project="..\video_streamer\video_streamer.vcxitems" Label="Shared" />
-    <Import Project="..\cs_vision_yolov8_trt\cs_vision_yolov8_trt.vcxitems" Label="Shared" />
     <Import Project="..\mongoose\mongoose.vcxitems" Label="Shared" />
     <Import Project="..\cs_vision_cred_storage\cs_vision_cred_storage.vcxitems" Label="Shared" />
     <Import Project="..\os_specific_windows\os_specific_windows.vcxitems" Label="Shared" />
