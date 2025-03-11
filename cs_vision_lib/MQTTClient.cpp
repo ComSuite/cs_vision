@@ -111,6 +111,8 @@ void MQTTClient::send_detection(const char* camera_id, const char* topic, std::l
 	root.AddMember("detections", objects, root.GetAllocator());
 
 	_send(topic, root);
+	
+	root.GetAllocator().Clear();
 }
 
 void MQTTClient::send_detection(const char* camera_id, const char* topic, list<DetectionItem*> detections)
@@ -167,6 +169,8 @@ void MQTTClient::send_detection(const char* camera_id, const char* topic, list<D
 	root.AddMember("detections", objects, root.GetAllocator());
 
 	_send(topic, root);
+
+	root.GetAllocator().Clear();
 }
 
 void MQTTClient::send_command_response(int command_id, const char* device_id, const char* topic, uint64_t req_id, int error_code, const char* error_string)
@@ -195,6 +199,8 @@ void MQTTClient::send_command_response(int command_id, const char* device_id, co
 	root.AddMember("response", response, root.GetAllocator());
 
 	_send(topic, root);
+
+	root.GetAllocator().Clear();
 }
 
 void MQTTClient::_send(const char* topic, rapidjson::Document& root)

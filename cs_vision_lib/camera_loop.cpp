@@ -236,10 +236,11 @@ void draw_detections(DetectorEnvironment* env, cv::Mat* detect_frame, list<Detec
 
 class detecting_image {
 public:
-	detecting_image(Mat* img, int x, int y, int id, int scale)
+	detecting_image(Mat* img, bool is_del_img, int x, int y, int id, int scale)
 	{
 		predecessor_id = id;
 		image = img;
+		is_delete_img = is_del_img;
 		original_x = x;
 		original_y = y;
 		scale_factor = scale;
@@ -247,7 +248,7 @@ public:
 
 	virtual ~detecting_image()
 	{
-		if (image != nullptr) {
+		if (image != nullptr && is_delete_img) {
 			delete image;
 			image = nullptr;
 		}
@@ -255,6 +256,7 @@ public:
 
 	int predecessor_id = -1;
 	Mat* image = nullptr;
+	bool is_delete_img = false;
 
 	int original_x = 0;
 	int original_y = 0;
@@ -320,7 +322,7 @@ void detect_func(DetectorEnvironment* env)
 		scale_factor = 1;
 
 		if (detector->predecessor_id < 0 || detector->predecessor_class < 0) {
-			di = new detecting_image(env->detect_frame, 0, 0, -1, 1);
+			di = new detecting_image(env->detect_frame, false, 0, 0, -1, 1);
 			images.push_back(di);
 		}
 		else {
@@ -350,7 +352,7 @@ void detect_func(DetectorEnvironment* env)
 						else
 							img = new Mat((*(env->detect_frame))(item->box));
 #endif
-						di = new detecting_image(img, item->box.x, item->box.y, item->id, scale_factor); 
+						di = new detecting_image(img, true, item->box.x, item->box.y, item->id, scale_factor); 
 
 						images.push_back(di);
 					}
