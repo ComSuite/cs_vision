@@ -361,7 +361,7 @@ void detect_func(DetectorEnvironment* env)
 		}
 
 		for (auto& img : images) {
-			if (img != NULL && img->image != NULL && !img->image->empty()) {
+			if (img != nullptr && img->image != nullptr && !img->image->empty()) {
 				if (detector->detect(img->image, id, false) == 1) { 
 					for (auto& d : detector->last_detections) {
 						DetectionItem* detection_item = new DetectionItem(d);
@@ -435,7 +435,6 @@ void thread_func(DetectorEnvironment* env)
 #ifdef _DEBUG_
 			env->fps.tick("##########Output FPS: ", env->camera_id.c_str(), env->http_server_queue);
 #endif
-			//env->detector_mutex.unlock();
 			env->detector_ready = true;
 		}
 	}
