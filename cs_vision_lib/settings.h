@@ -90,6 +90,7 @@ namespace cs
 		std::variant<std::string, int> device = 0;
 		bool is_use_gpu = false;
 		bool is_flip = false;
+		bool is_sort_results = false;
 		double rotate_angle = 0;
 		int is_convert_to_gray = 0;
 		int frame_width = 0;

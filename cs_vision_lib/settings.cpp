@@ -96,6 +96,7 @@ int camera_settings::parse(rapidjson::Value& root)
 	name = json_get_string(root, "name", name.c_str());
 	attempts_count = json_get_int(root, "connection_attempts_count", attempts_count);
 	rotate_angle = json_get_double(root, "rotate_angle", rotate_angle);
+	is_sort_results = json_get_bool(root, "is_sort_results", is_sort_results);
 	is_flip = json_get_bool(root, "is_flip", is_flip);
 	is_convert_to_gray = json_get_int(root, "is_convert_to_gray", is_convert_to_gray);
 	is_use_gpu = json_get_bool(root, "is_use_gpu", is_use_gpu);

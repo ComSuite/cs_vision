@@ -91,6 +91,7 @@ namespace cs
 
 		std::string topic = "";
 		std::string camera_id = "";
+		bool is_sort_results = false;
 		int resize_x = 0;
 		int resize_y = 0;
 		bool is_show_mask = false;
