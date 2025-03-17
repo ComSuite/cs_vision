@@ -89,6 +89,7 @@ void TRTYOLOv11ObjectDetector::postprocess(std::vector<Detection>* detections, i
 
 			std::string label;
 			get_rule_label(detection.class_id, label);
+			item->priority = get_rule_priority(detection.class_id);
 			item->label = trim(label);
 			item->score = detection.conf;
 			item->box = detection.bbox;

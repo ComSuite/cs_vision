@@ -415,6 +415,11 @@ void detect_func(DetectorEnvironment* env)
 	}
 #endif
 
+	std::vector<DetectionItem*> vec(detections.begin(), detections.end());
+	std::sort(vec.begin(), vec.end(), [](DetectionItem* a, DetectionItem* b) { return a->priority < b->priority; });
+	detections.assign(vec.begin(), vec.end());
+	//std::sort(detections.begin(), detections.end()); //, [](DetectionItem* a, DetectionItem* b) { return a->priority > b->priority; }
+
 	if (detections.size() > 0 || env->mqtt_is_send_empty) {
 		send_results_thread(env, detections);
 	}

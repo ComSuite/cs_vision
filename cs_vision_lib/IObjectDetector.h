@@ -46,6 +46,7 @@ namespace cs
 	public:
 		std::variant<int, std::string> object;
 		float score = 0;
+		float priority = 0;
 		std::string description = "";
 		std::string on_detect = "";
 		bool execute_always = false;
@@ -75,6 +76,7 @@ namespace cs
 			this->neural_network_id = item->neural_network_id;
 			this->class_id = item->class_id;
 			this->label = item->label;
+			this->priority = item->priority;
 			this->score = item->score;
 			this->box = item->box;
 			this->predecessor_id = item->predecessor_id;
@@ -99,6 +101,7 @@ namespace cs
 		int detector_id = -1;
 		int class_id = -1;
 		std::string label = "";
+		float priority = 0;
 		float score = 0;
 		cv::Rect2d box;
 		bool is_draw = false;
@@ -198,6 +201,7 @@ namespace cs
 		DetectionRule* get_rule(int ind);
 		bool get_rule_label(int ind, std::string& label);
 		float get_rule_score(int ind);
+		float get_rule_priority(int ind);
 		bool check_rule(int ind, float score, cv::Scalar& color);
 
 		float detect_time = 0;

@@ -230,6 +230,15 @@ float IObjectDetector::get_rule_score(int ind)
     return score;
 }
 
+float IObjectDetector::get_rule_priority(int ind)
+{
+    DetectionRule* rule = get_rule(ind);
+    if (rule == nullptr)
+        return true;
+
+	return rule->priority;
+}
+
 bool IObjectDetector::check_rule(int ind, float score, cv::Scalar& color)
 {
     DetectionRule* rule = get_rule(ind);
@@ -262,6 +271,7 @@ int IObjectDetector::parse(Document& root)
             DetectionRule* rule = new DetectionRule();
             int ind = json_get_int(_rule, "id", -1);
             rule->object = ind;
+			rule->priority = json_get_double(_rule, "priority", 0);
             rule->description = json_get_string(_rule, "description", "");
             rule->on_detect = json_get_string(_rule, "on_detect", "");
             rule->execute_always = json_get_bool(_rule, "execute_always", false);
