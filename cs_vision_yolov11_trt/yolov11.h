@@ -26,7 +26,6 @@ public:
     void preprocess(Mat& image);
     void infer();
     void postprocess(vector<Detection>& output);
-    void draw(Mat& image, const vector<Detection>& output);
 
 	int get_model_width() { return input_w; }
 	int get_model_height() { return input_h; }

@@ -117,9 +117,9 @@ void TRTYOLOv11ObjectDetector::postprocess(std::vector<Detection>* detections, i
 			delete item;
 	}
 
-	if (is_draw && image != nullptr) {
-		detector->draw(*image, *detections);
-	}
+	//if (is_draw && image != nullptr) {
+	//	detector->draw(*image, *detections);
+	//}
 }
 
 int TRTYOLOv11ObjectDetector::detect(cv::Mat* input, int& current_id, bool is_draw)

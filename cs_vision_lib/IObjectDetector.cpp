@@ -298,12 +298,12 @@ void IObjectDetector::draw_detection(cv::Mat* detect_frame, DetectionItem* detec
         draw_mask(detection, detect_frame, detection->color);
     }
     else {
-#ifdef __HAS_CUDA__
-        draw_mask(detection, detect_frame, detection->color);
-#else
+//#ifdef __HAS_CUDA__
+//        draw_mask(detection, detect_frame, detection->color);
+//#else
         rectangle(*detect_frame, static_cast<Rect>(detection->box), detection->color, 2, LINE_8);
-        //draw_label(*env->detect_frame, det->label, det->box.x, det->box.y);
-#endif
+        draw_label(*detect_frame, detection->label, detection->box.x, detection->box.y, detection->color, background_color);
+//#endif
     }
 }
 
@@ -348,3 +348,46 @@ void IObjectDetector::draw_label(Mat& input_image, string& label, int left, int 
     rectangle(input_image, tlc, brc, background_color, FILLED);
     putText(input_image, label.c_str(), Point(left, top + label_size.height), FONT_HERSHEY_COMPLEX, 0.7, text_color, 1, false);
 }
+
+/*
+void YOLOv11::draw(Mat& image, const vector<Detection>& output)
+{
+    const float ratio_h = input_h / (float)image.rows;
+    const float ratio_w = input_w / (float)image.cols;
+
+    for (int i = 0; i < output.size(); i++)
+    {
+        auto detection = output[i];
+        auto box = detection.bbox;
+        auto class_id = detection.class_id;
+        auto conf = detection.conf;
+        cv::Scalar color;  // = cv::Scalar(COLORS[class_id][0], COLORS[class_id][1], COLORS[class_id][2]);
+
+        if (ratio_h > ratio_w)
+        {
+            box.x = box.x / ratio_w;
+            box.y = (box.y - (input_h - ratio_w * image.rows) / 2) / ratio_w;
+            box.width = box.width / ratio_w;
+            box.height = box.height / ratio_w;
+        }
+        else
+        {
+            box.x = (box.x - (input_w - ratio_h * image.cols) / 2) / ratio_h;
+            box.y = box.y / ratio_h;
+            box.width = box.width / ratio_h;
+            box.height = box.height / ratio_h;
+        }
+
+        rectangle(image, Point(box.x, box.y), Point(box.x + box.width, box.y + box.height), color, 3);
+
+        // Detection box text
+        
+        string class_string = CLASS_NAMES[class_id] + ' ' + to_string(conf).substr(0, 4);
+        Size text_size = getTextSize(class_string, FONT_HERSHEY_DUPLEX, 1, 2, 0);
+        Rect text_rect(box.x, box.y - 40, text_size.width + 10, text_size.height + 20);
+        rectangle(image, text_rect, color, FILLED);
+        putText(image, class_string, Point(box.x + 5, box.y - 10), FONT_HERSHEY_DUPLEX, 1, Scalar(0, 0, 0), 2, 0);
+        
+    }
+}
+*/
