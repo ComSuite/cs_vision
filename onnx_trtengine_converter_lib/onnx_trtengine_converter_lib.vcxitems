@@ -15,5 +15,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)build_engine.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)engine_information.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)engine_information.h" />
   </ItemGroup>
 </Project>

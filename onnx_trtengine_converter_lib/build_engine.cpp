@@ -27,11 +27,12 @@
  */
 
 #include "yolov5_builder.hpp"
-
+#include "engine_information.h"
 #include <iostream>
 #include <algorithm>
 #include <string>
 #include "cxxopts.hpp"
+
 
 using namespace std;
 
@@ -113,6 +114,8 @@ int main(int argc, char* argv[])
         std::cout << "buildEngine() failed: " << yolov5::result_to_string(r) << std::endl;
         return 1;
     }
+
+	cs::engine_information::print(param.engine_file_path);
 
     return 0;
 }

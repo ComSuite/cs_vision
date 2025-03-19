@@ -101,8 +101,7 @@ Result Builder::buildEngine(const std::string& inputFilePath,
     }
 
     /*  Write to disk   */
-    _logger->logf(LOGGING_INFO, "[Builder] buildEngine(): writing serialized "
-                        "engine to file: %s", outputFilePath.c_str());
+    _logger->logf(LOGGING_INFO, "[Builder] buildEngine(): writing serialized engine to file: %s", outputFilePath.c_str());
     
     std::ofstream outputFile;
     outputFile.open(outputFilePath, std::ios::out | std::ios::binary);
