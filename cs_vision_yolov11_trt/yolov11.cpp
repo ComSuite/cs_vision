@@ -57,6 +57,53 @@ std::string datatype_to_string(nvinfer1::DataType type)
 	return "unknown";
 }
 
+
+void _print_engine_info(ICudaEngine* engine)
+{
+    std::cout << "===== TensorRT Engine Information =====" << std::endl;
+    std::cout << "Name: " << engine->getName() << std::endl;
+
+    int numBindings = engine->getNbIOTensors();
+    std::cout << "Number of tensors: " << numBindings << std::endl;
+
+    for (int i = 0; i < numBindings; ++i) {
+        const char* bindingName = engine->getIOTensorName(i);
+        std::cout << "\nTensor " << i << ":" << std::endl;
+        std::cout << "  Name: " << bindingName << std::endl;
+
+        // Check if the binding is an input or output
+        nvinfer1::TensorIOMode iomode = engine->getTensorIOMode(bindingName);
+        switch (iomode) {
+        case nvinfer1::TensorIOMode::kINPUT:
+            std::cout << "  Type: Input" << std::endl;
+            break;
+        case nvinfer1::TensorIOMode::kOUTPUT:
+            std::cout << "  Type: Output" << std::endl;
+            break;
+        default:
+            std::cout << "  Type: Unknown" << std::endl;
+            break;
+        }
+
+        nvinfer1::Dims dims = engine->getTensorShape(bindingName);
+        std::cout << "  Dimensions: (";
+        for (int j = 0; j < dims.nbDims; ++j) {
+            std::cout << dims.d[j];
+            if (j < dims.nbDims - 1) std::cout << ", ";
+        }
+        std::cout << ")" << std::endl;
+
+        std::cout << "  Data Type: ";
+		std::cout << datatype_to_string(engine->getTensorDataType(bindingName)) << std::endl;
+        std::cout << std::endl;
+    }
+
+    int numLayers = engine->getNbLayers();
+    std::cout << "\nNumber of layers: " << numLayers << std::endl;
+
+    std::cout << "=====================================" << std::endl;
+}
+
 void print_engine_info(ICudaEngine* engine)
 {
     cout << "*********************************" << endl;
@@ -87,7 +134,7 @@ void YOLOv11::init(std::string engine_path, nvinfer1::ILogger& logger)
 		return;
 	}
 
-    print_engine_info(engine);
+    _print_engine_info(engine);
 
     context = engine->createExecutionContext();
 
