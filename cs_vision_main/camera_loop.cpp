@@ -25,6 +25,9 @@
 #include <thread>
 #include <iostream>
 #include <fstream>
+#ifdef __LINUX__
+#include <signal.h>
+#endif
 #include <opencv2/opencv.hpp>
 #include <opencv2/core.hpp>
 #include <opencv2/core/utility.hpp>
@@ -56,9 +59,11 @@
 #include "IObjectDetector.h"
 #include "MQTTClient.h"
 #include "DetectorEnvironment.h"
+#ifdef __WITH_VIDEO_STREAMER__
 #include "HTTPVideoStreamer.h"
 #include "SimpleGStreamerVideoStreamer.h"
 #include "RTSPVideoStreamer.h"
+#endif
 #include "camera_loop_utils.h"
 #ifdef __WITH_SCRIPT_LANG__
 #include "CSScript.h"
@@ -75,6 +80,7 @@ void cpu_preprocessing(Mat& frame, camera_settings* set, Mat& image, Size& borde
 
 void create_video_streamer(DetectorEnvironment* environment, camera_settings* set, ICamera* capture)
 {
+#ifdef __WITH_VIDEO_STREAMER__
 	if (set->video_stream_mode != VIDEO_STREAM_MODE::VIDEO_STREAM_MODE_NONE) {
 		switch (set->video_stream_engine) {
 		case VIDEO_STREAM_ENGINE::VIDEO_STREAM_ENGINE_HTTP_MJPG:
@@ -104,6 +110,7 @@ void create_video_streamer(DetectorEnvironment* environment, camera_settings* se
 			environment->video_stream_mode = set->video_stream_mode;
 		}
 	}
+#endif 
 }
 
 bool connect_to_mqtt_broker(camera_settings* settings, DetectorEnvironment* env)
@@ -216,11 +223,7 @@ void send_results_thread(DetectorEnvironment* env, list<DetectionItem*>& detecti
 	env->mqtt_client->send_detection(env->camera_id.c_str(), env->mqtt_detection_topic.c_str(), detections, env->field_aliases);
 }
 
-//#ifdef __HAS_CUDA__
-//void draw_detections(DetectorEnvironment* env, cv::cuda::GpuMat* detect_frame, list<DetectionItem*>& detections, bool is_show_mask)
-//#else
 void draw_detections(DetectorEnvironment* env, cv::Mat* detect_frame, list<DetectionItem*>& detections, bool is_show_mask)
-//#endif
 {
 	if (detect_frame == nullptr || env == nullptr)
 		return;
@@ -266,6 +269,7 @@ public:
 
 void stream_thread_func(DetectorEnvironment* env)
 {
+#ifdef __WITH_VIDEO_STREAMER__
 	if (env == nullptr)
 		return;
 
@@ -278,6 +282,7 @@ void stream_thread_func(DetectorEnvironment* env)
 			env->video_streamer->show_frame(env->show_frame, env->video_stream_channel.c_str());
 		}
 	}
+#endif
 }
 
 void stream_frame_(Mat* frame, DetectorEnvironment* env)
@@ -424,10 +429,12 @@ void detect_func(DetectorEnvironment* env)
 		send_results_thread(env, detections);
 	}
 
+#ifdef __WITH_VIDEO_STREAMER__
 	if (env->video_stream_mode == VIDEO_STREAM_MODE::VIDEO_STREAM_MODE_DETECTOR && env->video_streamer != nullptr) {
 		draw_detections(env, env->detect_frame, detections, env->is_show_mask);
 		stream_frame_(env->detect_frame, env);
 	}
+#endif
 
 	clear<DetectionItem, std::list>(detections);
 }
@@ -472,9 +479,11 @@ void process_frame(ICamera* capture, cs::camera_settings* set, DetectorEnvironme
 #endif
 		environment->detect_frame = &frame;
 
+#ifdef __WITH_VIDEO_STREAMER__
 		if (set->video_stream_mode == VIDEO_STREAM_MODE::VIDEO_STREAM_MODE_SOURCE && environment->video_streamer != nullptr) {
 			stream_frame_(environment->detect_frame, environment);
 		}
+#endif
 
 		capture->set_ready(false);
 		environment->detector_ready = false;

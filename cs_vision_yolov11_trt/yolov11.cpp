@@ -14,11 +14,15 @@ static Logger logger;
 #define isFP16 true
 #define warmup true
 
+YOLOv11::YOLOv11()
+{
+}
+
 YOLOv11::YOLOv11(string model_path, nvinfer1::ILogger& logger)
 {
     if (to_lower(std::filesystem::path(model_path).extension().string()) == ".onnx") {
         build(model_path, logger);
-        saveEngine(model_path);
+        save_engine(model_path);
     }
 	else {
 		init(model_path, logger);
@@ -34,6 +38,22 @@ YOLOv11::YOLOv11(string model_path, nvinfer1::ILogger& logger)
     input_h = input_dims.d[2];
     input_w = input_dims.d[3];
 #endif
+}
+
+YOLOv11::~YOLOv11()
+{
+    // Release stream and buffers
+    CUDA_CHECK(cudaStreamSynchronize(stream));
+    CUDA_CHECK(cudaStreamDestroy(stream));
+    for (int i = 0; i < 2; i++)
+        CUDA_CHECK(cudaFree(gpu_buffers[i]));
+    //delete[] cpu_output_buffer;
+
+    // Destroy the engine
+    cuda_preprocess_destroy();
+    delete context;
+    delete engine;
+    delete runtime;
 }
 
 std::string datatype_to_string(nvinfer1::DataType type)
@@ -57,23 +77,21 @@ std::string datatype_to_string(nvinfer1::DataType type)
 	return "unknown";
 }
 
-
-void _print_engine_info(ICudaEngine* engine)
+void print_engine_info(ICudaEngine* engine)
 {
-    std::cout << "===== TensorRT Engine Information =====" << std::endl;
+    std::cout << std::endl << "===== TensorRT Engine Information =====" << std::endl;
     std::cout << "Name: " << engine->getName() << std::endl;
 
-    int numBindings = engine->getNbIOTensors();
-    std::cout << "Number of tensors: " << numBindings << std::endl;
+    int num_tensors = engine->getNbIOTensors();
+    std::cout << "Number of tensors: " << num_tensors << std::endl;
 
-    for (int i = 0; i < numBindings; ++i) {
-        const char* bindingName = engine->getIOTensorName(i);
+    for (int i = 0; i < num_tensors; i++) {
+        const char* tensor_name = engine->getIOTensorName(i);
         std::cout << "\nTensor " << i << ":" << std::endl;
-        std::cout << "  Name: " << bindingName << std::endl;
+        std::cout << "  Name: " << tensor_name << std::endl;
 
-        // Check if the binding is an input or output
-        nvinfer1::TensorIOMode iomode = engine->getTensorIOMode(bindingName);
-        switch (iomode) {
+        nvinfer1::TensorIOMode io_mode = engine->getTensorIOMode(tensor_name);
+        switch (io_mode) {
         case nvinfer1::TensorIOMode::kINPUT:
             std::cout << "  Type: Input" << std::endl;
             break;
@@ -85,34 +103,23 @@ void _print_engine_info(ICudaEngine* engine)
             break;
         }
 
-        nvinfer1::Dims dims = engine->getTensorShape(bindingName);
+        nvinfer1::Dims dims = engine->getTensorShape(tensor_name);
         std::cout << "  Dimensions: (";
-        for (int j = 0; j < dims.nbDims; ++j) {
+        for (int j = 0; j < dims.nbDims; j++) {
             std::cout << dims.d[j];
-            if (j < dims.nbDims - 1) std::cout << ", ";
+            if (j < dims.nbDims - 1) 
+                std::cout << ", ";
         }
         std::cout << ")" << std::endl;
 
         std::cout << "  Data Type: ";
-		std::cout << datatype_to_string(engine->getTensorDataType(bindingName)) << std::endl;
-        std::cout << std::endl;
+		std::cout << datatype_to_string(engine->getTensorDataType(tensor_name)) << std::endl << std::endl;
     }
 
     int numLayers = engine->getNbLayers();
     std::cout << "\nNumber of layers: " << numLayers << std::endl;
 
-    std::cout << "=====================================" << std::endl;
-}
-
-void print_engine_info(ICudaEngine* engine)
-{
-    cout << "*********************************" << endl;
-    cout << "Engine Info:" << endl;
-	cout << "Tensor: " << engine->getIOTensorName(0) << endl;
-	cout << "Engine Info:" << datatype_to_string(engine->getTensorDataType(engine->getIOTensorName(0))) << endl;
-    cout << "Tensor: " << engine->getIOTensorName(1) << endl;
-    cout << "Engine Info:" << datatype_to_string(engine->getTensorDataType(engine->getIOTensorName(1))) << endl;
-    cout << "*********************************" << endl;
+    std::cout << "=====================================" << std::endl << std::endl;
 }
 
 void YOLOv11::init(std::string engine_path, nvinfer1::ILogger& logger)
@@ -134,7 +141,7 @@ void YOLOv11::init(std::string engine_path, nvinfer1::ILogger& logger)
 		return;
 	}
 
-    _print_engine_info(engine);
+    print_engine_info(engine);
 
     context = engine->createExecutionContext();
 
@@ -184,23 +191,8 @@ void YOLOv11::init(std::string engine_path, nvinfer1::ILogger& logger)
     }
 }
 
-YOLOv11::~YOLOv11()
+void YOLOv11::preprocess(Mat& image) 
 {
-    // Release stream and buffers
-    CUDA_CHECK(cudaStreamSynchronize(stream));
-    CUDA_CHECK(cudaStreamDestroy(stream));
-    for (int i = 0; i < 2; i++)
-        CUDA_CHECK(cudaFree(gpu_buffers[i]));
-    //delete[] cpu_output_buffer;
-
-    // Destroy the engine
-    cuda_preprocess_destroy();
-    delete context;
-    delete engine;
-    delete runtime;
-}
-
-void YOLOv11::preprocess(Mat& image) {
     // Preprocessing data on gpu
     cuda_preprocess(image.ptr(), image.cols, image.rows, gpu_buffers[0], input_w, input_h, stream);
     //CUDA_CHECK(cudaStreamSynchronize(stream));
@@ -268,7 +260,7 @@ void YOLOv11::postprocess(vector<Detection>& output)
     }
 }
 
-void YOLOv11::build(std::string onnxPath, nvinfer1::ILogger& logger)
+void YOLOv11::build(std::string onnx_path, nvinfer1::ILogger& logger)
 {
     auto builder = createInferBuilder(logger);
     const auto explicitBatch = 1U << static_cast<uint32_t>(NetworkDefinitionCreationFlag::kEXPLICIT_BATCH);
@@ -279,7 +271,7 @@ void YOLOv11::build(std::string onnxPath, nvinfer1::ILogger& logger)
         config->setFlag(BuilderFlag::kFP16);
     }
     nvonnxparser::IParser* parser = nvonnxparser::createParser(*network, logger);
-    bool parsed = parser->parseFromFile(onnxPath.c_str(), static_cast<int>(nvinfer1::ILogger::Severity::kINFO));
+    bool parsed = parser->parseFromFile(onnx_path.c_str(), static_cast<int>(nvinfer1::ILogger::Severity::kINFO));
     IHostMemory* plan{ builder->buildSerializedNetwork(*network, *config) };
 
     runtime = createInferRuntime(logger);
@@ -294,35 +286,33 @@ void YOLOv11::build(std::string onnxPath, nvinfer1::ILogger& logger)
     delete plan;
 }
 
-bool YOLOv11::saveEngine(const std::string& onnxpath)
+bool YOLOv11::save_engine(const std::string& filename)
 {
     // Create an engine path from onnx path
     std::string engine_path;
-    size_t dotIndex = onnxpath.find_last_of(".");
+    size_t dotIndex = filename.find_last_of(".");
     if (dotIndex != std::string::npos) {
-        engine_path = onnxpath.substr(0, dotIndex) + ".engine";
+        engine_path = filename.substr(0, dotIndex) + ".engine";
     }
-    else
-    {
+    else {
         return false;
     }
 
-    // Save the engine to the path
-    if (engine)
-    {
+    if (engine) {
         nvinfer1::IHostMemory* data = engine->serialize();
         std::ofstream file;
         file.open(engine_path, std::ios::binary | std::ios::out);
-        if (!file.is_open())
-        {
+        if (!file.is_open()) {
             std::cout << "Create engine file" << engine_path << " failed" << std::endl;
             return 0;
         }
+
         file.write((const char*)data->data(), data->size());
         file.close();
 
         delete data;
     }
+
     return true;
 }
 

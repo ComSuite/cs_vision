@@ -74,7 +74,10 @@
   <ImportGroup Label="Shared">
     <Import Project="..\command_line_parcer\command_line_parcer.vcxitems" Label="Shared" />
     <Import Project="..\onnx_trtengine_converter_lib\onnx_trtengine_converter_lib.vcxitems" Label="Shared" />
-    <Import Project="..\yolov5_tensorrt\yolov5_tensorrt.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_yolov11_trt\cs_vision_yolov11_trt.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_lib\cs_vision_lib.vcxitems" Label="Shared" />
+    <Import Project="..\rapidjson\rapidjson.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_common\cs_vision_common.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
@@ -86,9 +89,10 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
       <CppLanguageStandard>c++2a</CppLanguageStandard>
+      <PreprocessorDefinitions>__LINUX__;__HAS_CUDA__;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;__USE_POSIX199309L;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <LibraryDependencies>OpenGL;GLX;GLU;cuda;cudart;cudadevrt;nvrtc;nvrtc-builtins;nvonnxparser;nvinfer;nvinfer_plugin;opencv_alphamat;opencv_aruco;opencv_bgsegm;opencv_bioinspired;opencv_calib3d;opencv_ccalib;opencv_core;opencv_datasets;opencv_dnn;opencv_hfs;opencv_imgproc;opencv_intensity_transform;opencv_line_descriptor;opencv_mcc;opencv_ml;opencv_highgui;opencv_img_hash;opencv_features2d;opencv_objdetect;opencv_plot;opencv_quality;opencv_video;opencv_flann;opencv_videoio;opencv_videostab;opencv_imgcodecs;opencv_photo;opencv_rapid;opencv_reg;opencv_rgbd;opencv_saliency;opencv_shape;opencv_stereo;opencv_stitching;opencv_structured_light;opencv_superres;opencv_dnn_superres;opencv_surface_matching;opencv_tracking;opencv_xfeatures2d;opencv_ximgproc;opencv_xobjdetect;opencv_xphoto;opencv_cudaarithm;opencv_cudabgsegm;opencv_cudacodec;opencv_cudafeatures2d;opencv_cudafilters;opencv_cudaimgproc;opencv_cudaobjdetect;opencv_cudaoptflow;opencv_cudastereo;opencv_cudawarping;opencv_cudev;opencv_gapi;pthread;dl</LibraryDependencies>
+      <LibraryDependencies>OpenGL;GLX;GLU;cuda;cudart;cudadevrt;nvrtc;nvrtc-builtins;nvonnxparser;nvinfer;nvinfer_plugin;opencv_alphamat;opencv_aruco;opencv_bgsegm;opencv_bioinspired;opencv_calib3d;opencv_ccalib;opencv_core;opencv_datasets;opencv_dnn;opencv_hfs;opencv_imgproc;opencv_intensity_transform;opencv_line_descriptor;opencv_mcc;opencv_ml;opencv_highgui;opencv_img_hash;opencv_features2d;opencv_objdetect;opencv_plot;opencv_quality;opencv_video;opencv_flann;opencv_videoio;opencv_videostab;opencv_imgcodecs;opencv_photo;opencv_rapid;opencv_reg;opencv_rgbd;opencv_saliency;opencv_shape;opencv_stereo;opencv_stitching;opencv_structured_light;opencv_superres;opencv_dnn_superres;opencv_surface_matching;opencv_tracking;opencv_xfeatures2d;opencv_ximgproc;opencv_xobjdetect;opencv_xphoto;opencv_cudaarithm;opencv_cudabgsegm;opencv_cudacodec;opencv_cudafeatures2d;opencv_cudafilters;opencv_cudaimgproc;opencv_cudaobjdetect;opencv_cudaoptflow;opencv_cudastereo;opencv_cudawarping;opencv_cudev;opencv_gapi;mosquitto;pthread;dl</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

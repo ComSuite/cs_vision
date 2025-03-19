@@ -19,13 +19,14 @@ class YOLOv11
 {
 
 public:
-
+    YOLOv11();
     YOLOv11(string model_path, nvinfer1::ILogger& logger);
     ~YOLOv11();
 
     void preprocess(Mat& image);
     void infer();
     void postprocess(vector<Detection>& output);
+    void build(std::string onnx_path, nvinfer1::ILogger& logger);
 
 	int get_model_width() { return input_w; }
 	int get_model_height() { return input_h; }
@@ -57,6 +58,5 @@ private:
 
     vector<Scalar> colors;
 
-    void build(std::string onnxPath, nvinfer1::ILogger& logger);
-    bool saveEngine(const std::string& filename);
+    bool save_engine(const std::string& filename);
 };

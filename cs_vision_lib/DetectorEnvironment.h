@@ -29,7 +29,9 @@
 #include "IObjectDetector.h"
 #include "std_utils.h"
 #include "MQTTClient.h"
+#ifdef __WITH_VIDEO_STREAMER__
 #include "IVideoStreamer.h"
+#endif
 #ifdef _DEBUG_
 #include "fps_counter.h"
 #include "kpi_counter.h"
@@ -54,10 +56,10 @@ namespace cs
 
 			//if (show_frame != nullptr)
 			//	delete show_frame;
-
+#ifdef __WITH_VIDEO_STREAMER__
 			if (video_streamer != nullptr)
 				delete video_streamer;
-
+#endif
 			if (mqtt_client != nullptr)
 				delete mqtt_client;
 
@@ -88,7 +90,6 @@ namespace cs
 		cv::Mat* detect_frame;
 		cv::Mat show_frame;
 
-
 		std::string topic = "";
 		std::string camera_id = "";
 		bool is_sort_results = false;
@@ -117,7 +118,9 @@ namespace cs
 		MQTTClient* mqtt_client = nullptr;
 		std::string mqtt_detection_topic = "";
 		bool mqtt_is_send_empty = false;
+#ifdef __WITH_VIDEO_STREAMER__
 		cs::IVideoStreamer* video_streamer = nullptr;
+#endif
 		std::string video_stream_channel = "";
 		VIDEO_STREAM_MODE video_stream_mode = VIDEO_STREAM_MODE::VIDEO_STREAM_MODE_NONE;
 

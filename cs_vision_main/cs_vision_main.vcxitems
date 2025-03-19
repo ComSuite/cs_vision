@@ -3,7 +3,7 @@
   <PropertyGroup Label="Globals">
     <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <HasSharedItems>true</HasSharedItems>
-    <ItemsProjectGuid>{a22ef9e6-3884-4a39-a3d9-5cbb4a8a4fa7}</ItemsProjectGuid>
+    <ItemsProjectGuid>{0dd4c02e-1d5d-48d6-96f6-4bab914188a1}</ItemsProjectGuid>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -14,13 +14,7 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)mongoose.c" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)mongoose_loop.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)net.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)mongoose.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)mongoose_loop.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)net.h" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)camera_loop.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)main.cpp" />
   </ItemGroup>
 </Project>

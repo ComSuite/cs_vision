@@ -26,13 +26,12 @@
  * 
  */
 
-#include "yolov5_builder.hpp"
-#include "engine_information.h"
+//#include "yolov5_builder.hpp"
+//#include "engine_information.h"
 #include <iostream>
 #include <algorithm>
 #include <string>
 #include "cxxopts.hpp"
-
 
 using namespace std;
 
@@ -89,8 +88,15 @@ int main(int argc, char* argv[])
 {
     builder_params param;
     parse_command_line(argc, argv, &param);
+}
 
-    yolov5::Precision precision = yolov5::PRECISION_FP32;   /*  default */
+/*
+int main(int argc, char* argv[])
+{
+    builder_params param;
+    parse_command_line(argc, argv, &param);
+
+    yolov5::Precision precision = yolov5::PRECISION_FP32; 
     if(param.precision == "fp32") {
     }
     else if(param.precision == "fp16") {
@@ -119,3 +125,4 @@ int main(int argc, char* argv[])
 
     return 0;
 }
+*/
