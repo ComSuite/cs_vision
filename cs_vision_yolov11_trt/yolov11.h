@@ -15,9 +15,10 @@ struct Detection
     Rect bbox;
 };
 
+void print_engine_info(ICudaEngine* engine);
+
 class YOLOv11
 {
-
 public:
     YOLOv11();
     YOLOv11(string model_path, nvinfer1::ILogger& logger);
@@ -27,9 +28,12 @@ public:
     void infer();
     void postprocess(vector<Detection>& output);
     void build(std::string onnx_path, nvinfer1::ILogger& logger);
+    bool save_engine(const std::string& filename);
 
 	int get_model_width() { return input_w; }
 	int get_model_height() { return input_h; }
+
+	ICudaEngine* get_engine() { return engine; }
 private:
     void init(std::string engine_path, nvinfer1::ILogger& logger);
 
@@ -57,6 +61,4 @@ private:
     float nms_threshold = 0.4f;
 
     vector<Scalar> colors;
-
-    bool save_engine(const std::string& filename);
 };

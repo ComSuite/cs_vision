@@ -32,6 +32,7 @@
 #include <algorithm>
 #include <string>
 #include "cxxopts.hpp"
+#include "yolov11.h"
 
 using namespace std;
 
@@ -88,6 +89,22 @@ int main(int argc, char* argv[])
 {
     builder_params param;
     parse_command_line(argc, argv, &param);
+
+    class TRTYOLOv11Logger : public nvinfer1::ILogger {
+        void log(Severity severity, const char* msg) noexcept override {
+            if (severity <= Severity::kVERBOSE)
+                std::cout << msg << std::endl;
+        }
+    } trt_logger;
+
+
+	YOLOv11 detector;
+	detector.build(param.model_file_path, trt_logger);
+	print_engine_info(detector.get_engine());
+	detector.save_engine(param.engine_file_path);
+
+	return 0;
+
 }
 
 /*
