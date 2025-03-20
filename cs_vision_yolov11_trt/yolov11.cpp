@@ -4,7 +4,6 @@
 #include "macros.h"
 #include "preprocess.h"
 #include <NvOnnxParser.h>
-//#include "common.h"
 #include <fstream>
 #include <iostream>
 #include <filesystem>
@@ -29,7 +28,6 @@ YOLOv11::YOLOv11(string model_path, nvinfer1::ILogger& logger)
 	}
 
 #if NV_TENSORRT_MAJOR < 10
-    // Define input dimensions
     auto input_dims = engine->getBindingDimensions(0);
     input_h = input_dims.d[2];
     input_w = input_dims.d[3];
@@ -42,14 +40,12 @@ YOLOv11::YOLOv11(string model_path, nvinfer1::ILogger& logger)
 
 YOLOv11::~YOLOv11()
 {
-    // Release stream and buffers
     CUDA_CHECK(cudaStreamSynchronize(stream));
     CUDA_CHECK(cudaStreamDestroy(stream));
     for (int i = 0; i < 2; i++)
         CUDA_CHECK(cudaFree(gpu_buffers[i]));
     //delete[] cpu_output_buffer;
 
-    // Destroy the engine
     cuda_preprocess_destroy();
     delete context;
     delete engine;
@@ -58,8 +54,7 @@ YOLOv11::~YOLOv11()
 
 std::string datatype_to_string(nvinfer1::DataType type)
 {
-    switch (type)
-    {
+    switch (type) {
     case nvinfer1::DataType::kFLOAT:
         return "fp32";
     case nvinfer1::DataType::kHALF:
@@ -124,7 +119,6 @@ void print_engine_info(ICudaEngine* engine)
 
 void YOLOv11::init(std::string engine_path, nvinfer1::ILogger& logger)
 {
-    // Read the engine file
     ifstream engineStream(engine_path, ios::binary);
     engineStream.seekg(0, ios::end);
     const size_t modelSize = engineStream.tellg();
@@ -133,7 +127,6 @@ void YOLOv11::init(std::string engine_path, nvinfer1::ILogger& logger)
     engineStream.read(engineData.get(), modelSize);
     engineStream.close();
 
-    // Deserialize the tensorrt engine
     runtime = createInferRuntime(logger);
     engine = runtime->deserializeCudaEngine(engineData.get(), modelSize);
 	if (engine == nullptr) {
@@ -145,9 +138,7 @@ void YOLOv11::init(std::string engine_path, nvinfer1::ILogger& logger)
 
     context = engine->createExecutionContext();
 
-    // Get input and output sizes of the model
 #if NV_TENSORRT_MAJOR < 10
-    // Define input dimensions
     auto input_dims = engine->getBindingDimensions(0);
     input_h = input_dims.d[2];
     input_w = input_dims.d[3];
@@ -165,14 +156,7 @@ void YOLOv11::init(std::string engine_path, nvinfer1::ILogger& logger)
     num_detections = output_dims.d[2];
     num_classes = detection_attribute_size - 4;
 #endif
-	
-
-    // Initialize input buffers
-    //cpu_output_buffer = new float[detection_attribute_size * num_detections];
-    //CUDA_CHECK(cudaMalloc(&gpu_buffers[0], 3 * input_w * input_h * sizeof(float)));
     CUDA_CHECK(cudaHostAlloc(&gpu_buffers[0], 3 * input_w * input_h * sizeof(float), cudaHostAllocWriteCombined));
-    // Initialize output buffer
-    //CUDA_CHECK(cudaMalloc(&gpu_buffers[1], detection_attribute_size * num_detections * sizeof(float)));
     CUDA_CHECK(cudaHostAlloc(&gpu_buffers[1], detection_attribute_size * num_detections * sizeof(float), cudaHostAllocPortable));
 	
 	context->setTensorAddress(engine->getIOTensorName(0), gpu_buffers[0]);
@@ -193,9 +177,7 @@ void YOLOv11::init(std::string engine_path, nvinfer1::ILogger& logger)
 
 void YOLOv11::preprocess(Mat& image) 
 {
-    // Preprocessing data on gpu
     cuda_preprocess(image.ptr(), image.cols, image.rows, gpu_buffers[0], input_w, input_h, stream);
-    //CUDA_CHECK(cudaStreamSynchronize(stream));
 }
 
 void YOLOv11::infer()
@@ -209,13 +191,6 @@ void YOLOv11::infer()
 
 void YOLOv11::postprocess(vector<Detection>& output)
 {
-    // Memcpy from device output buffer to host output buffer
-    //CUDA_CHECK(cudaMemcpyAsync(cpu_output_buffer, gpu_buffers[1], num_detections * detection_attribute_size * sizeof(float), cudaMemcpyDeviceToHost, stream));
-    //CUDA_CHECK(cudaStreamSynchronize(stream));
-
-    //vector<Rect> boxes;
-    //vector<int> class_ids;
-    //vector<float> confidences;
     boxes.clear();
     class_ids.clear();
     confidences.clear();
@@ -227,7 +202,6 @@ void YOLOv11::postprocess(vector<Detection>& output)
     Rect box;
 
     for (int i = 0; i < det_output.cols; ++i) {
-        //const Mat classes_scores = det_output.col(i).rowRange(4, 4 + num_classes);
         minMaxLoc(det_output.col(i).rowRange(4, 4 + num_classes), nullptr, &score, nullptr, &class_id_point);
 
         if (score > conf_threshold) {
@@ -266,8 +240,7 @@ void YOLOv11::build(std::string onnx_path, nvinfer1::ILogger& logger)
     const auto explicitBatch = 1U << static_cast<uint32_t>(NetworkDefinitionCreationFlag::kEXPLICIT_BATCH);
     INetworkDefinition* network = builder->createNetworkV2(explicitBatch);
     IBuilderConfig* config = builder->createBuilderConfig();
-    if (isFP16)
-    {
+    if (isFP16) {
         config->setFlag(BuilderFlag::kFP16);
     }
     nvonnxparser::IParser* parser = nvonnxparser::createParser(*network, logger);

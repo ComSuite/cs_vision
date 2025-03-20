@@ -104,42 +104,5 @@ int main(int argc, char* argv[])
 	detector.save_engine(param.engine_file_path);
 
 	return 0;
-
 }
 
-/*
-int main(int argc, char* argv[])
-{
-    builder_params param;
-    parse_command_line(argc, argv, &param);
-
-    yolov5::Precision precision = yolov5::PRECISION_FP32; 
-    if(param.precision == "fp32") {
-    }
-    else if(param.precision == "fp16") {
-        precision = yolov5::PRECISION_FP16;
-    }
-    else {
-        std::cout << "Invalid precision specified: " << param.precision << std::endl;
-        return 1;
-    }
-
-    yolov5::Builder builder;
-
-    yolov5::Result r = builder.init();
-    if(r != yolov5::RESULT_SUCCESS) {
-        std::cout << "init() failed: " << yolov5::result_to_string(r) << std::endl;
-        return 1;
-    }
-
-    r = builder.buildEngine(param.model_file_path, param.engine_file_path, precision);
-    if(r != yolov5::RESULT_SUCCESS) {
-        std::cout << "buildEngine() failed: " << yolov5::result_to_string(r) << std::endl;
-        return 1;
-    }
-
-	cs::engine_information::print(param.engine_file_path);
-
-    return 0;
-}
-*/
