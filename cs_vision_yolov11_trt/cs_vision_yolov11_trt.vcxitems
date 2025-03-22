@@ -18,14 +18,12 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)logging.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)macros.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)preprocess.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)TRTYOLOv11ObjectDetector.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)yolov11.h" />
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="$(MSBuildThisFileDirectory)preprocess.cu" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)TRTYOLOv11ObjectDetector.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)yolov11.cpp" />
   </ItemGroup>
   <ItemGroup>

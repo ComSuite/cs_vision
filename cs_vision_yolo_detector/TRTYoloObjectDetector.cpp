@@ -21,51 +21,50 @@
  * IN THE SOFTWARE.
  */
 
-#include "TRTYOLOv11ObjectDetector.h"
+#include "TRTYoloObjectDetector.h"
 
 using namespace cs;
 using namespace cv;
 using namespace std;
 
-class TRTYOLOv11Logger : public nvinfer1::ILogger {
+class TRTYOLOLogger : public nvinfer1::ILogger {
 	void log(Severity severity, const char* msg) noexcept override {
-		// Only output logs with severity greater than warning
 		if (severity <= Severity::kWARNING)
 			std::cout << msg << std::endl;
 	}
-} trt_yolov11_logger;
+} trt_yolo_logger;
 
-TRTYOLOv11ObjectDetector::TRTYOLOv11ObjectDetector()
+TRTYoloObjectDetector::TRTYoloObjectDetector()
 {
 
 }
 
-TRTYOLOv11ObjectDetector::~TRTYOLOv11ObjectDetector()
+TRTYoloObjectDetector::~TRTYoloObjectDetector()
 {
 
 }
 
-int TRTYOLOv11ObjectDetector::init(const char* model_path, const char* label_path, const char* rules_path, bool is_use_gpu)
+int TRTYoloObjectDetector::init(const char* model_path, const char* label_path, const char* rules_path, bool is_use_gpu)
 {
 	return init(model_path, label_path, rules_path, default_input_tensor_name, default_output_tensor_name, is_use_gpu);
 }
 
-int TRTYOLOv11ObjectDetector::init(const char* model_path, const char* label_path, const char* rules_path, const char* input_tensor_name, const char* output_tensor_name, bool is_use_gpu)
+int TRTYoloObjectDetector::init(const char* model_path, const char* label_path, const char* rules_path, const char* input_tensor_name, const char* output_tensor_name, bool is_use_gpu)
 {
 	load_rules(rules_path);
 	load_labels(label_path);
 
-	detector = make_unique<YOLOv11>(model_path, trt_yolov11_logger);
+	detector = make_unique<YOLOv11>(model_path, trt_yolo_logger);
 
 	return 1;
 }
 
-void TRTYOLOv11ObjectDetector::clear()
+void TRTYoloObjectDetector::clear()
 {
 
 }
 
-void TRTYOLOv11ObjectDetector::postprocess(std::vector<Detection>* detections, int& current_id, bool is_draw, int model_h, int model_w, cv::Mat* image)
+void TRTYoloObjectDetector::postprocess(std::vector<Detection>* detections, int& current_id, bool is_draw, int model_h, int model_w, cv::Mat* image)
 {
 	if (detections == nullptr)
 		return;
@@ -116,13 +115,9 @@ void TRTYOLOv11ObjectDetector::postprocess(std::vector<Detection>* detections, i
 		else
 			delete item;
 	}
-
-	//if (is_draw && image != nullptr) {
-	//	detector->draw(*image, *detections);
-	//}
 }
 
-int TRTYOLOv11ObjectDetector::detect(cv::Mat* input, int& current_id, bool is_draw)
+int TRTYoloObjectDetector::detect(cv::Mat* input, int& current_id, bool is_draw)
 {
 	if (input == nullptr)
 		return 0;
@@ -139,7 +134,7 @@ int TRTYOLOv11ObjectDetector::detect(cv::Mat* input, int& current_id, bool is_dr
 	return objects.size() > 0;
 }
 
-int TRTYOLOv11ObjectDetector::detect(cv::cuda::GpuMat* input, int& current_id, bool is_draw)
+int TRTYoloObjectDetector::detect(cv::cuda::GpuMat* input, int& current_id, bool is_draw)
 {
 	if (input == nullptr)
 		return 0;
@@ -150,7 +145,7 @@ int TRTYOLOv11ObjectDetector::detect(cv::cuda::GpuMat* input, int& current_id, b
 	return detect(&img, current_id, is_draw);
 }
 
-int TRTYOLOv11ObjectDetector::detect_batch(const std::vector<cv::Mat*>& input, int& current_id, bool is_draw)
+int TRTYoloObjectDetector::detect_batch(const std::vector<cv::Mat*>& input, int& current_id, bool is_draw)
 {
 	return 0;
 }

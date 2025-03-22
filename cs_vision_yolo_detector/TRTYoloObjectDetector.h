@@ -6,11 +6,11 @@
 
 namespace cs
 {
-	class TRTYOLOv11ObjectDetector : public IObjectDetector
+	class TRTYoloObjectDetector : public IObjectDetector
 	{
 	public:
-		TRTYOLOv11ObjectDetector();
-		virtual ~TRTYOLOv11ObjectDetector();
+		TRTYoloObjectDetector();
+		virtual ~TRTYoloObjectDetector();
 
 		virtual int init(const char* model_path, const char* label_path, const char* rules_path, bool is_use_gpu = false)  override;
 		virtual int init(const char* model_path, const char* label_path, const char* rules_path, const char* input_tensor_name, const char* output_tensor_name, bool is_use_gpu = false)  override;
