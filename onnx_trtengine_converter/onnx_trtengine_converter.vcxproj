@@ -74,10 +74,10 @@
   <ImportGroup Label="Shared">
     <Import Project="..\command_line_parcer\command_line_parcer.vcxitems" Label="Shared" />
     <Import Project="..\onnx_trtengine_converter_lib\onnx_trtengine_converter_lib.vcxitems" Label="Shared" />
-    <Import Project="..\cs_vision_yolov11_trt\cs_vision_yolov11_trt.vcxitems" Label="Shared" />
     <Import Project="..\cs_vision_lib\cs_vision_lib.vcxitems" Label="Shared" />
     <Import Project="..\rapidjson\rapidjson.vcxitems" Label="Shared" />
     <Import Project="..\cs_vision_common\cs_vision_common.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_yolo_trt\cs_vision_yolo_trt.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />

@@ -84,7 +84,6 @@
     <Import Project="..\cs_vision_cred_storage\cs_vision_cred_storage.vcxitems" Label="Shared" />
     <Import Project="..\gsl\gsl.vcxitems" Label="Shared" />
     <Import Project="..\os_specific_linux\os_specific_linux.vcxitems" Label="Shared" />
-    <Import Project="..\cs_vision_yolov11_trt\cs_vision_yolov11_trt.vcxitems" Label="Shared" />
     <Import Project="..\cs_vision_main\cs_vision_main.vcxitems" Label="Shared" />
     <Import Project="..\cs_vision_yolo_detector\cs_vision_yolo_detector.vcxitems" Label="Shared" />
     <Import Project="..\cs_vision_yolo_trt\cs_vision_yolo_trt.vcxitems" Label="Shared" />

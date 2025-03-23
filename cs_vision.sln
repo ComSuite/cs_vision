@@ -61,8 +61,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "os_specific_windows", "os_s
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "os_specific_linux", "os_specific_linux\os_specific_linux.vcxitems", "{CCA37887-5A52-4927-A7AE-AA4936F27DD7}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cs_vision_yolov11_trt", "cs_vision_yolov11_trt\cs_vision_yolov11_trt.vcxitems", "{A4BE7F00-E53D-4E24-BB1B-E2188E5321C4}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cs_vision_main", "cs_vision_main\cs_vision_main.vcxitems", "{0DD4C02E-1D5D-48D6-96F6-4BAB914188A1}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cs_vision_yolo_trt", "cs_vision_yolo_trt\cs_vision_yolo_trt.vcxitems", "{D3440309-D324-4E15-944D-C026049CECD9}"
@@ -343,7 +341,6 @@ Global
 		cs_vision_cred_storage\cs_vision_cred_storage.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4
 		cs_vision_lib\cs_vision_lib.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4
 		cs_vision_main\cs_vision_main.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4
-		cs_vision_yolov11_trt\cs_vision_yolov11_trt.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4
 		cs_vision_yolov5_tflite\cs_vision_yolov5_tflite.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4
 		cs_vision_yolo_detector\cs_vision_yolo_detector.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4
 		cs_vision_yolo_trt\cs_vision_yolo_trt.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4
@@ -359,7 +356,6 @@ Global
 		yolov8_ocvdnn\yolov8_ocvdnn.vcxitems*{8d162a0b-8bd6-4dd7-a243-73f5b0d155a6}*SharedItemsImports = 9
 		mongoose\mongoose.vcxitems*{a22ef9e6-3884-4a39-a3d9-5cbb4a8a4fa7}*SharedItemsImports = 9
 		cs_vision_yolov5_tflite\cs_vision_yolov5_tflite.vcxitems*{a2f476b3-5b9a-4958-a90c-4265cb6693d8}*SharedItemsImports = 9
-		cs_vision_yolov11_trt\cs_vision_yolov11_trt.vcxitems*{a4be7f00-e53d-4e24-bb1b-e2188e5321c4}*SharedItemsImports = 9
 		command_line_parcer\command_line_parcer.vcxitems*{a6bf81a0-a5a9-41d9-a32c-0ef2016232b5}*SharedItemsImports = 4
 		onnx_trtengine_converter_lib\onnx_trtengine_converter_lib.vcxitems*{a6bf81a0-a5a9-41d9-a32c-0ef2016232b5}*SharedItemsImports = 4
 		rapidjson\rapidjson.vcxitems*{b712c436-e9e0-45b6-beac-c397891dbec0}*SharedItemsImports = 9
@@ -369,7 +365,7 @@ Global
 		command_line_parcer\command_line_parcer.vcxitems*{d7e1371c-c6d9-4d01-aba0-96ba52678747}*SharedItemsImports = 4
 		cs_vision_common\cs_vision_common.vcxitems*{d7e1371c-c6d9-4d01-aba0-96ba52678747}*SharedItemsImports = 4
 		cs_vision_lib\cs_vision_lib.vcxitems*{d7e1371c-c6d9-4d01-aba0-96ba52678747}*SharedItemsImports = 4
-		cs_vision_yolov11_trt\cs_vision_yolov11_trt.vcxitems*{d7e1371c-c6d9-4d01-aba0-96ba52678747}*SharedItemsImports = 4
+		cs_vision_yolo_trt\cs_vision_yolo_trt.vcxitems*{d7e1371c-c6d9-4d01-aba0-96ba52678747}*SharedItemsImports = 4
 		onnx_trtengine_converter_lib\onnx_trtengine_converter_lib.vcxitems*{d7e1371c-c6d9-4d01-aba0-96ba52678747}*SharedItemsImports = 4
 		rapidjson\rapidjson.vcxitems*{d7e1371c-c6d9-4d01-aba0-96ba52678747}*SharedItemsImports = 4
 	EndGlobalSection
