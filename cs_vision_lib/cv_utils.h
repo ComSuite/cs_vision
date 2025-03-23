@@ -25,6 +25,7 @@
 
 #include <opencv2/opencv.hpp>
 
+cv::Scalar generate_contrast_color(const cv::Scalar& color);
 cv::Mat cpu_rotate(cv::Mat& src, double angle);
 void cpu_rotate(cv::Mat& src, cv::Mat& dst, double angle);
 cv::Mat cpu_resize(cv::Mat& src, int width, int height, int inter);

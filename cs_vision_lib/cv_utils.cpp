@@ -255,3 +255,9 @@ cv::Scalar cv_string_to_color(const char* str_color)
     unsigned int x = std::stoul(str_color, nullptr, 16);
     return cv::Scalar(x & 0x00FF0000, x & 0x0000FF00 >> 2, x & 0x000000FF);
 }
+
+cv::Scalar generate_contrast_color(const cv::Scalar& color)
+{
+    return cv::Scalar(255 - color[0], 255 - color[1], 255 - color[2]);
+}
+

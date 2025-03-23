@@ -346,6 +346,6 @@ void IObjectDetector::draw_label(Mat& input_image, string& label, int left, int 
     Point brc = Point(left + label_size.width, top + label_size.height + base_line);
 
     rectangle(input_image, tlc, brc, background_color, FILLED);
-    putText(input_image, label.c_str(), Point(left, top + label_size.height), FONT_HERSHEY_COMPLEX, 0.7, text_color, 1, false);
+    putText(input_image, label.c_str(), Point(left, top + label_size.height), FONT_HERSHEY_COMPLEX, 0.7, generate_contrast_color(background_color), 1, false);
 }
 
