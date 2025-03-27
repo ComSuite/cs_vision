@@ -21,7 +21,6 @@ void YOLOV5::getLabelsName(std::string path, std::vector<std::string> &labelName
 
 void YOLOV5::loadModel(const std::string path)
 {
-
     _model = tflite::FlatBufferModel::BuildFromFile(path.c_str());
     if (_model == nullptr) {
         std::cout << "\nFailed to load the model: " << path << std::endl;
@@ -73,7 +72,7 @@ void YOLOV5::preprocess(cv::Mat &image)
     cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
     cv::resize(image, image, cv::Size(_in_height, _in_width), cv::INTER_CUBIC);
     image.convertTo(image, CV_8U);
-}
+}  
 
 template <typename T>
 void YOLOV5::fill(T *in, cv::Mat &src)
@@ -87,7 +86,6 @@ void YOLOV5::fill(T *in, cv::Mat &src)
 
 std::vector<std::vector<float>> YOLOV5::tensorToVector2D(TfLiteTensor *pOutputTensor, const int &row, const int &colum)
 {
-
     auto scale = pOutputTensor->params.scale;
     auto zero_point = pOutputTensor->params.zero_point;
     std::vector<std::vector<float>> v;

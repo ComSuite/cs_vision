@@ -76,9 +76,9 @@ int TFYOLOv5ObjectDetector::init(const char* model_path, const char* label_path,
     yolo_model.getLabelsName(label_path, labels);
 
     cout << "[TFYOLOv5ObjectDetector] Label Count: " << labels.size() << "\n" << endl;
-    for (auto& lbl : labels) {
-        cout << lbl << endl;
-    }
+    //for (auto& lbl : labels) {
+    //    cout << lbl << endl;
+    //}
 
     load_rules(rules_path);
 
