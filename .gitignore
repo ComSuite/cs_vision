@@ -366,3 +366,4 @@ FodyWeavers.xsd
 *.onnx
 /models/yolov3u.onnx
 /models/yolov3-sppu.onnx
+*.pt
