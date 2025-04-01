@@ -67,6 +67,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cs_vision_yolo_trt", "cs_vi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cs_vision_yolo_detector", "cs_vision_yolo_detector\cs_vision_yolo_detector.vcxitems", "{24E60E89-9254-4730-AF29-07E15EC64E65}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cs_vision_face_detector_dlib", "cs_vision_face_detector_dlib\cs_vision_face_detector_dlib.vcxitems", "{77FA4B48-1987-41B1-AEBF-E0099158307A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -352,6 +354,7 @@ Global
 		video_streamer\video_streamer.vcxitems*{66ac5979-e2f7-49eb-874d-1cfec12d5f84}*SharedItemsImports = 4
 		cs_vision_lib\cs_vision_lib.vcxitems*{6f93440d-6b30-4ead-b564-d80ab54c34a5}*SharedItemsImports = 9
 		user_interface\user_interface.vcxitems*{72bc0788-965d-48a3-94fc-ac9585307a70}*SharedItemsImports = 9
+		cs_vision_face_detector_dlib\cs_vision_face_detector_dlib.vcxitems*{77fa4b48-1987-41b1-aebf-e0099158307a}*SharedItemsImports = 9
 		cs_vision_haar_cascade\cs_vision_haar_cascade.vcxitems*{82d588a6-86aa-4b07-8198-cd1e37e95264}*SharedItemsImports = 9
 		yolov8_ocvdnn\yolov8_ocvdnn.vcxitems*{8d162a0b-8bd6-4dd7-a243-73f5b0d155a6}*SharedItemsImports = 9
 		mongoose\mongoose.vcxitems*{a22ef9e6-3884-4a39-a3d9-5cbb4a8a4fa7}*SharedItemsImports = 9

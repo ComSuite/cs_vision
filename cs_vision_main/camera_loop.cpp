@@ -574,8 +574,10 @@ void* camera_loop(void* arg)
 	stream_tread.detach();
 
 	for (;;) {
-		if (!capture->is_ready())
+		if (!capture->is_ready()) {
+			cout << "Capture is not ready" << endl;
 			continue;
+		}
 
 		int ret = 0;
 		if (environment.detector_ready) {
