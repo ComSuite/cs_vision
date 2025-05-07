@@ -479,12 +479,6 @@ void process_frame(ICamera* capture, cs::camera_settings* set, DetectorEnvironme
 #endif
 		environment->detect_frame = &frame;
 
-#ifdef __WITH_VIDEO_STREAMER__
-		if (set->video_stream_mode == VIDEO_STREAM_MODE::VIDEO_STREAM_MODE_SOURCE && environment->video_streamer != nullptr) {
-			stream_frame_(environment->detect_frame, environment);
-		}
-#endif
-
 		capture->set_ready(false);
 		environment->detector_ready = false;
 	}
@@ -573,6 +567,8 @@ void* camera_loop(void* arg)
 	thread stream_tread(stream_thread_func, &environment); //show_frame, 
 	stream_tread.detach();
 
+	cv::Mat* show_frame = nullptr;
+
 	for (;;) {
 		if (!capture->is_ready()) {
 			cout << "Capture is not ready" << endl;
@@ -582,10 +578,20 @@ void* camera_loop(void* arg)
 		int ret = 0;
 		if (environment.detector_ready) {
 			ret = capture->get_frame(frame, set->get_is_convert_to_gray());
+			show_frame = &frame;
 		}
 		else {
 			capture->get_frame(fake, false);
+			show_frame = &fake;
 		}
+
+#ifdef __WITH_VIDEO_STREAMER__
+		if (set->video_stream_mode == VIDEO_STREAM_MODE::VIDEO_STREAM_MODE_SOURCE && environment.video_streamer != nullptr) {
+			environment.is_can_show = true;
+			stream_frame_(show_frame, &environment);
+		}
+#endif
+
 
 #ifdef _DEBUG_
 		if (set->input_kind == INPUT_OUTPUT_DEVICE_KIND::INPUT_OUTPUT_DEVICE_KIND_CAMERA) {
