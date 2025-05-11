@@ -102,6 +102,7 @@
     <LibraryPath>/usr/lib/aarch64-linux-gnu;/usr/local/cuda/targets/aarch64-linux/lib;~/tensorflow/tensorflow/lite/tools/make/gen/linux_aarch64/lib</LibraryPath>
     <TargetExt />
     <SourcePath>/home/marmot/projects/dlib/dlib/all</SourcePath>
+    <CustomBuildBeforeTargets />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <IncludePath>/usr/include/opencv4/;/usr/local/cuda/include;~/tensorflow/;../ChaiScript/include;/usr/local/include;/usr/local/include/groupsock;/usr/local/include/UsageEnvironment;/usr/local/include/BasicUsageEnvironment;/usr/local/include/liveMedia;/usr/include/gstreamer-1.0/;/usr/include/glib-2.0/;/usr/lib/aarch64-linux-gnu/glib-2.0/include/</IncludePath>
@@ -146,6 +147,19 @@
     <Link>
       <LibraryDependencies>OpenGL;GLX;GLU;cuda;cudart;cudadevrt;nvrtc;nvrtc-builtins;nvonnxparser;nvinfer;nvinfer_plugin;opencv_alphamat;opencv_aruco;opencv_bgsegm;opencv_bioinspired;opencv_calib3d;opencv_ccalib;opencv_core;opencv_datasets;opencv_dnn;opencv_hfs;opencv_imgproc;opencv_intensity_transform;opencv_line_descriptor;opencv_mcc;opencv_ml;opencv_highgui;opencv_img_hash;opencv_features2d;opencv_objdetect;opencv_plot;opencv_quality;opencv_video;opencv_flann;opencv_videoio;opencv_videostab;opencv_imgcodecs;opencv_photo;opencv_rapid;opencv_reg;opencv_rgbd;opencv_saliency;opencv_shape;opencv_stereo;opencv_stitching;opencv_structured_light;opencv_superres;opencv_dnn_superres;opencv_surface_matching;opencv_tracking;opencv_xfeatures2d;opencv_ximgproc;opencv_xobjdetect;opencv_xphoto;opencv_cudaarithm;opencv_cudabgsegm;opencv_cudacodec;opencv_cudafeatures2d;opencv_cudafilters;opencv_cudaimgproc;opencv_cudaobjdetect;opencv_cudaoptflow;opencv_cudastereo;opencv_cudawarping;opencv_cudev;opencv_gapi;mosquitto;tensorflow-lite;pthread;portaudio;BasicUsageEnvironment;groupsock;liveMedia;UsageEnvironment;avformat;avcodec;swresample;swscale;avutil;gstreamer-1.0;gstrtspserver-1.0;glib-2.0;gobject-2.0;dlib;dl</LibraryDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>NVCC compiler</Message>
+    </PreBuildEvent>
+    <RemotePreBuildEvent>
+      <Command>/usr/local/cuda/bin/nvcc -c /home/marmot/projects/cs_vision_orin_nano/cs_vision_yolo_trt/preprocess.cu -o /home/marmot/projects/cs_vision_orin_nano/cs_vision_yolo_trt/trt_preprocess.o -I/usr/include/opencv4</Command>
+    </RemotePreBuildEvent>
+    <RemotePreBuildEvent>
+      <Message>NVCC</Message>
+    </RemotePreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <Link>

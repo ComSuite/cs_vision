@@ -27,6 +27,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)yolov11.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Object Include="$(MSBuildThisFileDirectory)yolov11-tensorrt_generated_preprocess.cu.o" />
+    <Object Include="$(MSBuildThisFileDirectory)trt_preprocess.o" />
   </ItemGroup>
 </Project>

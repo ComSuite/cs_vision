@@ -2,7 +2,7 @@
 #include "cuda_utils.h"
 #include "device_launch_parameters.h"
 
-static uint8_t* img_buffer_host = nullptr;
+//static uint8_t* img_buffer_host = nullptr;
 static uint8_t* img_buffer_device = nullptr;
 
 struct AffineMatrix {
@@ -101,9 +101,9 @@ void cuda_preprocess(
 
     int img_size = src_width * src_height * 3;
     // copy data to pinned memory
-    memcpy(img_buffer_host, src, img_size);
+    //memcpy(img_buffer_host, src, img_size);
     // copy data to device memory
-    CUDA_CHECK(cudaMemcpyAsync(img_buffer_device, img_buffer_host, img_size, cudaMemcpyHostToDevice, stream));
+    CUDA_CHECK(cudaMemcpyAsync(img_buffer_device, src, img_size, cudaMemcpyHostToDevice, stream));
 
     AffineMatrix s2d, d2s;
     float scale = std::min(dst_height / (float)src_height, dst_width / (float)src_width);
@@ -132,13 +132,14 @@ void cuda_preprocess(
 }
 
 void cuda_preprocess_init(int max_image_size) {
+	printf("\nYolo TRT: 4\n");
     // prepare input data in pinned memory
-    CUDA_CHECK(cudaMallocHost((void**)&img_buffer_host, max_image_size * 3));
+    //CUDA_CHECK(cudaMallocHost((void**)&img_buffer_host, max_image_size * 3));
     // prepare input data in device memory
     CUDA_CHECK(cudaMalloc((void**)&img_buffer_device, max_image_size * 3));
 }
 
 void cuda_preprocess_destroy() {
     CUDA_CHECK(cudaFree(img_buffer_device));
-    CUDA_CHECK(cudaFreeHost(img_buffer_host));
+    //CUDA_CHECK(cudaFreeHost(img_buffer_host));
 }
