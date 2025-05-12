@@ -1,0 +1,1 @@
+/usr/local/cuda/bin/nvcc -use_fast_math -arch=native -c /home/marmot/projects/cs_vision_orin_nano/cs_vision_yolo_trt/preprocess.cu -o /home/marmot/projects/cs_vision_orin_nano/cs_vision_yolo_trt/trt_preprocess.o -I/usr/include/opencv4

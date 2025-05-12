@@ -569,26 +569,38 @@ void* camera_loop(void* arg)
 
 	cv::Mat* show_frame = nullptr;
 
+	cv::Mat buffers[2]{cv::Mat(capture->get_height(), capture->get_width(), CV_8UC3), cv::Mat(capture->get_height(), capture->get_width(), CV_8UC3)};
+	int ind = 0;
+	cv::Mat* pframe = &buffers[ind];
+
 	for (;;) {
 		if (!capture->is_ready()) {
 			cout << "Capture is not ready" << endl;
 			continue;
 		}
 
-		int ret = 0;
-		if (environment.detector_ready) {
-			ret = capture->get_frame(frame, set->get_is_convert_to_gray());
-			show_frame = &frame;
+		if (pframe != nullptr && environment.detector_ready) {
+			process_frame(capture, set, &environment, *pframe);
+			ind = 1 - ind;
+			pframe = &buffers[ind];
 		}
-		else {
-			capture->get_frame(fake, false);
-			show_frame = &fake;
-		}
+
+		int ret = capture->get_frame(*pframe, set->get_is_convert_to_gray());
+
+		//int ret = 0;
+		//if (environment.detector_ready) {
+		//	ret = capture->get_frame(frame, set->get_is_convert_to_gray());
+		//	show_frame = &frame;
+		//}
+		//else {
+		//	capture->get_frame(fake, false);
+		//	show_frame = &fake;
+		//}
 
 #ifdef __WITH_VIDEO_STREAMER__
 		if (set->video_stream_mode == VIDEO_STREAM_MODE::VIDEO_STREAM_MODE_SOURCE && environment.video_streamer != nullptr) {
 			environment.is_can_show = true;
-			stream_frame_(show_frame, &environment);
+			stream_frame_(pframe, &environment);
 		}
 #endif
 
@@ -600,17 +612,18 @@ void* camera_loop(void* arg)
 #endif
 
 		if (ret != 0) {
-			if (!frame.empty()) {
-				process_frame(capture, set, &environment, frame);
-			}
+			//if (!frame.empty()) {
+			//	process_frame(capture, set, &environment, frame);
+			//}
 
-			if (capture->source_is_file && capture->is_end_of_file()) {
-				capture->bring_to_start();
-				cout << "Reopen capture" << endl;
-			}
+			if (capture->source_is_file) {
+				if (capture->is_end_of_file()) {
+					capture->bring_to_start();
+					cout << "Reopen capture" << endl;
+				}
 
-			if (capture->source_is_file)
 				std::this_thread::sleep_for(std::chrono::milliseconds(1000 / capture->get_fps()));
+			}
 		}
 	}
 	

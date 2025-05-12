@@ -132,7 +132,7 @@ void cuda_preprocess(
 }
 
 void cuda_preprocess_init(int max_image_size) {
-	printf("\nYolo TRT: 4\n");
+	printf("\nYolo TRT: 5\n");
     // prepare input data in pinned memory
     //CUDA_CHECK(cudaMallocHost((void**)&img_buffer_host, max_image_size * 3));
     // prepare input data in device memory
