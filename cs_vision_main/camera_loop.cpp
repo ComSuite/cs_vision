@@ -577,6 +577,10 @@ void* camera_loop(void* arg)
 		if (frame != nullptr && environment.detector_ready) {
 			process_frame(capture, set, &environment, *frame);
 			ind = 1 - ind;
+			//ind++;
+			//if (ind >= 3) {
+			//	ind = 0;
+			//}
 			frame = &buffers[ind];
 		}
 

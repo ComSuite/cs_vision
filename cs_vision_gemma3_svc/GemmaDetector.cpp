@@ -138,6 +138,22 @@ int GemmaDetector::detect(cv::Mat* input, int& current_id, bool is_draw)
 				if (root.HasMember("response")) {
 					if (root["response"].IsString()) {
 						cout << "Response: " << root["response"].GetString() << endl;
+						std::string response = root["response"].GetString();
+
+						if (json_resp.find("Yes") != std::string::npos)
+						{
+							DetectionItem* item = new DetectionItem();
+							item->id = current_id;
+							current_id++;
+
+							item->kind = ObjectDetectorKind::OBJECT_DETECTOR_SVC_GEMMA3;
+							item->detector_id = id;
+
+							item->label = "Weapon!!!";
+							item->neural_network_id = neural_network_id;
+
+							last_detections.push_back(item);
+						}
 					}
 				}
 			}
@@ -162,4 +178,12 @@ int GemmaDetector::detect(cv::cuda::GpuMat* input, int& current_id, bool is_draw
 int GemmaDetector::detect_batch(const std::vector<cv::Mat*>& input, int& current_id, bool is_draw)
 {
 	return 0;
+}
+
+void GemmaDetector::draw_detection(cv::Mat* detect_frame, DetectionItem* detection, cv::Scalar& background_color, bool is_show_mask)
+{
+	if (detect_frame == nullptr || detection == nullptr)
+		return;
+
+	cv::putText(*detect_frame, detection->label, cv::Point(10, 10), cv::FONT_HERSHEY_SIMPLEX, 0.5, background_color, 2);
 }

@@ -21,6 +21,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)yolov11.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)build_cuda_kernels.sh" />
     <None Include="$(MSBuildThisFileDirectory)preprocess.cu" />
   </ItemGroup>
   <ItemGroup>
