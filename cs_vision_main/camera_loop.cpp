@@ -545,9 +545,6 @@ void* camera_loop(void* arg)
 		capture->set_detector_buffer(detector->width * detector->height);
 	}
 
-	Mat frame(capture->get_height(), capture->get_width(), CV_8UC3);
-	Mat fake(capture->get_height(), capture->get_width(), CV_8UC3);
-
 	environment.mqtt_client->loop();
 
 #ifdef _DEBUG_
@@ -564,14 +561,12 @@ void* camera_loop(void* arg)
 	thread detect_tread(thread_func, &environment);
 	detect_tread.detach();
 
-	thread stream_tread(stream_thread_func, &environment); //show_frame, 
+	thread stream_tread(stream_thread_func, &environment);
 	stream_tread.detach();
-
-	cv::Mat* show_frame = nullptr;
 
 	cv::Mat buffers[2]{cv::Mat(capture->get_height(), capture->get_width(), CV_8UC3), cv::Mat(capture->get_height(), capture->get_width(), CV_8UC3)};
 	int ind = 0;
-	cv::Mat* pframe = &buffers[ind];
+	cv::Mat* frame = &buffers[ind];
 
 	for (;;) {
 		if (!capture->is_ready()) {
@@ -579,31 +574,20 @@ void* camera_loop(void* arg)
 			continue;
 		}
 
-		if (pframe != nullptr && environment.detector_ready) {
-			process_frame(capture, set, &environment, *pframe);
+		if (frame != nullptr && environment.detector_ready) {
+			process_frame(capture, set, &environment, *frame);
 			ind = 1 - ind;
-			pframe = &buffers[ind];
+			frame = &buffers[ind];
 		}
 
-		int ret = capture->get_frame(*pframe, set->get_is_convert_to_gray());
-
-		//int ret = 0;
-		//if (environment.detector_ready) {
-		//	ret = capture->get_frame(frame, set->get_is_convert_to_gray());
-		//	show_frame = &frame;
-		//}
-		//else {
-		//	capture->get_frame(fake, false);
-		//	show_frame = &fake;
-		//}
+		int ret = capture->get_frame(*frame, set->get_is_convert_to_gray());
 
 #ifdef __WITH_VIDEO_STREAMER__
 		if (set->video_stream_mode == VIDEO_STREAM_MODE::VIDEO_STREAM_MODE_SOURCE && environment.video_streamer != nullptr) {
 			environment.is_can_show = true;
-			stream_frame_(pframe, &environment);
+			stream_frame_(frame, &environment);
 		}
 #endif
-
 
 #ifdef _DEBUG_
 		if (set->input_kind == INPUT_OUTPUT_DEVICE_KIND::INPUT_OUTPUT_DEVICE_KIND_CAMERA) {
@@ -612,10 +596,6 @@ void* camera_loop(void* arg)
 #endif
 
 		if (ret != 0) {
-			//if (!frame.empty()) {
-			//	process_frame(capture, set, &environment, frame);
-			//}
-
 			if (capture->source_is_file) {
 				if (capture->is_end_of_file()) {
 					capture->bring_to_start();
@@ -648,15 +628,6 @@ void cpu_preprocessing(Mat& frame, camera_settings* set, Mat& image, Size& borde
 		rotate.copyTo(frame);
 	}
 
-	/*
-	if (set->resize_x != 0 && set->resize_y != 0) {
-		if (set->resize_x == set->resize_y && frame.cols != frame.rows) 
-			cpu_create_square_letterbox(frame, image, set->resize_x, border_dims);
-		else
-			cv::resize(frame, image, Size(set->resize_x, set->resize_y), 0, 0, INTER_AREA);
-	}
-	else
-	*/
 	frame.copyTo(image);
 }
 
