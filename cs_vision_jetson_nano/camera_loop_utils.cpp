@@ -22,7 +22,8 @@
  */
 
 #include "camera_loop_utils.h"
-#include "TRTYOLOv5ObjectDetector.h"
+#include "TRTYoloObjectDetector.h"
+
 #include "cv_utils.h"
 #ifdef __HAS_CUDA__
 #include <opencv2/core/cuda.hpp>
@@ -39,7 +40,10 @@ using namespace cv::cuda;
 IObjectDetector* create_detector(int kind)
 {
 	switch (static_cast<ObjectDetectorKind>(kind)) {
-	case ObjectDetectorKind::OBJECT_DETECTOR_TENSORRT: return new TRTYOLOv5ObjectDetector();
+	case ObjectDetectorKind::OBJECT_DETECTOR_TENSORRT_YOLOv3:
+	case ObjectDetectorKind::OBJECT_DETECTOR_TENSORRT_YOLOv5:
+	case ObjectDetectorKind::OBJECT_DETECTOR_TENSORRT_YOLOv8:
+	case ObjectDetectorKind::OBJECT_DETECTOR_TENSORRT_YOLOv11: return new TRTYoloObjectDetector();
 	}
 
 	return nullptr;

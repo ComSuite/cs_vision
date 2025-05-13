@@ -71,13 +71,51 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
-  <ImportGroup Label="Shared" />
+  <ImportGroup Label="Shared">
+    <Import Project="..\cs_vision_common\cs_vision_common.vcxitems" Label="Shared" />
+    <Import Project="..\command_line_parcer\command_line_parcer.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_lib\cs_vision_lib.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_main\cs_vision_main.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_yolo_trt\cs_vision_yolo_trt.vcxitems" Label="Shared" />
+    <Import Project="..\os_specific_linux\os_specific_linux.vcxitems" Label="Shared" />
+    <Import Project="..\rapidjson\rapidjson.vcxitems" Label="Shared" />
+    <Import Project="..\video_streamer\video_streamer.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_yolo_detector\cs_vision_yolo_detector.vcxitems" Label="Shared" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <LibraryPath>/usr/lib/aarch64-linux-gnu;$(LibraryPath)</LibraryPath>
+    <IncludePath>/usr/include/opencv4/;/usr/local/cuda/include;~/tensorflow/;../ChaiScript/include;/usr/local/include;/usr/local/include/groupsock;/usr/local/include/UsageEnvironment;/usr/local/include/BasicUsageEnvironment;/usr/local/include/liveMedia;/usr/include/gstreamer-1.0/;/usr/include/glib-2.0/;/usr/lib/aarch64-linux-gnu/glib-2.0/include/</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+    <IncludePath>/usr/include/opencv4/;/usr/local/cuda/include;~/tensorflow/;../ChaiScript/include;/usr/local/include;/usr/local/include/groupsock;/usr/local/include/UsageEnvironment;/usr/local/include/BasicUsageEnvironment;/usr/local/include/liveMedia;/usr/include/gstreamer-1.0/;/usr/include/glib-2.0/;/usr/lib/aarch64-linux-gnu/glib-2.0/include/</IncludePath>
+    <LibraryPath>/usr/lib/aarch64-linux-gnu;$(LibraryPath)</LibraryPath>
+    <RemotePreBuildEventUseInBuild>false</RemotePreBuildEventUseInBuild>
+    <RemoteCCompileToolExe>g++</RemoteCCompileToolExe>
+    <RemoteCppCompileToolExe>g++</RemoteCppCompileToolExe>
+    <MultiProcNumber>4</MultiProcNumber>
+  </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="camera_loop_utils.cpp" />
   </ItemGroup>
-  <ItemDefinitionGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <ClCompile>
+      <CppLanguageStandard>c++17</CppLanguageStandard>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+    <ClCompile>
+      <CppLanguageStandard>c++17</CppLanguageStandard>
+      <PreprocessorDefinitions>__LINUX__;_DEBUG_;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;__USE_POSIX199309L;DBUILD_ZLIB=ON;__HAS_CUDA__;YOLOV5_OPENCV_HAS_CUDA;__WITH_VIDEO_STREAMER__;_WITH_VPI</PreprocessorDefinitions>
+    </ClCompile>
+    <RemotePreBuildEvent>
+      <Command>/usr/local/cuda/bin/nvcc -use_fast_math -c /home/marmot/projects/cs_vision_jetson_nano/cs_vision_yolo_trt/preprocess.cu -o /home/marmot/projects/cs_vision_jetson_nano/cs_vision_yolo_trt/trt_preprocess.o -I/usr/include/opencv4</Command>
+    </RemotePreBuildEvent>
+    <RemotePreBuildEvent>
+      <Message>NVCC</Message>
+    </RemotePreBuildEvent>
+  </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

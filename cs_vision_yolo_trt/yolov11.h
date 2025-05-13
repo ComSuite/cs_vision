@@ -1,54 +1,57 @@
 #pragma once
 
 #include "NvInfer.h"
+#if NV_TENSORRT_MAJOR < 10
+#include <NvInferRuntime.h>
+#endif
 #include <opencv2/opencv.hpp>
 #include <vector>
 
-using namespace nvinfer1;
-using namespace std;
-using namespace cv;
+//using namespace nvinfer1;
+//using namespace std;
+//using namespace cv;
 
 struct Detection
 {
     float conf;
     int class_id;
-    Rect bbox;
+    cv::Rect bbox;
 };
 
-void print_engine_info(ICudaEngine* engine);
+void print_engine_info(nvinfer1::ICudaEngine* engine);
 
 class YOLOv11
 {
 public:
     YOLOv11();
-    YOLOv11(string model_path, nvinfer1::ILogger& logger);
+    YOLOv11(std::string model_path, nvinfer1::ILogger& logger);
     ~YOLOv11();
 
-    void preprocess(Mat& image);
+    void preprocess(cv::Mat& image);
     void infer();
-    void postprocess(vector<Detection>& output);
+    void postprocess(std::vector<Detection>& output);
     void build(std::string onnx_path, nvinfer1::ILogger& logger);
     bool save_engine(const std::string& filename);
 
 	int get_model_width() { return input_w; }
 	int get_model_height() { return input_h; }
 
-	ICudaEngine* get_engine() { return engine; }
+    nvinfer1::ICudaEngine* get_engine() { return engine; }
 private:
     void init(std::string engine_path, nvinfer1::ILogger& logger);
 
     float* gpu_buffers[2];               //!< The vector of device buffers needed for engine execution
     float* cpu_output_buffer;
 
-    vector<Rect> boxes;
-    vector<int> class_ids;
-    vector<float> confidences;
-    vector<int> nms_result;
+    std::vector<cv::Rect> boxes;
+    std::vector<int> class_ids;
+    std::vector<float> confidences;
+    std::vector<int> nms_result;
 
     cudaStream_t stream;
-    IRuntime* runtime;                 //!< The TensorRT runtime used to deserialize the engine
-    ICudaEngine* engine;               //!< The TensorRT engine used to run the network
-    IExecutionContext* context;        //!< The context for executing inference using an ICudaEngine
+    nvinfer1::IRuntime* runtime;                 //!< The TensorRT runtime used to deserialize the engine
+    nvinfer1::ICudaEngine* engine;               //!< The TensorRT engine used to run the network
+    nvinfer1::IExecutionContext* context;        //!< The context for executing inference using an ICudaEngine
 
     // Model parameters
     int input_w;
@@ -60,5 +63,5 @@ private:
     float conf_threshold = 0.3f;
     float nms_threshold = 0.4f;
 
-    vector<Scalar> colors;
+    std::vector<cv::Scalar> colors;
 };

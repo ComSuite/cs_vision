@@ -6,8 +6,14 @@
 #include <NvOnnxParser.h>
 #include <fstream>
 #include <iostream>
+#ifdef __WITH_FILESYSTEM_CXX__
 #include <filesystem>
+#endif
 #include "std_utils.h"
+
+using namespace nvinfer1;
+using namespace std;
+using namespace cv;
 
 static Logger logger;
 #define isFP16 true
@@ -19,7 +25,11 @@ YOLOv11::YOLOv11()
 
 YOLOv11::YOLOv11(string model_path, nvinfer1::ILogger& logger)
 {
+#ifdef __WITH_FILESYSTEM_CXX__
     if (to_lower(std::filesystem::path(model_path).extension().string()) == ".onnx") {
+#else
+	if (model_path.find(".onnx") != std::string::npos) {
+#endif
         build(model_path, logger);
         save_engine(model_path);
     }
@@ -65,8 +75,10 @@ std::string datatype_to_string(nvinfer1::DataType type)
         return "INT32";
     case nvinfer1::DataType::kBOOL:
         return "bool8";
+#if NV_TENSORRT_MAJOR >= 10
     case nvinfer1::DataType::kUINT8:
         return "UINT8";
+#endif
     }
 
 	return "unknown";
@@ -77,6 +89,7 @@ void print_engine_info(ICudaEngine* engine)
     std::cout << std::endl << "===== TensorRT Engine Information =====" << std::endl;
     std::cout << "Name: " << engine->getName() << std::endl;
 
+#if NV_TENSORRT_MAJOR >= 10
     int num_tensors = engine->getNbIOTensors();
     std::cout << "Number of tensors: " << num_tensors << std::endl;
 
@@ -110,7 +123,7 @@ void print_engine_info(ICudaEngine* engine)
         std::cout << "  Data Type: ";
 		std::cout << datatype_to_string(engine->getTensorDataType(tensor_name)) << std::endl << std::endl;
     }
-
+#endif
     int numLayers = engine->getNbLayers();
     std::cout << "\nNumber of layers: " << numLayers << std::endl;
 
@@ -159,8 +172,13 @@ void YOLOv11::init(std::string engine_path, nvinfer1::ILogger& logger)
     CUDA_CHECK(cudaHostAlloc(&gpu_buffers[0], 3 * input_w * input_h * sizeof(float), cudaHostAllocWriteCombined));
     CUDA_CHECK(cudaHostAlloc(&gpu_buffers[1], detection_attribute_size * num_detections * sizeof(float), cudaHostAllocPortable));
 	
+#if NV_TENSORRT_MAJOR >= 10
 	context->setTensorAddress(engine->getIOTensorName(0), gpu_buffers[0]);
 	context->setTensorAddress(engine->getIOTensorName(1), gpu_buffers[1]);
+#else
+	context->setTensorAddress(engine->getBindingName(0), (void*)gpu_buffers[0]);
+    //context->setInputShapeBinding(engine->getBindingName(1), (int32_t const*)gpu_buffers[1]);
+#endif
 
     cuda_preprocess_init(MAX_IMAGE_SIZE);
 

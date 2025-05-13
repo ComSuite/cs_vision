@@ -88,6 +88,7 @@
     <Import Project="..\cs_vision_yolo_detector\cs_vision_yolo_detector.vcxitems" Label="Shared" />
     <Import Project="..\cs_vision_yolo_trt\cs_vision_yolo_trt.vcxitems" Label="Shared" />
     <Import Project="..\cs_vision_gemma3_svc\cs_vision_gemma3_svc.vcxitems" Label="Shared" />
+    <Import Project="..\video_streamer_rtsp\video_streamer_rtsp.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
@@ -139,7 +140,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
-      <PreprocessorDefinitions>__LINUX__;_DEBUG_;__WITH_FILESYSTEM_CXX__;__WITH_SCRIPT_LANG__;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;__USE_POSIX199309L;_____GPIO_NVIDIA_JETSON____;DBUILD_ZLIB=ON;__HAS_CUDA__;YOLOV5_OPENCV_HAS_CUDA;__WITH_AUDIO_PROCESSING__;__WITH_MONGOOSE_SERVER___;__WITH_VIDEO_STREAMER__;_WITH_VPI</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__LINUX__;_DEBUG_;__WITH_FILESYSTEM_CXX__;__WITH_SCRIPT_LANG__;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;__USE_POSIX199309L;_____GPIO_NVIDIA_JETSON____;DBUILD_ZLIB=ON;__HAS_CUDA__;YOLOV5_OPENCV_HAS_CUDA;__WITH_AUDIO_PROCESSING__;__WITH_MONGOOSE_SERVER___;__WITH_VIDEO_STREAMER__;__WITH_RTSP_STREAMER__;_WITH_VPI</PreprocessorDefinitions>
       <CppLanguageStandard>c++2a</CppLanguageStandard>
       <CLanguageStandard>gnu11</CLanguageStandard>
       <AdditionalOptions>-I source.cpp %(AdditionalOptions)</AdditionalOptions>
@@ -170,7 +171,7 @@
     </ClCompile>
     <ClCompile>
       <CppLanguageStandard>c++2a</CppLanguageStandard>
-      <PreprocessorDefinitions>NDEBUG;__LINUX__;_DEBUG_;__WITH_FILESYSTEM_CXX__;__WITH_SCRIPT_LANG__;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;__USE_POSIX199309L;_____GPIO_NVIDIA_JETSON____;DBUILD_ZLIB=ON;__HAS_CUDA__;YOLOV5_OPENCV_HAS_CUDA;__WITH_AUDIO_PROCESSING__;__WITH_MONGOOSE_SERVER__;__WITH_VIDEO_STREAMER__;_WITH_VPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;__LINUX__;_DEBUG_;__WITH_FILESYSTEM_CXX__;__WITH_SCRIPT_LANG__;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;__USE_POSIX199309L;_____GPIO_NVIDIA_JETSON____;DBUILD_ZLIB=ON;__HAS_CUDA__;YOLOV5_OPENCV_HAS_CUDA;__WITH_AUDIO_PROCESSING__;__WITH_MONGOOSE_SERVER__;__WITH_VIDEO_STREAMER__;__WITH_RTSP_STREAMER__;_WITH_VPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
