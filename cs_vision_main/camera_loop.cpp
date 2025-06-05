@@ -135,6 +135,52 @@ bool connect_to_mqtt_broker(camera_settings* settings, DetectorEnvironment* env)
 	return true;
 }
 
+bool cleanup_detectors_environment(DetectorEnvironment* environment)
+{
+	if (environment == nullptr)
+		return false;
+
+	if (environment->mqtt_client != nullptr) {
+		//environment->mqtt_client->stop_background_loop();
+		delete environment->mqtt_client;
+		environment->mqtt_client = nullptr;
+	}
+
+#ifdef __WITH_VIDEO_STREAMER__
+	if (environment->video_streamer != nullptr) {
+		//environment->video_streamer->close();
+		delete environment->video_streamer;
+		environment->video_streamer = nullptr;
+	}
+#endif
+
+	if (environment->field_aliases != nullptr) {
+		delete environment->field_aliases;
+		environment->field_aliases = nullptr;
+	}
+	if (environment->super_resolution != nullptr) {
+		delete environment->super_resolution;
+		environment->super_resolution = nullptr;
+	}
+	if (environment->image_writer != nullptr) {
+		delete environment->image_writer;
+		environment->image_writer = nullptr;
+	}
+
+	for (auto& detector : environment->detectors) {
+		if (detector != nullptr) {
+			//detector->cleanup();
+			delete detector;
+		}
+	}
+	environment->detectors.clear();
+	environment->detect_frame = nullptr;
+	environment->show_frame.release();
+	environment->is_can_show = false;
+	environment->detector_ready = false;
+	environment->original_size = Size(0, 0);
+}
+
 bool init_detectors_environment(DetectorEnvironment* environment, camera_settings* set, ICamera* capture)
 {
 	if (!environment)
@@ -581,10 +627,6 @@ void* camera_loop(void* arg)
 		if (frame != nullptr && environment.detector_ready) {
 			process_frame(capture, set, &environment, *frame);
 			ind = 1 - ind;
-			//ind++;
-			//if (ind >= 3) {
-			//	ind = 0;
-			//}
 			frame = &buffers[ind];
 		}
 
@@ -616,7 +658,7 @@ void* camera_loop(void* arg)
 	}
 	
 	delete capture;
-	//delete environment;
+	cleanup_detectors_environment(&environment);
 
 	return NULL;
 }

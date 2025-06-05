@@ -1,15 +1,11 @@
 #pragma once
 
-#include "NvInfer.h"
+#include <NvInfer.h>
 #if NV_TENSORRT_MAJOR < 10
 #include <NvInferRuntime.h>
 #endif
 #include <opencv2/opencv.hpp>
 #include <vector>
-
-//using namespace nvinfer1;
-//using namespace std;
-//using namespace cv;
 
 struct Detection
 {
@@ -40,7 +36,7 @@ public:
 private:
     void init(std::string engine_path, nvinfer1::ILogger& logger);
 
-    float* gpu_buffers[2];               //!< The vector of device buffers needed for engine execution
+    float* gpu_buffers[2];               
     float* cpu_output_buffer;
 
     std::vector<cv::Rect> boxes;
@@ -49,11 +45,10 @@ private:
     std::vector<int> nms_result;
 
     cudaStream_t stream;
-    nvinfer1::IRuntime* runtime;                 //!< The TensorRT runtime used to deserialize the engine
-    nvinfer1::ICudaEngine* engine;               //!< The TensorRT engine used to run the network
-    nvinfer1::IExecutionContext* context;        //!< The context for executing inference using an ICudaEngine
+    nvinfer1::IRuntime* runtime;
+    nvinfer1::ICudaEngine* engine;
+    nvinfer1::IExecutionContext* context;
 
-    // Model parameters
     int input_w;
     int input_h;
     int num_detections;

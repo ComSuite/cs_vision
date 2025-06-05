@@ -89,7 +89,7 @@
     <IncludePath>/usr/include/opencv4/;/usr/local/cuda/include;~/tensorflow/;../ChaiScript/include;/usr/local/include;/usr/local/include/groupsock;/usr/local/include/UsageEnvironment;/usr/local/include/BasicUsageEnvironment;/usr/local/include/liveMedia;/usr/include/gstreamer-1.0/;/usr/include/glib-2.0/;/usr/lib/aarch64-linux-gnu/glib-2.0/include/</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
-    <IncludePath>/usr/include/opencv4/;/usr/local/cuda/include;~/tensorflow/;../ChaiScript/include;/usr/local/include;/usr/local/include/groupsock;/usr/local/include/UsageEnvironment;/usr/local/include/BasicUsageEnvironment;/usr/local/include/liveMedia;/usr/include/gstreamer-1.0/;/usr/include/glib-2.0/;/usr/lib/aarch64-linux-gnu/glib-2.0/include/</IncludePath>
+    <IncludePath>/usr/include/opencv4/;/usr/local/cuda/include;/usr/include/aarch64-linux-gnu/;../ChaiScript/include;/usr/local/include;/usr/local/include/groupsock;/usr/include/glib-2.0/;/usr/lib/aarch64-linux-gnu/glib-2.0/include/</IncludePath>
     <LibraryPath>/usr/lib/aarch64-linux-gnu;$(LibraryPath)</LibraryPath>
     <RemotePreBuildEventUseInBuild>false</RemotePreBuildEventUseInBuild>
     <RemoteCCompileToolExe>g++</RemoteCCompileToolExe>
