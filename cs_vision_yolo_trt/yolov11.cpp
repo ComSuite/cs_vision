@@ -176,8 +176,9 @@ void YOLOv11::init(std::string engine_path, nvinfer1::ILogger& logger)
 	context->setTensorAddress(engine->getIOTensorName(0), gpu_buffers[0]);
 	context->setTensorAddress(engine->getIOTensorName(1), gpu_buffers[1]);
 #else
-	context->setTensorAddress(engine->getBindingName(0), (void*)gpu_buffers[0]);
-    //context->setInputShapeBinding(engine->getBindingName(1), (int32_t const*)gpu_buffers[1]);
+	//context->setTensorAddress(engine->getBindingName(0), (void*)gpu_buffers[0]);
+    //context->setInputShapeBinding(engine->getBindingIndex("images"), (const int32_t*)gpu_buffers[0]);
+    //context->set >setOutputShapeBinding(engine->getBindingIndex("output0"), (const int32_t*)gpu_buffers[1]);
 #endif
 
     cuda_preprocess_init(MAX_IMAGE_SIZE);

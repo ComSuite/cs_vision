@@ -90,11 +90,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <IncludePath>/usr/include/opencv4/;/usr/local/cuda/include;/usr/include/aarch64-linux-gnu/;../ChaiScript/include;/usr/local/include;/usr/local/include/groupsock;/usr/include/glib-2.0/;/usr/lib/aarch64-linux-gnu/glib-2.0/include/</IncludePath>
-    <LibraryPath>/usr/lib/aarch64-linux-gnu;$(LibraryPath)</LibraryPath>
+    <LibraryPath>/usr/lib/aarch64-linux-gnu;/usr/local/cuda/targets/aarch64-linux/lib;$(LibraryPath)</LibraryPath>
     <RemotePreBuildEventUseInBuild>false</RemotePreBuildEventUseInBuild>
     <RemoteCCompileToolExe>g++</RemoteCCompileToolExe>
     <RemoteCppCompileToolExe>g++</RemoteCppCompileToolExe>
-    <MultiProcNumber>4</MultiProcNumber>
+    <MultiProcNumber>1</MultiProcNumber>
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="camera_loop_utils.cpp" />
@@ -115,6 +115,9 @@
     <RemotePreBuildEvent>
       <Message>NVCC</Message>
     </RemotePreBuildEvent>
+    <Link>
+      <LibraryDependencies>OpenGL;GLX;GLU;cuda;cudart;cudadevrt;nvrtc;nvrtc-builtins;nvonnxparser;nvinfer;nvinfer_plugin;opencv_alphamat;opencv_aruco;opencv_bgsegm;opencv_bioinspired;opencv_calib3d;opencv_ccalib;opencv_core;opencv_datasets;opencv_dnn;opencv_hfs;opencv_imgproc;opencv_intensity_transform;opencv_line_descriptor;opencv_mcc;opencv_ml;opencv_highgui;opencv_img_hash;opencv_features2d;opencv_objdetect;opencv_plot;opencv_quality;opencv_video;opencv_flann;opencv_videoio;opencv_videostab;opencv_imgcodecs;opencv_photo;opencv_rapid;opencv_reg;opencv_rgbd;opencv_saliency;opencv_shape;opencv_stereo;opencv_stitching;opencv_structured_light;opencv_superres;opencv_dnn_superres;opencv_surface_matching;opencv_tracking;opencv_xfeatures2d;opencv_ximgproc;opencv_xobjdetect;opencv_xphoto;opencv_cudaarithm;opencv_cudabgsegm;opencv_cudacodec;opencv_cudafeatures2d;opencv_cudafilters;opencv_cudaimgproc;opencv_cudaobjdetect;opencv_cudaoptflow;opencv_cudastereo;opencv_cudawarping;opencv_cudev;opencv_gapi;mosquitto;pthread;avformat;avcodec;swresample;swscale;avutil;gstreamer-1.0;glib-2.0;gobject-2.0;dl;%(LibraryDependencies)</LibraryDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
