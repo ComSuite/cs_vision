@@ -87,8 +87,8 @@
     <Import Project="..\cs_vision_main\cs_vision_main.vcxitems" Label="Shared" />
     <Import Project="..\cs_vision_yolo_detector\cs_vision_yolo_detector.vcxitems" Label="Shared" />
     <Import Project="..\cs_vision_yolo_trt\cs_vision_yolo_trt.vcxitems" Label="Shared" />
-    <Import Project="..\cs_vision_gemma3_svc\cs_vision_gemma3_svc.vcxitems" Label="Shared" />
     <Import Project="..\video_streamer_rtsp\video_streamer_rtsp.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_ollama_svc\cs_vision_ollama_svc.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />

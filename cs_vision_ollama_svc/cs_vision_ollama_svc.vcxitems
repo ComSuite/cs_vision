@@ -3,7 +3,7 @@
   <PropertyGroup Label="Globals">
     <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <HasSharedItems>true</HasSharedItems>
-    <ItemsProjectGuid>{dfbada5b-d8b4-4a0a-b2bf-bc41d56c1651}</ItemsProjectGuid>
+    <ItemsProjectGuid>{3f27e16e-e8e1-4390-80a0-43ef06a9681e}</ItemsProjectGuid>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -14,12 +14,16 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)base64.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)GemmaDetector.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)OllamaDetector.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)QwenDetector.cpp" />
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)base64.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GemmaDetector.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)HTTPRequest.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)base64.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)GemmaDetector.cpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)OllamaDetector.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)QwenDetector.h" />
   </ItemGroup>
 </Project>

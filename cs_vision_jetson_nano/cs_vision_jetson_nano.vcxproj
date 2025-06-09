@@ -91,7 +91,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <IncludePath>/usr/include/opencv4/;/usr/local/cuda/include;/usr/include/aarch64-linux-gnu/;../ChaiScript/include;/usr/local/include;/usr/local/include/groupsock;/usr/include/glib-2.0/;/usr/lib/aarch64-linux-gnu/glib-2.0/include/</IncludePath>
     <LibraryPath>/usr/lib/aarch64-linux-gnu;/usr/local/cuda/targets/aarch64-linux/lib;$(LibraryPath)</LibraryPath>
-    <RemotePreBuildEventUseInBuild>false</RemotePreBuildEventUseInBuild>
+    <RemotePreBuildEventUseInBuild>true</RemotePreBuildEventUseInBuild>
     <RemoteCCompileToolExe>g++</RemoteCCompileToolExe>
     <RemoteCppCompileToolExe>g++</RemoteCppCompileToolExe>
     <MultiProcNumber>1</MultiProcNumber>

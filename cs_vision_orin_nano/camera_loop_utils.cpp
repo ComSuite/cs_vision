@@ -55,7 +55,7 @@ IObjectDetector* create_detector(int kind)
 	case ObjectDetectorKind::OBJECT_DETECTOR_TENSORRT_YOLOv5:
 	case ObjectDetectorKind::OBJECT_DETECTOR_TENSORRT_YOLOv8:
 	case ObjectDetectorKind::OBJECT_DETECTOR_TENSORRT_YOLOv11: return new TRTYoloObjectDetector();
-	case ObjectDetectorKind::OBJECT_DETECTOR_SVC_GEMMA3: return new GemmaDetector();
+	case ObjectDetectorKind::OBJECT_DETECTOR_SVC_GEMMA3: return new OllamaDetector();
 	}
 
 	return nullptr;

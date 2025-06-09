@@ -37,17 +37,17 @@ using namespace std;
 using namespace cv;
 using namespace rapidjson;
 
-GemmaDetector::GemmaDetector()
+OllamaDetector::OllamaDetector()
 {
 	// Initialize any member variables if needed
 }
 
-GemmaDetector::~GemmaDetector()
+OllamaDetector::~OllamaDetector()
 {
 	clear();
 }
 
-int GemmaDetector::init(const char* model_path, const char* label_path, const char* rules_path, bool is_use_gpu)
+int OllamaDetector::init(const char* model_path, const char* label_path, const char* rules_path, bool is_use_gpu)
 {
 	// Initialize the detector with the provided model, label, and rules paths
 	// Use GPU if is_use_gpu is true
@@ -55,7 +55,7 @@ int GemmaDetector::init(const char* model_path, const char* label_path, const ch
 	return 0;
 }
 
-int GemmaDetector::init(const char* model_path, const char* label_path, const char* rules_path, const char* input_tensor_name, const char* output_tensor_name, bool is_use_gpu)
+int OllamaDetector::init(const char* model_path, const char* label_path, const char* rules_path, const char* input_tensor_name, const char* output_tensor_name, bool is_use_gpu)
 {
 	model = model_path;
 	prompt = input_tensor_name;
@@ -90,13 +90,13 @@ int GemmaDetector::init(const char* model_path, const char* label_path, const ch
 	}
 }
 
-void GemmaDetector::clear()
+void OllamaDetector::clear()
 {
 	// Clear any resources allocated by the detector
 	// This may include freeing memory, closing files, etc.
 }
 
-int GemmaDetector::detect(cv::Mat* input, int& current_id, bool is_draw)
+int OllamaDetector::detect(cv::Mat* input, int& current_id, bool is_draw)
 {
 	try
 	{
@@ -132,7 +132,7 @@ int GemmaDetector::detect(cv::Mat* input, int& current_id, bool is_draw)
 			});
 
 		std::string json_resp = std::string{ response.body.begin(), response.body.end() };
-
+		cout << endl << "Response Body: " << json_resp << endl << endl;
 		try {
 			if (!root.Parse(json_resp.c_str()).HasParseError()) {
 				if (root.HasMember("response")) {
@@ -140,20 +140,7 @@ int GemmaDetector::detect(cv::Mat* input, int& current_id, bool is_draw)
 						cout << "Response: " << root["response"].GetString() << endl;
 						std::string response = root["response"].GetString();
 
-						if (json_resp.find("Yes") != std::string::npos)
-						{
-							DetectionItem* item = new DetectionItem();
-							item->id = current_id;
-							current_id++;
-
-							item->kind = ObjectDetectorKind::OBJECT_DETECTOR_SVC_GEMMA3;
-							item->detector_id = id;
-
-							item->label = "Weapon!!!";
-							item->neural_network_id = neural_network_id;
-
-							last_detections.push_back(item);
-						}
+						parse(response, current_id);
 					}
 				}
 			}
@@ -170,17 +157,25 @@ int GemmaDetector::detect(cv::Mat* input, int& current_id, bool is_draw)
 	return 0;
 }
 
-int GemmaDetector::detect(cv::cuda::GpuMat* input, int& current_id, bool is_draw)
+void OllamaDetector::parse(const std::string& payload, int& current_id)
+{
+	// Parse the JSON payload and extract relevant information
+	// This may include extracting detection results, labels, etc.
+	// The implementation will depend on the structure of the payload
+}
+
+
+int OllamaDetector::detect(cv::cuda::GpuMat* input, int& current_id, bool is_draw)
 {
 	return 0;
 }
 
-int GemmaDetector::detect_batch(const std::vector<cv::Mat*>& input, int& current_id, bool is_draw)
+int OllamaDetector::detect_batch(const std::vector<cv::Mat*>& input, int& current_id, bool is_draw)
 {
 	return 0;
 }
 
-void GemmaDetector::draw_detection(cv::Mat* detect_frame, DetectionItem* detection, cv::Scalar& background_color, bool is_show_mask)
+void OllamaDetector::draw_detection(cv::Mat* detect_frame, DetectionItem* detection, cv::Scalar& background_color, bool is_show_mask)
 {
 	if (detect_frame == nullptr || detection == nullptr)
 		return;

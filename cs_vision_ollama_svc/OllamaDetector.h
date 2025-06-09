@@ -27,11 +27,11 @@
 
 namespace cs
 {
-	class GemmaDetector : public IObjectDetector
+	class OllamaDetector : public IObjectDetector
 	{
 	public:
-		GemmaDetector();
-		~GemmaDetector();
+		OllamaDetector();
+		~OllamaDetector();
 
 		virtual int init(const char* model_path, const char* label_path, const char* rules_path, bool is_use_gpu = false)  override;
 		virtual int init(const char* model_path, const char* label_path, const char* rules_path, const char* input_tensor_name, const char* output_tensor_name, bool is_use_gpu = false)  override;
@@ -41,6 +41,8 @@ namespace cs
 		virtual int detect(cv::cuda::GpuMat* input, int& current_id, bool is_draw = false) override;
 		virtual int detect_batch(const std::vector<cv::Mat*>& input, int& current_id, bool is_draw = false) override;
 		virtual void draw_detection(cv::Mat* detect_frame, DetectionItem* detection, cv::Scalar& background_color, bool is_show_mask) override;
+
+		virtual void parse(const std::string& payload, int& current_id);
 	private:
 		std::string endpoint = "";
 		std::string model = "";
