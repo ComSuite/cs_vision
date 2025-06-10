@@ -98,6 +98,8 @@ void OllamaDetector::clear()
 
 int OllamaDetector::detect(cv::Mat* input, int& current_id, bool is_draw)
 {
+	clear_last_detections();
+
 	try
 	{
 		http::Request request{ endpoint };
@@ -132,12 +134,11 @@ int OllamaDetector::detect(cv::Mat* input, int& current_id, bool is_draw)
 			});
 
 		std::string json_resp = std::string{ response.body.begin(), response.body.end() };
-		cout << endl << "Response Body: " << json_resp << endl << endl;
+		
 		try {
 			if (!root.Parse(json_resp.c_str()).HasParseError()) {
 				if (root.HasMember("response")) {
 					if (root["response"].IsString()) {
-						cout << "Response: " << root["response"].GetString() << endl;
 						std::string response = root["response"].GetString();
 
 						parse(response, current_id);
@@ -154,7 +155,7 @@ int OllamaDetector::detect(cv::Mat* input, int& current_id, bool is_draw)
 		std::cerr << "Request failed, error: " << e.what() << '\n';
 	}
 
-	return 0;
+	return last_detections.size() > 0;
 }
 
 void OllamaDetector::parse(const std::string& payload, int& current_id)
@@ -163,7 +164,6 @@ void OllamaDetector::parse(const std::string& payload, int& current_id)
 	// This may include extracting detection results, labels, etc.
 	// The implementation will depend on the structure of the payload
 }
-
 
 int OllamaDetector::detect(cv::cuda::GpuMat* input, int& current_id, bool is_draw)
 {
@@ -175,10 +175,3 @@ int OllamaDetector::detect_batch(const std::vector<cv::Mat*>& input, int& curren
 	return 0;
 }
 
-void OllamaDetector::draw_detection(cv::Mat* detect_frame, DetectionItem* detection, cv::Scalar& background_color, bool is_show_mask)
-{
-	if (detect_frame == nullptr || detection == nullptr)
-		return;
-
-	cv::putText(*detect_frame, detection->label, cv::Point(10, 10), cv::FONT_HERSHEY_SIMPLEX, 0.5, background_color, 2);
-}

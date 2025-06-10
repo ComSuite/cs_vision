@@ -40,7 +40,6 @@ namespace cs
 		virtual int detect(cv::Mat* input, int& current_id, bool is_draw = false) override;
 		virtual int detect(cv::cuda::GpuMat* input, int& current_id, bool is_draw = false) override;
 		virtual int detect_batch(const std::vector<cv::Mat*>& input, int& current_id, bool is_draw = false) override;
-		virtual void draw_detection(cv::Mat* detect_frame, DetectionItem* detection, cv::Scalar& background_color, bool is_show_mask) override;
 
 		virtual void parse(const std::string& payload, int& current_id);
 	private:

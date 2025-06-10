@@ -318,23 +318,27 @@ void IObjectDetector::draw_mask(DetectionItem* det, cv::Mat* frame, const cv::Sc
     int y0 = (trunc(det->box.y) >= 0) ? trunc(det->box.y) : 0;
     int y1 = (y0 + trunc(det->box.height) > frame->rows) ? frame->rows : y0 + trunc(det->box.height);
 
-//#ifdef __HAS_CUDA__
-//    GpuMat sub = (*(frame))(Range(y0, y1), Range(x0, x1));
-//    GpuMat clr(sub.size(), CV_8UC3, color);
-//    if (sub.cols > 0 && sub.rows > 0) {
-//        double alpha = 0.3;
-//        cv::cuda::addWeighted(clr, alpha, sub, 1.0 - alpha, 0.0, sub);
-//        (*(frame))(Range(y0, y1), Range(x0, x1)) = sub;
-//    }
-//#else
-    Mat sub = (*(frame))(Range(y0, y1), Range(x0, x1));
-    Mat clr(sub.size(), CV_8UC3, color);
-    if (sub.cols > 0 && sub.rows > 0) {
-        double alpha = 0.3;
-        cv::addWeighted(clr, alpha, sub, 1.0 - alpha, 0.0, sub);
-        (*(frame))(Range(y0, y1), Range(x0, x1)) = sub;
+    //#ifdef __HAS_CUDA__
+    //    GpuMat sub = (*(frame))(Range(y0, y1), Range(x0, x1));
+    //    GpuMat clr(sub.size(), CV_8UC3, color);
+    //    if (sub.cols > 0 && sub.rows > 0) {
+    //        double alpha = 0.3;
+    //        cv::cuda::addWeighted(clr, alpha, sub, 1.0 - alpha, 0.0, sub);
+    //        (*(frame))(Range(y0, y1), Range(x0, x1)) = sub;
+    //    }
+    //#else
+    try {
+        Mat sub = (*(frame))(Range(y0, y1), Range(x0, x1));
+        Mat clr(sub.size(), CV_8UC3, color);
+
+        if (sub.cols > 0 && sub.rows > 0) {
+            double alpha = 0.3;
+            cv::addWeighted(clr, alpha, sub, 1.0 - alpha, 0.0, sub);
+            (*(frame))(Range(y0, y1), Range(x0, x1)) = sub;
+        }
     }
-//#endif
+    catch (...) {}
+    //#endif
 }
 
 void IObjectDetector::draw_label(Mat& input_image, string& label, int left, int top, cv::Scalar& background_color, cv::Scalar& text_color)
