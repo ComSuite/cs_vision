@@ -59,7 +59,7 @@ int OllamaDetector::init(const char* model_path, const char* label_path, const c
 {
 	model = model_path;
 	prompt = input_tensor_name;
-	endpoint = "http://192.168.1.130:11434/api/generate";
+	endpoint = "http://192.168.0.128:11434/api/generate";
 
 	try
 	{
@@ -134,7 +134,7 @@ int OllamaDetector::detect(cv::Mat* input, int& current_id, bool is_draw)
 			});
 
 		std::string json_resp = std::string{ response.body.begin(), response.body.end() };
-		
+		cout << "Response: " << json_resp << endl;
 		try {
 			if (!root.Parse(json_resp.c_str()).HasParseError()) {
 				if (root.HasMember("response")) {

@@ -1,0 +1,5 @@
+Detect all weapons in the image and return their locations and labels (knife, gan, rifle etc.) in the form of coordinates.
+
+Detect persons in the image and return their locations and label (person) in the form of coordinates.
+
+Detect cambotants in the image and return their locations and label in the form of coordinates.

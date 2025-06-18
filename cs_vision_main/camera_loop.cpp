@@ -504,6 +504,9 @@ void thread_func(DetectorEnvironment* env)
 
 void process_frame(ICamera* capture, cs::camera_settings* set, DetectorEnvironment* environment, Mat& frame)
 {
+	//if (frame.empty())
+	//	return;
+
 	if (environment->detector_ready) {
 		environment->original_size = frame.size();
 
@@ -615,6 +618,8 @@ void* camera_loop(void* arg)
 	stream_tread.detach();
 
 	cv::Mat buffers[2]{cv::Mat(capture->get_height(), capture->get_width(), CV_8UC3), cv::Mat(capture->get_height(), capture->get_width(), CV_8UC3)};
+	buffers[0].release();
+	buffers[1].release();
 	int ind = 0;
 	cv::Mat* frame = &buffers[ind];
 
@@ -625,9 +630,12 @@ void* camera_loop(void* arg)
 		}
 
 		if (frame != nullptr && environment.detector_ready) {
-			process_frame(capture, set, &environment, *frame);
-			ind = 1 - ind;
-			frame = &buffers[ind];
+			if (!frame->empty()) {
+				process_frame(capture, set, &environment, *frame);
+				ind = 1 - ind;
+				frame = &buffers[ind];
+				//frame->release();
+			}
 		}
 
 		int ret = capture->get_frame(*frame, set->get_is_convert_to_gray());

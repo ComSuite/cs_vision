@@ -35,6 +35,44 @@
 
 namespace cs
 {
+/*
+	class dynamic_settings : protected cs::JsonWrapper
+	{
+	public:
+		float get_float(const std::string& key, float default_value = 0.0f) const
+		{
+			auto it = settings.find(key);
+			if (it != settings.end())
+			{
+				return std::get<float>(it->second);
+			}
+			return default_value;
+		}
+
+		int get_int(const std::string& key, int default_value = 0) const
+		{
+			auto it = settings.find(key);
+			if (it != settings.end())
+			{
+				return std::get<int>(it->second);
+			}
+			return default_value;
+		}
+
+		std::string get_string(const std::string& key, const std::string& default_value = "") const
+		{
+			auto it = settings.find(key);
+			if (it != settings.end())
+			{
+				return std::get<std::string>(it->second);
+			}
+			return default_value;
+		}
+
+	private:
+		std::map<std::string, std::variant<int, double, std::string>> settings;
+	};
+*/
 	class detector_settings : protected cs::JsonWrapper
 	{
 	public:
