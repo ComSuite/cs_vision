@@ -45,11 +45,13 @@ void QwenDetector::parse(const std::string& response, int& current_id)
 						item->label = trim(label);
 						item->neural_network_id = neural_network_id;
 
-						item->box.width = (box[2].GetFloat() - box[0].GetFloat()) / 0.30;
-						item->box.height = (box[3].GetFloat() - box[1].GetFloat()) / 0.30;
-						item->box.x = box[0].GetFloat() / 0.30;
-						item->box.y = box[1].GetFloat() / 0.30;
-						cout << "QwenDetector::parse: " << item->label << " " << item->box.x << " " << item->box.y << " " << item->box.width << " " << item->box.height << endl;
+						double k = 0.50;
+
+						item->box.width = (box[2].GetFloat() / k - box[0].GetFloat()) / k;
+						item->box.height = (box[3].GetFloat() / k - box[1].GetFloat()) / k;
+						item->box.x = box[0].GetFloat() / k;
+						item->box.y = box[1].GetFloat() / k;
+						//cout << "QwenDetector::parse: " << item->label << " " << item->box.x << " " << item->box.y << " " << item->box.width << " " << item->box.height << endl;
 
 						last_detections.push_back(item);
 					}

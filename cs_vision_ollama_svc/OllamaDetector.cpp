@@ -113,8 +113,9 @@ int OllamaDetector::detect(cv::Mat* input, int& current_id, bool is_draw)
 		root.AddMember("prompt", Value().SetString(prompt.c_str(), prompt.length()), allocator);
 		root.AddMember("stream", false, allocator);
 
+		double k = 0.50;
 		cv::Mat img; 
-		cv::resize(*input, img, cv::Size(), 0.30, 0.30);
+		cv::resize(*input, img, cv::Size(), k, k);
 
 		std::vector<uchar> buf;
 		cv::imencode(".jpg", img, buf);
@@ -134,7 +135,7 @@ int OllamaDetector::detect(cv::Mat* input, int& current_id, bool is_draw)
 			});
 
 		std::string json_resp = std::string{ response.body.begin(), response.body.end() };
-		cout << "Response: " << json_resp << endl;
+		//cout << "Response: " << json_resp << endl;
 		try {
 			if (!root.Parse(json_resp.c_str()).HasParseError()) {
 				if (root.HasMember("response")) {

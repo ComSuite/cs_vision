@@ -108,6 +108,7 @@ void create_video_streamer(DetectorEnvironment* environment, camera_settings* se
 				cout << "Error: " << e.what() << endl;
 			}
 
+			//environment->video_streamer->set_max_output_fps(3); //set->video_stream_max_output_fps
 			environment->video_streamer->open(set->video_stream_port);
 			cout << "[Video Streamer] Publishing to port: " << set->video_stream_port << " Channel: " << set->video_stream_channel << " Mode: " << static_cast<int>(set->video_stream_mode) << endl;
 			environment->video_stream_channel = set->video_stream_channel;
@@ -329,7 +330,7 @@ void stream_thread_func(DetectorEnvironment* env)
 	while (true) {
 		if (!env->is_can_show && !env->show_frame.empty()) {
 			env->is_can_show = true;
-			env->video_streamer->show_frame(env->show_frame, env->video_stream_channel.c_str());
+			env->video_streamer->show(env->show_frame, env->video_stream_channel.c_str());
 		}
 	}
 #endif

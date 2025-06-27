@@ -65,11 +65,11 @@ namespace cs
 				std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 				auto diff = std::chrono::duration_cast<std::chrono::seconds>(end - begin).count();
 				if (diff != 0) {
-					unsigned int val = static_cast<unsigned int>(counter / diff);
+					fps = static_cast<unsigned int>(counter / diff);
 					if (queue != nullptr) {
 						fps_counter_info* info = new fps_counter_info();
 						if (info != nullptr) {
-							info->counter = val;
+							info->counter = fps;
 							info->id = id;
 
 							queue->try_push(info);
@@ -77,7 +77,7 @@ namespace cs
 					}
 //delete last "_" to print fps
 #ifdef _DEBUG_
-					std::cout << prompt << val << std::endl;
+					std::cout << prompt << fps << std::endl;
 #endif
 				}
 			}
@@ -93,11 +93,25 @@ namespace cs
 			begin = std::chrono::steady_clock::now();
 			is_init = true;
 		}
+
+		void reset()
+		{
+			counter = 0;
+			ticker = 0;
+			begin = std::chrono::steady_clock::now();
+			fps = 0;
+		}
+
+		unsigned int get_fps() const
+		{
+			return fps;
+		}
 	private:
 		unsigned int step = default_fps_counter_step;
 		__int128_t counter = 0;
 		std::chrono::steady_clock::time_point begin;
 		int ticker = 0;
 		bool is_init = false;
+		unsigned int fps = 0;
 	};
 }

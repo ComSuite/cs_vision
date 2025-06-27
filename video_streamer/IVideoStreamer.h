@@ -24,6 +24,7 @@
 #pragma once
 
 #include <opencv2/core.hpp>
+#include "fps_counter.h"
 
 namespace cs
 {
@@ -37,6 +38,38 @@ namespace cs
 		virtual int open(int port, int tunneling_port = 0) = 0;
 		virtual void show_frame(cv::Mat& frame, const char* channel) = 0;
 		virtual void add_user_credentials(const char* user, const char* password) {};
+
+		void show(cv::Mat& frame, const char* channel)
+		{
+			if (fps != nullptr) {
+				fps->tick("IVideoStreamer::show", channel);
+				if (max_output_fps != 0 && fps->get_fps() > max_output_fps) {
+					return; 
+				}
+			} else {
+				show_frame(frame, channel);
+			}
+		}
+
+		void set_max_output_fps(unsigned int new_fps)
+		{
+			max_output_fps = new_fps;
+
+			if (new_fps != 0) {
+				if (fps == nullptr) {
+					fps = new fps_counter();
+				}
+			} 
+			else {
+				if (fps != nullptr) {
+					delete fps;
+					fps = nullptr;
+				}
+			}
+		}
+	private:
+		unsigned int max_output_fps = 0;
+		fps_counter* fps = nullptr;
 	};
 }
 
