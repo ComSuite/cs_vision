@@ -42,13 +42,14 @@ namespace cs
 		void show(cv::Mat& frame, const char* channel)
 		{
 			if (fps != nullptr) {
-				fps->tick("IVideoStreamer::show", channel);
-				if (max_output_fps != 0 && fps->get_fps() > max_output_fps) {
+				if (fps->get_fps() > max_output_fps) {
 					return; 
 				}
-			} else {
-				show_frame(frame, channel);
+				else
+					fps->tick("IVideoStreamer::show", channel);
 			}
+			
+			show_frame(frame, channel);
 		}
 
 		void set_max_output_fps(unsigned int new_fps)
@@ -58,6 +59,7 @@ namespace cs
 			if (new_fps != 0) {
 				if (fps == nullptr) {
 					fps = new fps_counter();
+					fps->init(default_fps_counter_step);
 				}
 			} 
 			else {

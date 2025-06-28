@@ -102,8 +102,14 @@ namespace cs
 			fps = 0;
 		}
 
-		unsigned int get_fps() const
+		unsigned int get_fps()
 		{
+			std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+			auto diff = std::chrono::duration_cast<std::chrono::seconds>(end - begin).count();
+			if (diff != 0) {
+				fps = static_cast<unsigned int>(counter / diff);
+			}
+
 			return fps;
 		}
 	private:
