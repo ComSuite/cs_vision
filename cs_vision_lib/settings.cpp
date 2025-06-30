@@ -120,6 +120,7 @@ int camera_settings::parse(rapidjson::Value& root)
 
 	video_stream_mode = static_cast<VIDEO_STREAM_MODE>(json_get_int(root, "video_stream_mode", static_cast<int>(video_stream_mode)));
 	video_stream_engine = static_cast<VIDEO_STREAM_ENGINE>(json_get_int(root, "video_stream_engine", static_cast<int>(video_stream_engine)));
+	video_stream_max_output_fps = json_get_int(root, "video_stream_max_output_fps", video_stream_max_output_fps);
 
 	is_use_super_resolution = json_get_bool(root, "is_use_super_resolution", is_use_super_resolution);
 	super_resolution_name = json_get_string(root, "super_resolution_name", super_resolution_name.c_str());

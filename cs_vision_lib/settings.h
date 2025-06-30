@@ -149,6 +149,7 @@ namespace cs
 		std::string video_stream_password = "";
 		VIDEO_STREAM_MODE video_stream_mode = VIDEO_STREAM_MODE::VIDEO_STREAM_MODE_NONE;
 		VIDEO_STREAM_ENGINE video_stream_engine = VIDEO_STREAM_ENGINE::VIDEO_STREAM_ENGINE_NONE;
+		unsigned int video_stream_max_output_fps = 0;
 
 		bool is_use_super_resolution = false;
 		std::string super_resolution_name = "";
