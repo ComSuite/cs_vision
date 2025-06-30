@@ -169,6 +169,8 @@ namespace cs
 		std::string id = "";
 		std::string name = "";
 
+		dynamic_settings additional;
+
 		bool is_display = false;
 		std::variant<std::string, int> device = 0;
 		bool is_use_gpu = false;

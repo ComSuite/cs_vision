@@ -108,7 +108,7 @@ void create_video_streamer(DetectorEnvironment* environment, camera_settings* se
 				cout << "Error: " << e.what() << endl;
 			}
 
-			environment->video_streamer->set_max_output_fps(set->video_stream_max_output_fps);
+			environment->video_streamer->set_max_output_fps(set->additional.get<int>("video_stream_max_output_fps", 0));
 			environment->video_streamer->open(set->video_stream_port);
 			cout << "[Video Streamer] Publishing to port: " << set->video_stream_port << " Channel: " << set->video_stream_channel << " Mode: " << static_cast<int>(set->video_stream_mode) << endl;
 			environment->video_stream_channel = set->video_stream_channel;

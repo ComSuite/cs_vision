@@ -43,21 +43,7 @@ int dynamic_settings::parse(rapidjson::Value& root)
 				continue;
 
 			std::string name = json_get_string(tr, "name", "");
-			std::cout << "Dynamic setting: " << name << " Val: ";
 			auto val = json_get_variant(tr, "val", def);
-			if (std::holds_alternative<int>(val)) {
-				std::cout << std::get<int>(val);
-			} else if (std::holds_alternative<std::string>(val)) {
-				std::cout << std::get<std::string>(val);
-			} else if (std::holds_alternative<float>(val)) {
-				std::cout << std::get<float>(val);
-			} else if (std::holds_alternative<double>(val)) {
-				std::cout << std::get<double>(val);
-			} else if (std::holds_alternative<bool>(val)) {
-				std::cout << (std::get<bool>(val) ? "true" : "false");
-			}
-			std::cout << std::endl;
-
 			settings[name] = val;
 		}
 	}
@@ -125,6 +111,8 @@ int detector_settings::parse(rapidjson::Value& root)
 //******************************************************************************************
 int camera_settings::parse(rapidjson::Value& root)
 {
+	additional.parse(root);
+
 	int dev = json_get_int(root, "device", -1);
 	if (dev >= 0)
 		device = dev;
