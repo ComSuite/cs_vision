@@ -68,8 +68,9 @@ namespace cs
 			return default_value;
 		}
 
+		int parse(rapidjson::Value& root);
 	private:
-		std::map<std::string, std::variant<int, double, std::string>> settings;
+		std::map<std::string, std::variant<int, std::string, float, double, bool>> settings;
 	};
 
 	class detector_settings : protected cs::JsonWrapper
@@ -86,6 +87,8 @@ namespace cs
 
 		int predecessor_id = -1; //id -1 - should use original image. another - list of results of executed predecessor
 		int predecessor_class = -1;
+
+		dynamic_settings additional;
 
 		std::string input_tensor_name = "";
 		std::string output_tensor_name = "";

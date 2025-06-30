@@ -28,6 +28,44 @@
 using namespace cs;
 using namespace rapidjson;
 
+//******************************************************************************************
+// dynamic_settings
+int dynamic_settings::parse(rapidjson::Value& root)
+{
+	if (root.HasMember("additional")) {
+		auto additional = root["additional"].GetArray();
+		std::variant<int, std::string, float, double, bool> def;
+		for (auto& tr : additional) {
+			if (!tr.IsObject())
+				continue;
+
+			if (!tr.HasMember("name") || !tr.HasMember("val"))
+				continue;
+
+			std::string name = json_get_string(tr, "name", "");
+			std::cout << "Dynamic setting: " << name << " Val: ";
+			auto val = json_get_variant(tr, "val", def);
+			if (std::holds_alternative<int>(val)) {
+				std::cout << std::get<int>(val);
+			} else if (std::holds_alternative<std::string>(val)) {
+				std::cout << std::get<std::string>(val);
+			} else if (std::holds_alternative<float>(val)) {
+				std::cout << std::get<float>(val);
+			} else if (std::holds_alternative<double>(val)) {
+				std::cout << std::get<double>(val);
+			} else if (std::holds_alternative<bool>(val)) {
+				std::cout << (std::get<bool>(val) ? "true" : "false");
+			}
+			std::cout << std::endl;
+
+			settings[name] = val;
+		}
+	}
+
+	return settings.size() > 0;
+}
+
+//******************************************************************************************
 detector_settings::detector_settings(detector_settings& settings)
 {
 	model_path = settings.model_path;
@@ -40,6 +78,8 @@ detector_settings::detector_settings(detector_settings& settings)
 
 int detector_settings::parse(rapidjson::Value& root)
 {
+	additional.parse(root);
+
 	name = json_get_string(root, "name", name.c_str());
 	id = json_get_int(root, "id", id);
 	neural_network_id = json_get_int(root, "neural_network_id", neural_network_id);
@@ -81,7 +121,6 @@ int detector_settings::parse(rapidjson::Value& root)
 
 	return 1;
 }
-
 
 //******************************************************************************************
 int camera_settings::parse(rapidjson::Value& root)
