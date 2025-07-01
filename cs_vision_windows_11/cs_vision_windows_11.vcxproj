@@ -64,6 +64,10 @@
     <Import Project="..\mongoose\mongoose.vcxitems" Label="Shared" />
     <Import Project="..\cs_vision_cred_storage\cs_vision_cred_storage.vcxitems" Label="Shared" />
     <Import Project="..\os_specific_windows\os_specific_windows.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_yolo_detector\cs_vision_yolo_detector.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_yolo_trt\cs_vision_yolo_trt.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_main\cs_vision_main.vcxitems" Label="Shared" />
+    <Import Project="..\command_line_parcer\command_line_parcer.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -80,7 +84,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>G:\Nvidia\TensorRT-10.0.1.6\include;$(CUDA_PATH)\include;$(MOSQUITTO_DIR)\devel;G:\Projects\ocv\build\install\include;$(TENSORFLOW_LITE_PATH)\include;C:\Program Files\NVIDIA\CUDNN\v9.2\include;../ChaiScript/include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(CUDA_PATH)\lib\x64;C:\Program Files\NVIDIA\CUDNN\v9.2\lib;G:\Projects\ocv\build\install\x64\vc17\lib;C:\Program Files\mosquitto\devel;G:\Projects\comsuite\sources\cs_vision\packages\portaudio.0.19.1\build\native\lib\x64\v120\Debug;G:\Nvidia\TensorRT-10.0.1.6\lib;$(TENSORFLOW_LITE_PATH)\libs\windows_x86_64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(CUDA_PATH)\lib\x64;C:\Program Files\NVIDIA\CUDNN\v9.2\lib;G:\Projects\ocv\build\install\x64\vc17\lib;C:\Program Files\mosquitto\devel;G:\Projects\comsuite\sources\cs_vision\packages\portaudio.0.19.1\build\native\lib\x64\v120\Debug;G:\Nvidia\TensorRT-10.0.1.6\lib;$(TENSORFLOW_LITE_PATH)\libs\windows_x86_64;G:\Projects\comsuite\sources\cs_vision\cs_vision_yolo_trt\win;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>G:\Nvidia\TensorRT-10.0.1.6\include;$(CUDA_PATH)\include;$(MOSQUITTO_DIR)\devel;G:\Projects\ocv\build\install\include;$(TENSORFLOW_LITE_PATH)\include;C:\Program Files\NVIDIA\CUDNN\v9.2\include;../ChaiScript/include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
@@ -140,7 +144,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;_DEBUG_;__HAS_CUDA__;_CRT_SECURE_NO_WARNINGS;__WITH_FILESYSTEM_CXX__;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;__USE_POSIX199309;DBUILD_ZLIB=ON;YOLOV5_OPENCV_HAS_CUDA;__WITH_MONGOOSE_SERVER__;__WITH_NVML__;_WITH_VPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;_DEBUG_;__HAS_CUDA__;_CRT_SECURE_NO_WARNINGS;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;__USE_POSIX199309;DBUILD_ZLIB=ON;YOLOV5_OPENCV_HAS_CUDA;__WITH_FILESYSTEM_CXX__;__WITH_MONGOOSE_SERVER__;__WITH_NVML__;_WITH_VPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>

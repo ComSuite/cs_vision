@@ -25,7 +25,7 @@
 //#include "TRTYOLOv5ObjectDetector.h"
 //#include "OCVYOLOv8ObjectDetector.h"
 #include "TFYOLOv5ObjectDetector.h"
-#include "TRTYOLOv8ObjectDetector.h"
+#include "TRTYOLOObjectDetector.h"
 #include "NullObjectDetector.h"
 #include "cv_utils.h"
 #ifdef __HAS_CUDA__
@@ -44,9 +44,8 @@ IObjectDetector* create_detector(int kind)
 {
 	switch (static_cast<ObjectDetectorKind>(kind)) {
 	case ObjectDetectorKind::OBJECT_DETECTOR_NONE: return new NullObjectDetector();
-	//case ObjectDetectorKind::OBJECT_DETECTOR_TENSORRT_YOLOv5: return new TRTYOLOv5ObjectDetector();
 	case ObjectDetectorKind::OBJECT_DETECTOR_TENSORFLOW_YOLOv5: return new TFYOLOv5ObjectDetector();
-	case ObjectDetectorKind::OBJECT_DETECTOR_TENSORRT_YOLOv8: return new TRTYOLOv8ObjectDetector();
+	case ObjectDetectorKind::OBJECT_DETECTOR_TENSORRT_YOLO: return new TRTYoloObjectDetector();
 	}
 
 	return nullptr;

@@ -318,10 +318,14 @@ Global
 		command_line_parcer\command_line_parcer.vcxitems*{02c4c439-5877-4974-b178-5804df66a6f9}*SharedItemsImports = 4
 		video_streamer\video_streamer.vcxitems*{02c4c439-5877-4974-b178-5804df66a6f9}*SharedItemsImports = 4
 		cs_vision_portaudio\cs_vision_portaudio.vcxitems*{03200230-deb5-4f82-a284-96e775280082}*SharedItemsImports = 9
+		command_line_parcer\command_line_parcer.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
 		cs_vision_common\cs_vision_common.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
 		cs_vision_cred_storage\cs_vision_cred_storage.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
 		cs_vision_lib\cs_vision_lib.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
+		cs_vision_main\cs_vision_main.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
 		cs_vision_yolov5_tflite\cs_vision_yolov5_tflite.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
+		cs_vision_yolo_detector\cs_vision_yolo_detector.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
+		cs_vision_yolo_trt\cs_vision_yolo_trt.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
 		mongoose\mongoose.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
 		os_specific_windows\os_specific_windows.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
 		rapidjson\rapidjson.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
