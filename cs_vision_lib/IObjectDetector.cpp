@@ -291,18 +291,18 @@ int IObjectDetector::parse(Document& root)
 
 void IObjectDetector::draw_detection(cv::Mat* detect_frame, DetectionItem* detection)
 {
-    switch (illustration_mode) {
-        case (int)ILLUSTRATION_STYLE::ILLUSTRATION_STYLE_BOX:
+    switch (static_cast<int>(illustration_mode)) {
+        case static_cast<int>(ILLUSTRATION_STYLE::ILLUSTRATION_STYLE_BOX):
             rectangle(*detect_frame, static_cast<Rect>(detection->box), detection->color, 2, LINE_8);
             break;
-        case (int)ILLUSTRATION_STYLE::ILLUSTRATION_STYLE_BOX_AND_TEXT:
+        case static_cast<int>(ILLUSTRATION_STYLE::ILLUSTRATION_STYLE_BOX_AND_TEXT):
             rectangle(*detect_frame, static_cast<Rect>(detection->box), detection->color, 2, LINE_8);
             draw_label(*detect_frame, detection->label, detection->box.x, detection->box.y, detection->color);
 			break;
-        case (int)ILLUSTRATION_STYLE::ILLUSTRATION_STYLE_MASK:
+        case static_cast<int>(ILLUSTRATION_STYLE::ILLUSTRATION_STYLE_MASK):
             draw_mask(detection, detect_frame, detection->color);
             break;
-        case (int)ILLUSTRATION_STYLE::ILLUSTRATION_STYLE_MASK_AND_TEXT:
+        case static_cast<int>(ILLUSTRATION_STYLE::ILLUSTRATION_STYLE_MASK_AND_TEXT):
             draw_mask(detection, detect_frame, detection->color);
 			draw_label(*detect_frame, detection->label, detection->box.x, detection->box.y, detection->color);
             break;
