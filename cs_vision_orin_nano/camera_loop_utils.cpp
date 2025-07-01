@@ -52,11 +52,7 @@ IObjectDetector* create_detector(int kind)
 	case ObjectDetectorKind::OBJECT_DETECTOR_TENSORFLOW_YOLOv5: return new TFYOLOv5ObjectDetector();
 	//case ObjectDetectorKind::AUDIO_RECOGNIZER_TFLITE: return new TFAudioSampleRecognizer();
 	//case ObjectDetectorKind::HAAR_CASCADE_CLASSIFIER: return new HaarCascadeClassifier();
-	case ObjectDetectorKind::OBJECT_DETECTOR_TENSORRT_YOLOv3:
-	case ObjectDetectorKind::OBJECT_DETECTOR_TENSORRT_YOLOv5:
-	case ObjectDetectorKind::OBJECT_DETECTOR_TENSORRT_YOLOv8:
-	case ObjectDetectorKind::OBJECT_DETECTOR_TENSORRT_YOLOv11: 
-	case ObjectDetectorKind::OBJECT_DETECTOR_TENSORRT_YOLOv12: return new TRTYoloObjectDetector();
+	case ObjectDetectorKind::OBJECT_DETECTOR_TENSORRT_YOLO: return new TRTYoloObjectDetector();
 	case ObjectDetectorKind::OBJECT_DETECTOR_SVC_GEMMA3: return new GemmaDetector();
 	case ObjectDetectorKind::OBJECT_DETECTOR_SVC_QWEN: return new QwenDetector();
 	}

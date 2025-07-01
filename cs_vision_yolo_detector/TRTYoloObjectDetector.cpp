@@ -82,7 +82,7 @@ void TRTYoloObjectDetector::postprocess(std::vector<Detection>* detections, int&
 			item->id = current_id;
 			current_id++;
 
-			item->kind = ObjectDetectorKind::OBJECT_DETECTOR_TENSORRT_YOLOv8;
+			item->kind = ObjectDetectorKind::OBJECT_DETECTOR_TENSORRT_YOLO;
 			item->class_id = detection.class_id;
 			item->detector_id = id;
 
