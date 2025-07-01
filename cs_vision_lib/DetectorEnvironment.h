@@ -71,7 +71,7 @@ namespace cs
 		}
 
 		std::atomic_bool detector_ready = true;
-		std::mutex detector_mutex;
+		//std::mutex detector_mutex;
 
 		std::list<IObjectDetector*> detectors; //to do: shold be changed to map<int, IObjectDetector*>?
 

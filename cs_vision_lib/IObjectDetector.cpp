@@ -291,10 +291,10 @@ int IObjectDetector::parse(Document& root)
 //#ifdef __HAS_CUDA__
 //void IObjectDetector::draw_detection(cv::cuda::GpuMat* detect_frame, DetectionItem* detection, cv::Scalar& background_color, bool is_show_mask)
 //#else
-void IObjectDetector::draw_detection(cv::Mat* detect_frame, DetectionItem* detection, bool is_show_mask)
+void IObjectDetector::draw_detection(cv::Mat* detect_frame, DetectionItem* detection)
 //#endif
 {
-    if (is_show_mask) {
+    if (this->illustration_mode == 2) {
         draw_mask(detection, detect_frame, detection->color);
     }
     else {

@@ -182,7 +182,7 @@ namespace cs
 		int frame_height = 0;
 		int resize_x = 0;
 		int resize_y = 0;
-		bool is_show_mask = false;
+		//bool is_show_mask = false;
 
 		bool mqtt = true; // to do: should be changed to false
 		std::string mqtt_client_name = "";

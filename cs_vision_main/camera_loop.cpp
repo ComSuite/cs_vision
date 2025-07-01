@@ -233,6 +233,7 @@ bool init_detectors_environment(DetectorEnvironment* environment, camera_setting
 			_detector->is_draw_detections = detector->is_draw_detections;
 			_detector->results_mapping_rule = detector->results_mapping_rule;
 			_detector->color = detector->color;
+			_detector->illustration_mode = detector->additional.get<int>("illustration_mode", 0);
 #ifdef __WITH_SCRIPT_LANG__
 			_detector->on_detect = detector->on_detect;
 			_detector->execute_always = detector->execute_always;
@@ -247,7 +248,7 @@ bool init_detectors_environment(DetectorEnvironment* environment, camera_setting
 		}
 	}
 
-	environment->is_show_mask = set->is_show_mask;
+	//environment->is_show_mask = set->is_show_mask;
 
 	if (set->is_use_super_resolution) {
 		environment->super_resolution = new cv::dnn_superres::DnnSuperResImpl();
@@ -274,7 +275,7 @@ void send_results_thread(DetectorEnvironment* env, list<DetectionItem*>& detecti
 	env->mqtt_client->send_detection(env->camera_id.c_str(), env->mqtt_detection_topic.c_str(), detections, env->field_aliases);
 }
 
-void draw_detections(DetectorEnvironment* env, cv::Mat* detect_frame, list<DetectionItem*>& detections, bool is_show_mask)
+void draw_detections(DetectorEnvironment* env, cv::Mat* detect_frame, list<DetectionItem*>& detections)
 {
 	if (detect_frame == nullptr || env == nullptr)
 		return;
@@ -283,7 +284,7 @@ void draw_detections(DetectorEnvironment* env, cv::Mat* detect_frame, list<Detec
 		if (det->is_draw) {
 			IObjectDetector* detector = env->get_detector(det->detector_id);
 			if (detector != nullptr) {
-				detector->draw_detection(detect_frame, det, is_show_mask);
+				detector->draw_detection(detect_frame, det);
 			}
 		}
 	}
@@ -482,7 +483,7 @@ void detect_func(DetectorEnvironment* env)
 
 #ifdef __WITH_VIDEO_STREAMER__
 	if (env->video_stream_mode == VIDEO_STREAM_MODE::VIDEO_STREAM_MODE_DETECTOR && env->video_streamer != nullptr) {
-		draw_detections(env, env->detect_frame, detections, env->is_show_mask);
+		draw_detections(env, env->detect_frame, detections);
 		stream_frame_(env->detect_frame, env);
 	}
 #endif

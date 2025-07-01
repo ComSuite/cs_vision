@@ -131,7 +131,7 @@ int camera_settings::parse(rapidjson::Value& root)
 	frame_height = json_get_int(root, "frame_height", frame_height);
 	resize_x = json_get_int(root, "resize_x", resize_x);
 	resize_y = json_get_int(root, "resize_y", resize_y);
-	is_show_mask = json_get_bool(root, "is_show_mask", is_show_mask);
+	//is_show_mask = json_get_bool(root, "is_show_mask", is_show_mask);
 
 	mqtt = json_get_bool(root, "mqtt", mqtt);
 	mqtt_client_name = json_get_string(root, "mqtt_client_name", mqtt_client_name.c_str());

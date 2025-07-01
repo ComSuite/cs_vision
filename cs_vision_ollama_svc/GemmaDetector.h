@@ -25,7 +25,7 @@ namespace cs
 			}
 		}
 
-		virtual void draw_detection(cv::Mat* detect_frame, DetectionItem* detection, bool is_show_mask) override
+		virtual void draw_detection(cv::Mat* detect_frame, DetectionItem* detection) override
 		{
 			if (detect_frame == nullptr || detection == nullptr)
 				return;

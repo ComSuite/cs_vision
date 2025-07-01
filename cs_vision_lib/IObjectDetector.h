@@ -148,7 +148,7 @@ namespace cs
 //		virtual void draw_detection(cv::cuda::GpuMat* detect_frame, DetectionItem* detection, cv::Scalar& background_color, bool is_show_mask);
 //		void draw_mask(DetectionItem* det, cv::cuda::GpuMat* frame, const cv::Scalar& color = cv::Scalar(255, 255, 255));
 //#else
-		virtual void draw_detection(cv::Mat* detect_frame, DetectionItem* detection, bool is_show_mask);
+		virtual void draw_detection(cv::Mat* detect_frame, DetectionItem* detection);
 		void draw_mask(DetectionItem* det, cv::Mat* frame, const cv::Scalar color = cv::Scalar(255, 255, 255));
 //#endif
 
@@ -168,6 +168,7 @@ namespace cs
 		bool is_send_results = false;
 		bool is_use_gpu = false;
 		bool is_draw_detections = false;
+		int illustration_mode = 0; // 0 - no illustration, 1 - draw boxes, 2 - draw masks
 		int scale_factor = 1;
 
 		cv::Scalar color = cv::Scalar(255, 255, 255);
