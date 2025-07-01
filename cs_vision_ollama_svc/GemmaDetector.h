@@ -25,12 +25,12 @@ namespace cs
 			}
 		}
 
-		virtual void draw_detection(cv::Mat* detect_frame, DetectionItem* detection, cv::Scalar& background_color, bool is_show_mask) override
+		virtual void draw_detection(cv::Mat* detect_frame, DetectionItem* detection, bool is_show_mask) override
 		{
 			if (detect_frame == nullptr || detection == nullptr)
 				return;
 
-			cv::putText(*detect_frame, detection->label, cv::Point(10, 10), cv::FONT_HERSHEY_SIMPLEX, 0.5, background_color, 2);
+			cv::putText(*detect_frame, detection->label, cv::Point(10, 10), cv::FONT_HERSHEY_SIMPLEX, 0.5, detection->color, 2);
 		}
 	};
 }

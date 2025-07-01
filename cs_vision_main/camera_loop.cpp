@@ -283,7 +283,7 @@ void draw_detections(DetectorEnvironment* env, cv::Mat* detect_frame, list<Detec
 		if (det->is_draw) {
 			IObjectDetector* detector = env->get_detector(det->detector_id);
 			if (detector != nullptr) {
-				detector->draw_detection(detect_frame, det, env->background_color, is_show_mask);
+				detector->draw_detection(detect_frame, det, is_show_mask);
 			}
 		}
 	}

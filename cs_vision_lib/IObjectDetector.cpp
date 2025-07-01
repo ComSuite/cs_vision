@@ -291,7 +291,7 @@ int IObjectDetector::parse(Document& root)
 //#ifdef __HAS_CUDA__
 //void IObjectDetector::draw_detection(cv::cuda::GpuMat* detect_frame, DetectionItem* detection, cv::Scalar& background_color, bool is_show_mask)
 //#else
-void IObjectDetector::draw_detection(cv::Mat* detect_frame, DetectionItem* detection, cv::Scalar& background_color, bool is_show_mask)
+void IObjectDetector::draw_detection(cv::Mat* detect_frame, DetectionItem* detection, bool is_show_mask)
 //#endif
 {
     if (is_show_mask) {
@@ -302,7 +302,7 @@ void IObjectDetector::draw_detection(cv::Mat* detect_frame, DetectionItem* detec
 //        draw_mask(detection, detect_frame, detection->color);
 //#else
         rectangle(*detect_frame, static_cast<Rect>(detection->box), detection->color, 2, LINE_8);
-        draw_label(*detect_frame, detection->label, detection->box.x, detection->box.y, detection->color, background_color);
+        draw_label(*detect_frame, detection->label, detection->box.x, detection->box.y, detection->color);
 //#endif
     }
 }
@@ -341,7 +341,7 @@ void IObjectDetector::draw_mask(DetectionItem* det, cv::Mat* frame, const cv::Sc
     //#endif
 }
 
-void IObjectDetector::draw_label(Mat& input_image, string& label, int left, int top, cv::Scalar& background_color, cv::Scalar& text_color)
+void IObjectDetector::draw_label(Mat& input_image, string& label, int left, int top, cv::Scalar& background_color)
 {
     int base_line = 0;
     Size label_size = getTextSize(label, FONT_HERSHEY_COMPLEX, 0.7, 1, &base_line);
