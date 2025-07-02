@@ -237,10 +237,18 @@ public:
     //! Note samples should not be calling this function directly; it will eventually go away once we eliminate the
     //! inheritance from nvinfer1::ILogger
     //!
+    
+#ifndef TRT_BUILD_RTX != 21    
     void log(Severity severity, const char* msg) TRT_NOEXCEPT override
     {
         LogStreamConsumer(mReportableSeverity, severity) << "[TRT] " << std::string(msg) << std::endl;
     }
+#else
+    void log(Severity severity, const char* msg) noexcept override
+    {
+        LogStreamConsumer(mReportableSeverity, severity) << "[TRT] " << std::string(msg) << std::endl;
+    }
+#endif
 
     //!
     //! \brief Method for controlling the verbosity of logging output

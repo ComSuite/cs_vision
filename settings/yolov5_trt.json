@@ -17,7 +17,7 @@
                         "is_use_gpu": true,
                         "kind": 2,
                         "labels_path": "/home/marmot/settings/coco.names",
-                        "model_path": "/home/marmot/models/yolov5n.engine",
+                        "model_path": "/home/marmot/models/y5n.engine",
                         "name": "Yolo Objects",
                         "neural_network_id": 1,
                         "output_tensor_name": "output0",
@@ -34,7 +34,7 @@
 						"execute_mode": 0
                     }
                 ],
-                "device": "rtsp://192.168.0.128:8554/cam",
+                "device": "rtsp://admin:1234567890@192.168.0.191/iphone/11",
                 "id": "1",
                 "is_convert_to_gray": false,
                 "is_display": false,

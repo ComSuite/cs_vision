@@ -1,0 +1,568 @@
+{
+    "rules": [
+        {
+            "id": 0,
+            "score": 0.0,
+			"color": "0x0000FF00",
+			"priority" : 10,
+            "description": "person",
+			"on_detect": "",
+			"execute_always": false
+        },
+        {
+            "id": 1,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "bicycle"
+        },
+        {
+            "id": 2,
+            "score": 0.5,
+			"color": "0x000000FF",
+			"priority" : 0,
+            "description": "car"
+        },
+        {
+            "id": 3,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "motorbike"
+        },
+        {
+            "id": 4,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "aeroplane"
+        },
+        {
+            "id": 5,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "bus"
+        },
+        {
+            "id": 6,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "train"
+        },
+        {
+            "id": 7,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "truck"
+        },
+        {
+            "id": 8,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "boat"
+        },
+        {
+            "id": 9,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "traffic light"
+        },
+        {
+            "id": 10,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "fire hydrant"
+        },
+        {
+            "id": 11,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "stop sign"
+        },
+        {
+            "id": 12,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "parking meter"
+        },
+        {
+            "id": 13,
+            "score": 0.5,
+			"color": "0x00FF0000",
+            "description": "bench"
+        },
+        {
+            "id": 14,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "bird"
+        },
+        {
+            "id": 15,
+            "score": 0.2,
+			"color": "0x00111111",
+			"priority" : 9,
+            "description": "cat"
+        },
+        {
+            "id": 16,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "dog"
+        },
+        {
+            "id": 17,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "horse"
+        },
+        {
+            "id": 18,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "sheep"
+        },
+        {
+            "id": 19,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "cow"
+        },
+        {
+            "id": 20,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "elephant"
+        },
+        {
+            "id": 21,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "bear"
+        },
+        {
+            "id": 22,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "zebra"
+        },
+        {
+            "id": 23,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "giraffe"
+        },
+        {
+            "id": 24,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "backpack"
+        },
+        {
+            "id": 25,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "umbrella"
+        },
+        {
+            "id": 26,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "handbag"
+        },
+        {
+            "id": 27,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "tie"
+        },
+        {
+            "id": 28,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "suitcase"
+        },
+        {
+            "id": 29,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "frisbee"
+        },
+        {
+            "id": 30,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "skis"
+        },
+        {
+            "id": 31,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "snowboard"
+        },
+        {
+            "id": 32,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "sports ball"
+        },
+        {
+            "id": 33,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "kite"
+        },
+        {
+            "id": 34,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "baseball bat"
+        },
+        {
+            "id": 35,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "baseball glove"
+        },
+        {
+            "id": 36,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "skateboard"
+        },
+        {
+            "id": 37,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "surfboard"
+        },
+        {
+            "id": 38,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "tennis racket"
+        },
+        {
+            "id": 39,
+            "score": 0.5,
+			"color": "0x00FF00FF",
+			"priority" : 0,
+            "description": "bottle"
+        },
+        {
+            "id": 40,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "wine glass"
+        },
+        {
+            "id": 41,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "cup"
+        },
+        {
+            "id": 42,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "fork"
+        },
+        {
+            "id": 43,
+            "score": 1.0,
+			"color": "0x00FF0000",
+			"priority" : 8,
+            "description": "knife"
+        },
+        {
+            "id": 44,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "spoon"
+        },
+        {
+            "id": 45,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "bowl"
+        },
+        {
+            "id": 46,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "banana"
+        },
+        {
+            "id": 47,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "apple"
+        },
+        {
+            "id": 48,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "sandwich"
+        },
+        {
+            "id": 49,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "orange"
+        },
+        {
+            "id": 50,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "broccoli"
+        },
+        {
+            "id": 51,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "carrot"
+        },
+        {
+            "id": 52,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "hot dog"
+        },
+        {
+            "id": 53,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "pizza"
+        },
+        {
+            "id": 54,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "donut"
+        },
+        {
+            "id": 55,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "cake"
+        },
+        {
+            "id": 56,
+            "score": 0.5,
+			"color": "0x00FF00FF",
+			"priority" : 2,
+            "description": "chair"
+        },
+        {
+            "id": 57,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "sofa"
+        },
+        {
+            "id": 58,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "pottedplant"
+        },
+        {
+            "id": 59,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "bed"
+        },
+        {
+            "id": 60,
+            "score": 0.5,
+			"color": "0x00FF9900",
+			"priority" : 1,
+            "description": "diningtable"
+        },
+        {
+            "id": 61,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "toilet"
+        },
+        {
+            "id": 62,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 4,
+            "description": "tvmonitor"
+        },
+        {
+            "id": 63,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 7,
+            "description": "laptop"
+        },
+        {
+            "id": 64,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "mouse"
+        },
+        {
+            "id": 65,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "remote"
+        },
+        {
+            "id": 66,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "keyboard"
+        },
+        {
+            "id": 67,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "cell phone"
+        },
+        {
+            "id": 68,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "microwave"
+        },
+        {
+            "id": 69,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "oven"
+        },
+        {
+            "id": 70,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "toaster"
+        },
+        {
+            "id": 71,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "sink"
+        },
+        {
+            "id": 72,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "refrigerator"
+        },
+        {
+            "id": 73,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "book"
+        },
+        {
+            "id": 74,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "clock"
+        },
+        {
+            "id": 75,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "vase"
+        },
+        {
+            "id": 76,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "scissors"
+        },
+        {
+            "id": 77,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "teddy bear"
+        },
+        {
+            "id": 78,
+            "score": 0.2,
+			"color": "0x00234578",
+			"priority" : 0,
+            "description": "hair drier"
+        },
+        {
+            "id": 79,
+            "score": 0.0,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "toothbrush"
+        }
+	]
+}
+
+
+

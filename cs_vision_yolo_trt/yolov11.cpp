@@ -37,7 +37,7 @@ YOLOv11::YOLOv11(string model_path, nvinfer1::ILogger& logger)
 		init(model_path, logger);
 	}
 
-#if NV_TENSORRT_MAJOR < 10
+#if NV_TENSORRT_MAJOR < 10 && TRT_BUILD_RTX != 21
     auto input_dims = engine->getBindingDimensions(0);
     input_h = input_dims.d[2];
     input_w = input_dims.d[3];
@@ -89,7 +89,7 @@ void print_engine_info(ICudaEngine* engine)
     std::cout << std::endl << "===== TensorRT Engine Information =====" << std::endl;
     std::cout << "Name: " << engine->getName() << std::endl;
 
-#if NV_TENSORRT_MAJOR >= 10
+#if NV_TENSORRT_MAJOR >= 10 || TRT_BUILD_RTX == 21
     int num_tensors = engine->getNbIOTensors();
     std::cout << "Number of tensors: " << num_tensors << std::endl;
 
@@ -151,7 +151,7 @@ void YOLOv11::init(std::string engine_path, nvinfer1::ILogger& logger)
 
     context = engine->createExecutionContext();
 
-#if NV_TENSORRT_MAJOR < 10
+#if NV_TENSORRT_MAJOR < 10 && TRT_BUILD_RTX != 21
     auto input_dims = engine->getBindingDimensions(0);
     input_h = input_dims.d[2];
     input_w = input_dims.d[3];
@@ -172,7 +172,7 @@ void YOLOv11::init(std::string engine_path, nvinfer1::ILogger& logger)
     CUDA_CHECK(cudaHostAlloc(&gpu_buffers[0], 3 * input_w * input_h * sizeof(float), cudaHostAllocWriteCombined));
     CUDA_CHECK(cudaHostAlloc(&gpu_buffers[1], detection_attribute_size * num_detections * sizeof(float), cudaHostAllocPortable));
 	
-#if NV_TENSORRT_MAJOR >= 10
+#if NV_TENSORRT_MAJOR >= 10 || TRT_BUILD_RTX == 21
 	context->setTensorAddress(engine->getIOTensorName(0), gpu_buffers[0]);
 	context->setTensorAddress(engine->getIOTensorName(1), gpu_buffers[1]);
 #else
@@ -201,7 +201,7 @@ void YOLOv11::preprocess(Mat& image)
 
 void YOLOv11::infer()
 {
-#if NV_TENSORRT_MAJOR < 10
+#if NV_TENSORRT_MAJOR < 10 && TRT_BUILD_RTX != 21
     context->enqueueV2((void**)gpu_buffers, stream, nullptr);
 #else
     this->context->enqueueV3(this->stream);

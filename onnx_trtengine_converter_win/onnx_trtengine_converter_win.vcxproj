@@ -58,6 +58,10 @@
   <ImportGroup Label="Shared">
     <Import Project="..\command_line_parcer\command_line_parcer.vcxitems" Label="Shared" />
     <Import Project="..\onnx_trtengine_converter_lib\onnx_trtengine_converter_lib.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_yolo_trt\cs_vision_yolo_trt.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_common\cs_vision_common.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_lib\cs_vision_lib.vcxitems" Label="Shared" />
+    <Import Project="..\rapidjson\rapidjson.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -73,8 +77,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>G:\Projects\ocv\build\install\include;$(CUDA_PATH)\include;G:\Nvidia\TensorRT-10.0.1.6\include;C:\Program Files\NVIDIA\CUDNN\v9.2\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(CUDA_PATH)\lib\x64;C:\Program Files\NVIDIA\CUDNN\v9.2\lib;G:\Projects\ocv\build\install\x64\vc17\lib;G:\Nvidia\TensorRT-10.0.1.6\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>G:\Projects\ocv\build\install\include;$(CUDA_PATH)\include;G:\Nvidia\TensorRT-10.0.1.6\include;C:\Program Files\NVIDIA\CUDNN\v9.2\include;$(MOSQUITTO_DIR)\devel;$(IncludePath)</IncludePath>
+    <LibraryPath>$(CUDA_PATH)\lib\x64;C:\Program Files\NVIDIA\CUDNN\v9.2\lib;G:\Projects\ocv\build\install\x64\vc17\lib;G:\Nvidia\TensorRT-10.0.1.6\lib;C:\Program Files\mosquitto\devel;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -108,14 +112,15 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_DEBUG_;__HAS_CUDA__;__WITH_FILESYSTEM_CXX__;__WITH_VIDEO_STREAMER__;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;__USE_POSIX199309;DBUILD_ZLIB=ON;YOLOV5_OPENCV_HAS_CUDA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>OpenCL.lib;opengl32.lib;nppc.lib;nppial.lib;nppicc.lib;nppidei.lib;nppif.lib;nppig.lib;nppim.lib;nppist.lib;nppisu.lib;nppitc.lib;npps.lib;nvrtc.lib;cuda.lib;cudart.lib;cudadevrt.lib;nvonnxparser.lib;nvinfer.lib;nvparsers.lib;nvinfer_plugin.lib;aded.lib;IlmImfd.lib;ippicvmt.lib;ippiwd.lib;ittnotifyd.lib;libjpeg-turbod.lib;libopenjp2d.lib;libpngd.lib;libprotobufd.lib;libtiffd.lib;libwebpd.lib;quircd.lib;zlibd.lib;opencv_aruco455d.lib;opencv_bgsegm455d.lib;opencv_bioinspired455d.lib;opencv_calib3d455d.lib;opencv_ccalib455d.lib;opencv_core455d.lib;opencv_datasets455d.lib;opencv_dnn455d.lib;opencv_hfs455d.lib;opencv_imgproc455d.lib;opencv_intensity_transform455d.lib;opencv_line_descriptor455d.lib;opencv_mcc455d.lib;opencv_ml455d.lib;opencv_highgui455d.lib;opencv_img_hash455d.lib;opencv_features2d455d.lib;opencv_objdetect455d.lib;opencv_plot455d.lib;opencv_quality455d.lib;opencv_video455d.lib;opencv_flann455d.lib;opencv_videoio455d.lib;opencv_videostab455d.lib;opencv_imgcodecs455d.lib;opencv_photo455d.lib;opencv_rapid455d.lib;opencv_reg455d.lib;opencv_rgbd455d.lib;opencv_saliency455d.lib;opencv_shape455d.lib;opencv_stereo455d.lib;opencv_stitching455d.lib;opencv_structured_light455d.lib;opencv_superres455d.lib;opencv_dnn_superres455d.lib;opencv_surface_matching455d.lib;opencv_tracking455d.lib;opencv_xfeatures2d455d.lib;opencv_ximgproc455d.lib;opencv_xobjdetect455d.lib;opencv_xphoto455d.lib;opencv_cudaarithm455d.lib;opencv_cudabgsegm455d.lib;opencv_cudacodec455d.lib;opencv_cudafeatures2d455d.lib;opencv_cudafilters455d.lib;opencv_cudaimgproc455d.lib;opencv_cudaobjdetect455d.lib;opencv_cudaoptflow455d.lib;opencv_cudastereo455d.lib;opencv_cudawarping455d.lib;opencv_cudev455d.lib;opencv_gapi455d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>OpenCL.lib;opengl32.lib;nppc.lib;nppial.lib;nppicc.lib;nppidei.lib;nppif.lib;nppig.lib;nppim.lib;nppist.lib;nppisu.lib;nppitc.lib;npps.lib;nvrtc.lib;cuda.lib;cudart.lib;cudadevrt.lib;nvonnxparser_10.lib;nvinfer_10.lib;nvinfer_plugin_10.lib;nvml.lib;opencv_aruco4100.lib;opencv_bgsegm4100.lib;opencv_bioinspired4100.lib;opencv_calib3d4100.lib;opencv_ccalib4100.lib;opencv_core4100.lib;opencv_datasets4100.lib;opencv_dnn4100.lib;opencv_hfs4100.lib;opencv_imgproc4100.lib;opencv_intensity_transform4100.lib;opencv_line_descriptor4100.lib;opencv_mcc4100.lib;opencv_ml4100.lib;opencv_highgui4100.lib;opencv_img_hash4100.lib;opencv_features2d4100.lib;opencv_objdetect4100.lib;opencv_plot4100.lib;opencv_quality4100.lib;opencv_video4100.lib;opencv_flann4100.lib;opencv_videoio4100.lib;opencv_videostab4100.lib;opencv_imgcodecs4100.lib;opencv_photo4100.lib;opencv_rapid4100.lib;opencv_reg4100.lib;opencv_rgbd4100.lib;opencv_saliency4100.lib;opencv_shape4100.lib;opencv_stereo4100.lib;opencv_stitching4100.lib;opencv_structured_light4100.lib;opencv_superres4100.lib;opencv_dnn_superres4100.lib;opencv_surface_matching4100.lib;opencv_tracking4100.lib;opencv_xfeatures2d4100.lib;opencv_ximgproc4100.lib;opencv_xobjdetect4100.lib;opencv_xphoto4100.lib;opencv_cudaarithm4100.lib;opencv_cudabgsegm4100.lib;opencv_cudacodec4100.lib;opencv_cudafeatures2d4100.lib;opencv_cudafilters4100.lib;opencv_cudaimgproc4100.lib;opencv_cudaobjdetect4100.lib;opencv_cudaoptflow4100.lib;opencv_cudastereo4100.lib;opencv_cudawarping4100.lib;opencv_cudev4100.lib;opencv_gapi4100.lib;mosquitto.lib;Ws2_32.lib;Pdh.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

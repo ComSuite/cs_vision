@@ -1,0 +1,58 @@
+{
+    "rules": [
+        {
+            "id": 0,
+            "score": 0.0,
+			"color": "0x0000FF00",
+			"priority" : 10,
+            "description": "person",
+			"on_detect": "",
+			"execute_always": false
+        },
+        {
+            "id": 1,
+            "score": 0.0,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "bike"
+        },
+        {
+            "id": 2,
+            "score": 0.0,
+			"color": "0x000000FF",
+			"priority" : 0,
+            "description": "light_vehicle"
+        },
+        {
+            "id": 3,
+            "score": 0.0,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "truck"
+        },
+        {
+            "id": 4,
+            "score": 0.0,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "bus"
+        },
+        {
+            "id": 5,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "boat"
+        },
+        {
+            "id": 6,
+            "score": 0.5,
+			"color": "0x00FF0000",
+			"priority" : 0,
+            "description": "digger"
+        }
+	]
+}
+
+
+
