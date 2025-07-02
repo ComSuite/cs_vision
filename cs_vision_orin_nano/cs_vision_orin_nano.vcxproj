@@ -104,7 +104,7 @@
     <TargetExt />
     <SourcePath>/home/marmot/projects/dlib/dlib/all</SourcePath>
     <CustomBuildBeforeTargets />
-    <RemotePreBuildEventUseInBuild>false</RemotePreBuildEventUseInBuild>
+    <RemotePreBuildEventUseInBuild>true</RemotePreBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <IncludePath>/usr/include/opencv4/;/usr/local/cuda/include;~/tensorflow/;../ChaiScript/include;/usr/local/include;/usr/local/include/groupsock;/usr/local/include/UsageEnvironment;/usr/local/include/BasicUsageEnvironment;/usr/local/include/liveMedia;/usr/include/gstreamer-1.0/;/usr/include/glib-2.0/;/usr/lib/aarch64-linux-gnu/glib-2.0/include/</IncludePath>

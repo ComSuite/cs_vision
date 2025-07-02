@@ -2,7 +2,8 @@
 #include "cuda_utils.h"
 #include "device_launch_parameters.h"
 
-//static uint8_t* img_buffer_host = nullptr;
+#define TRT_BUILD_RTX 
+
 static uint8_t* img_buffer_device = nullptr;
 
 struct AffineMatrix {
@@ -13,9 +14,11 @@ __global__ void warpaffine_kernel(
     uint8_t* src, int src_line_size, int src_width,
     int src_height, float* dst, int dst_width,
     int dst_height, uint8_t const_value_st,
-    AffineMatrix d2s, int edge) {
+    AffineMatrix d2s, int edge) 
+{
     int position = blockDim.x * blockIdx.x + threadIdx.x;
-    if (position >= edge) return;
+    if (position >= edge) 
+        return;
 
     float m_x1 = d2s.value[0];
     float m_y1 = d2s.value[1];
@@ -97,12 +100,10 @@ __global__ void warpaffine_kernel(
 void cuda_preprocess(
     uint8_t* src, int src_width, int src_height,
     float* dst, int dst_width, int dst_height,
-    cudaStream_t stream) {
-
+    cudaStream_t stream) 
+{
     int img_size = src_width * src_height * 3;
-    // copy data to pinned memory
-    //memcpy(img_buffer_host, src, img_size);
-    // copy data to device memory
+
     CUDA_CHECK(cudaMemcpyAsync(img_buffer_device, src, img_size, cudaMemcpyHostToDevice, stream));
 
     AffineMatrix s2d, d2s;
@@ -133,13 +134,9 @@ void cuda_preprocess(
 
 void cuda_preprocess_init(int max_image_size) {
 	printf("\nYolo TRT: 5\n");
-    // prepare input data in pinned memory
-    //CUDA_CHECK(cudaMallocHost((void**)&img_buffer_host, max_image_size * 3));
-    // prepare input data in device memory
     CUDA_CHECK(cudaMalloc((void**)&img_buffer_device, max_image_size * 3));
 }
 
 void cuda_preprocess_destroy() {
     CUDA_CHECK(cudaFree(img_buffer_device));
-    //CUDA_CHECK(cudaFreeHost(img_buffer_host));
 }

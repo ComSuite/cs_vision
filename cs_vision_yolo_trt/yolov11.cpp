@@ -54,7 +54,10 @@ YOLOv11::~YOLOv11()
     CUDA_CHECK(cudaStreamDestroy(stream));
     for (int i = 0; i < 2; i++)
         CUDA_CHECK(cudaFree(gpu_buffers[i]));
-    //delete[] cpu_output_buffer;
+
+    if (cpu_output_buffer != nullptr) {
+        delete[] cpu_output_buffer;
+    }
 
     cuda_preprocess_destroy();
     delete context;
@@ -169,9 +172,17 @@ void YOLOv11::init(std::string engine_path, nvinfer1::ILogger& logger)
     num_detections = output_dims.d[2];
     num_classes = detection_attribute_size - 4;
 #endif
+
+#ifdef TRT_BUILD_RTX == 21
+    cpu_output_buffer = new float[detection_attribute_size * num_detections];
+
+    CUDA_CHECK(cudaMalloc(&gpu_buffers[0], 3 * input_w * input_h * sizeof(float)));
+    CUDA_CHECK(cudaMalloc(&gpu_buffers[1], detection_attribute_size * num_detections * sizeof(float)));
+#else
     CUDA_CHECK(cudaHostAlloc(&gpu_buffers[0], 3 * input_w * input_h * sizeof(float), cudaHostAllocWriteCombined));
     CUDA_CHECK(cudaHostAlloc(&gpu_buffers[1], detection_attribute_size * num_detections * sizeof(float), cudaHostAllocPortable));
-	
+#endif
+
 #if NV_TENSORRT_MAJOR >= 10 || TRT_BUILD_RTX == 21
 	context->setTensorAddress(engine->getIOTensorName(0), gpu_buffers[0]);
 	context->setTensorAddress(engine->getIOTensorName(1), gpu_buffers[1]);
@@ -185,7 +196,6 @@ void YOLOv11::init(std::string engine_path, nvinfer1::ILogger& logger)
 
     CUDA_CHECK(cudaStreamCreate(&stream));
 
-
     if (warmup) {
         for (int i = 0; i < 10; i++) {
             this->infer();
@@ -197,6 +207,9 @@ void YOLOv11::init(std::string engine_path, nvinfer1::ILogger& logger)
 void YOLOv11::preprocess(Mat& image) 
 {
     cuda_preprocess(image.ptr(), image.cols, image.rows, gpu_buffers[0], input_w, input_h, stream);
+#ifdef TRT_BUILD_RTX == 21
+    CUDA_CHECK(cudaStreamSynchronize(stream)); 
+#endif
 }
 
 void YOLOv11::infer()
@@ -210,11 +223,20 @@ void YOLOv11::infer()
 
 void YOLOv11::postprocess(vector<Detection>& output)
 {
+#ifdef TRT_BUILD_RTX == 21
+    CUDA_CHECK(cudaMemcpyAsync(cpu_output_buffer, gpu_buffers[1], num_detections * detection_attribute_size * sizeof(float), cudaMemcpyDeviceToHost, stream));
+    CUDA_CHECK(cudaStreamSynchronize(stream));
+#endif
+
     boxes.clear();
     class_ids.clear();
     confidences.clear();
 
+#ifdef TRT_BUILD_RTX == 21
+    const Mat det_output(detection_attribute_size, num_detections, CV_32F, cpu_output_buffer);
+#else
     const Mat det_output(detection_attribute_size, num_detections, CV_32F, gpu_buffers[1]);
+#endif
 
     Point class_id_point;
     double score;

@@ -37,7 +37,7 @@ private:
     void init(std::string engine_path, nvinfer1::ILogger& logger);
 
     float* gpu_buffers[2];               
-    float* cpu_output_buffer;
+    float* cpu_output_buffer = nullptr;
 
     std::vector<cv::Rect> boxes;
     std::vector<int> class_ids;
