@@ -85,6 +85,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>G:\Nvidia\TensorRT-10.0.1.6\include;$(CUDA_PATH)\include;$(MOSQUITTO_DIR)\devel;G:\Projects\ocv\build\install\include;$(TENSORFLOW_LITE_PATH)\include;C:\Program Files\NVIDIA\CUDNN\v9.2\include;../ChaiScript/include;$(IncludePath)</IncludePath>
     <LibraryPath>$(CUDA_PATH)\lib\x64;C:\Program Files\NVIDIA\CUDNN\v9.2\lib;G:\Projects\ocv\build\install\x64\vc17\lib;C:\Program Files\mosquitto\devel;G:\Projects\comsuite\sources\cs_vision\packages\portaudio.0.19.1\build\native\lib\x64\v120\Debug;G:\Nvidia\TensorRT-10.0.1.6\lib;$(TENSORFLOW_LITE_PATH)\libs\windows_x86_64;G:\Projects\comsuite\sources\cs_vision\cs_vision_yolo_trt\win;$(LibraryPath)</LibraryPath>
+    <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>G:\Nvidia\TensorRT-RTX-1.0.0.21.Windows.win10.cuda-12.9\TensorRT-RTX-1.0.0.21\include;$(CUDA_PATH)\include;$(MOSQUITTO_DIR)\devel;G:\Projects\ocv\build\install\include;$(TENSORFLOW_LITE_PATH)\include;C:\Program Files\NVIDIA\CUDNN\v9.2\include;../ChaiScript/include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
@@ -136,6 +137,12 @@
       <AdditionalDependencies>OpenCL.lib;opengl32.lib;nppc.lib;nppial.lib;nppicc.lib;nppidei.lib;nppif.lib;nppig.lib;nppim.lib;nppist.lib;nppisu.lib;nppitc.lib;npps.lib;nvrtc.lib;cuda.lib;cudart.lib;cudadevrt.lib;nvonnxparser_10.lib;nvinfer_10.lib;nvinfer_plugin_10.lib;zlibd.lib;opencv_aruco4100d.lib;opencv_bgsegm4100d.lib;opencv_bioinspired4100d.lib;opencv_calib3d4100d.lib;opencv_ccalib4100d.lib;opencv_core4100d.lib;opencv_datasets4100d.lib;opencv_dnn4100d.lib;opencv_hfs4100d.lib;opencv_imgproc4100d.lib;opencv_intensity_transform4100d.lib;opencv_line_descriptor4100d.lib;opencv_mcc4100d.lib;opencv_ml4100d.lib;opencv_highgui4100d.lib;opencv_img_hash4100d.lib;opencv_features2d4100d.lib;opencv_objdetect4100d.lib;opencv_plot4100d.lib;opencv_quality4100d.lib;opencv_video4100d.lib;opencv_flann4100d.lib;opencv_videoio4100d.lib;opencv_videostab4100d.lib;opencv_imgcodecs4100d.lib;opencv_photo4100d.lib;opencv_rapid4100d.lib;opencv_reg4100d.lib;opencv_rgbd4100d.lib;opencv_saliency4100d.lib;opencv_shape4100d.lib;opencv_stereo4100d.lib;opencv_stitching4100d.lib;opencv_structured_light4100d.lib;opencv_superres4100d.lib;opencv_dnn_superres4100d.lib;opencv_surface_matching4100d.lib;opencv_tracking4100d.lib;opencv_xfeatures2d4100d.lib;opencv_ximgproc4100d.lib;opencv_xobjdetect4100d.lib;opencv_xphoto4100d.lib;opencv_cudaarithm4100d.lib;opencv_cudabgsegm4100d.lib;opencv_cudacodec4100d.lib;opencv_cudafeatures2d4100d.lib;opencv_cudafilters4100d.lib;opencv_cudaimgproc4100d.lib;opencv_cudaobjdetect4100d.lib;opencv_cudaoptflow4100d.lib;opencv_cudastereo4100d.lib;opencv_cudawarping4100d.lib;opencv_cudev4100d.lib;opencv_gapi4100d.lib;mosquitto.lib;tensorflowlite.dll.if.lib;portaudio_x64.lib;Ws2_32.lib;Pdh.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
+    <PreBuildEvent>
+      <Command>nvcc --std c++20 -g -use_fast_math -arch=native -ccbin "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64" -c .\preprocess.cu -o .\trt_preprocess.o -IG:\Projects\ocv\build\install\include -LG:\Projects\ocv\build\install\x64\vc17\lib\opencv_imgproc4100d.lib</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>NVCC</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
