@@ -367,3 +367,8 @@ FodyWeavers.xsd
 /models/yolov3u.onnx
 /models/yolov3-sppu.onnx
 *.pt
+/models/winRTX5080TI/yolo11m.engine
+/models/winRTX5080TI/yolo11x.engine
+/models/winRTX5080TI/yolo12x.engine
+/models/winRTX5080TI/rtdetr-l.engine
+/models/winRTX5080TI/yolov8s-worldv2.engine
