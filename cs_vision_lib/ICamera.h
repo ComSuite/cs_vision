@@ -27,6 +27,7 @@
 #include <atomic>
 #include <opencv2/core.hpp>
 #include <opencv2/videoio.hpp>
+#include "settings.h"
 
 namespace cs
 {
@@ -42,6 +43,15 @@ namespace cs
 		virtual int open(const char* name) = 0;
 		virtual int open(const int id, int attempts_count);
 		virtual int open(const char* name, int attempts_count);
+		virtual int open(camera_settings* settings)
+		{
+			if (settings == nullptr)
+				return -1;
+			auto device = settings->device;
+			//source_is_file = settings->source_is_file;
+			return open(device, settings->frame_width, settings->frame_height);
+		}
+
 		int start_save_video(const int id, const char* output_movie_name);
 		virtual int close();
 		virtual int prepare() = 0;

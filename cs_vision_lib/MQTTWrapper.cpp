@@ -139,9 +139,9 @@ int MQTTWrapper::subscribe(const char* topic, void* data, on_message callback)
 	//	on_message_callback = callback;
 	//}
 
-	if (data != NULL) {
-		mosquitto_user_data_set(mosq, data);
-	}
+	//if (data != NULL) {
+	//	mosquitto_user_data_set(mosq, data);
+	//}
 
 	int ret = mosquitto_subscribe(mosq, NULL, topic, 1);
 	if (ret == MOSQ_ERR_SUCCESS) {
@@ -155,7 +155,7 @@ int MQTTWrapper::subscribe(const char* topic, void* data, on_message callback)
 
 int MQTTWrapper::unsubscribe(const char* topic, on_message callback)
 {
-	if (topic == NULL || strlen(topic) == 0)
+	if (topic == nullptr || strlen(topic) == 0 || callback == nullptr)
 		return 0;
 
 	for (auto it = MQTTWrapper::callbacks.begin(); it != MQTTWrapper::callbacks.end(); ) {

@@ -25,6 +25,7 @@
 
 #include <chrono>
 #include <vector>
+#include <string>
 #include <mosquitto.h>
 
 namespace cs

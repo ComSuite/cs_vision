@@ -88,6 +88,8 @@ int OllamaDetector::init(const char* model_path, const char* label_path, const c
 	{
 		std::cerr << "Request failed, error: " << e.what() << '\n';
 	}
+
+	return 1;
 }
 
 void OllamaDetector::clear()

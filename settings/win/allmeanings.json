@@ -73,7 +73,7 @@
                 "video_stream_password": "",
                 "video_stream_port": 8088,
 				"additional" : [
-					{"name": "video_stream_max_output_fps", "val": 0}
+					{"name": "mqtt_request_topic", "val": "comsuite/request"}
 				],
 				"is_use_super_resolution": false,
 				"super_resolution_name": "lapsrn",
