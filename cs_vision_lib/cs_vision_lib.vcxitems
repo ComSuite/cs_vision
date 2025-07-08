@@ -20,6 +20,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)ICamera.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)IObjectDetector.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MQTTClient.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MQTTRequest.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MQTTWrapper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)NullObjectDetector.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)OpenCVCamera.cpp" />
@@ -38,6 +39,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)IObjectDetector.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)JsonCOCOLabels.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MQTTClient.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MQTTRequest.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MQTTWrapper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)NullObjectDetector.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)OpenCVCamera.h" />

@@ -68,6 +68,7 @@
     <Import Project="..\cs_vision_yolo_trt\cs_vision_yolo_trt.vcxitems" Label="Shared" />
     <Import Project="..\cs_vision_main\cs_vision_main.vcxitems" Label="Shared" />
     <Import Project="..\command_line_parcer\command_line_parcer.vcxitems" Label="Shared" />
+    <Import Project="..\cs_vision_ollama_svc\cs_vision_ollama_svc.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />

@@ -24,6 +24,7 @@
 #pragma once
 
 #include <chrono>
+#include <vector>
 #include <mosquitto.h>
 
 namespace cs
@@ -37,6 +38,14 @@ namespace cs
 		bool retained;
 	};
 
+	class MQTTSubscriber
+	{
+	public:
+		std::string topic = "";
+		void* user_data = nullptr;
+		on_message callback = nullptr;
+	};
+
 	class MQTTWrapper
 	{
 	public:
@@ -48,15 +57,16 @@ namespace cs
 		int connect(const char* client, const char* login, const char* password, const char* host, int port);
 		int send(const char* topic, const char* payload);
 		int send(const char* topic, const char* payload, bool retained);
-		int subscribe(const char* topic, void* data, void (*on_message)(struct mosquitto* mosq, const char* topic, const char* payload, void* data));
-		int unsubscribe(const char* topic);
+		int subscribe(const char* topic, void* data, on_message callback);
+		int unsubscribe(const char* topic, on_message callback);
 		int loop();
 		int start_background_loop();
 		int disconnect();
 		int cleanup();
 		struct mosquitto* get_handle() { return mosq; };
 
-		static on_message on_message_callback;
+		//static on_message on_message_callback;
+		static std::vector<MQTTSubscriber> callbacks;
 	protected:
 		std::chrono::system_clock::time_point last_ping_time;
 		struct mosquitto* mosq = NULL;

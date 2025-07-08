@@ -34,7 +34,8 @@ using namespace std;
 using namespace std::chrono;
 using namespace cs;
 
-on_message MQTTWrapper::on_message_callback = NULL;
+//on_message MQTTWrapper::on_message_callback = NULL;
+std::vector<MQTTSubscriber> MQTTWrapper::callbacks;
 
 void mqtt_on_connect(struct mosquitto* mosq, void* data, int);
 void mqtt_on_disconnect(struct mosquitto* mosq, void* data, int);
@@ -132,11 +133,11 @@ int MQTTWrapper::send(const char* topic, const char* payload)
 	return send(topic, payload, false);
 }
 
-int MQTTWrapper::subscribe(const char* topic, void* data, void(*on_message)(struct mosquitto* mosq, const char* topic, const char* payload, void* data))
+int MQTTWrapper::subscribe(const char* topic, void* data, on_message callback)
 {
-	if (on_message != NULL) {
-		on_message_callback = on_message;
-	}
+	//if (callback != NULL) {
+	//	on_message_callback = callback;
+	//}
 
 	if (data != NULL) {
 		mosquitto_user_data_set(mosq, data);
@@ -147,11 +148,35 @@ int MQTTWrapper::subscribe(const char* topic, void* data, void(*on_message)(stru
 		mosquitto_message_callback_set(mosq, mqtt_on_message);
 	}
 
+	MQTTWrapper::callbacks.push_back({ std::string(topic), data, callback });
+
 	return ret;
 }
 
-int MQTTWrapper::unsubscribe(const char* topic)
+int MQTTWrapper::unsubscribe(const char* topic, on_message callback)
 {
+	if (topic == NULL || strlen(topic) == 0)
+		return 0;
+
+	for (auto it = MQTTWrapper::callbacks.begin(); it != MQTTWrapper::callbacks.end(); ) {
+		if (it->topic == topic && it->callback == callback) {
+			it = MQTTWrapper::callbacks.erase(it);
+			break; 
+		}
+		else {
+			it++;
+		}
+	}
+
+	for (auto it = MQTTWrapper::callbacks.begin(); it != MQTTWrapper::callbacks.end(); ) {
+		if (it->topic == topic) {
+			return 0;
+		}
+		else {
+			it++;
+		}
+	}
+
 	return mosquitto_unsubscribe(mosq, NULL, topic);
 }
 
@@ -176,8 +201,14 @@ int MQTTWrapper::start_background_loop()
 //************************************************************************************************
 void mqtt_on_message(struct mosquitto* mosq, void* data, const struct mosquitto_message* msg)
 {
-	if (MQTTWrapper::on_message_callback != NULL)
-		MQTTWrapper::on_message_callback(mosq, msg->topic, (const char*)msg->payload, data);
+	//if (MQTTWrapper::on_message_callback != NULL)
+	//	MQTTWrapper::on_message_callback(mosq, msg->topic, (const char*)msg->payload, data);
+
+	for (auto& subscriber : MQTTWrapper::callbacks) {
+		if (subscriber.topic == msg->topic && subscriber.callback != NULL) {
+			subscriber.callback(mosq, msg->topic, (const char*)msg->payload, subscriber.user_data);
+		}
+	}
 }
 
 void mqtt_on_connect(struct mosquitto* mosq, void* data, int)

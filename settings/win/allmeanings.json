@@ -18,7 +18,7 @@
                         "is_use_gpu": false,
                         "kind": 2,
                         "labels_path": "G:/Projects/comsuite/sources/cs_vision/settings/win/coco.names",
-                        "model_path": "G:/Projects/comsuite/sources/cs_vision/models/winRTX5080TI/rtdetr-l.engine",
+                        "model_path": "G:/Projects/comsuite/sources/cs_vision/models/winRTX5080TI/allmeanings.engine",
                         "name": "Yolo Objects",
                         "neural_network_id": 1,
                         "output_tensor_name": "output0",
