@@ -124,7 +124,7 @@ int OpenCVCamera::open(int id, const int frame_width, const int frame_height)
 #ifdef __LINUX__
 		capture = new VideoCapture(id, CAP_V4L); //, CAP_OPENCV_MJPEG , CAP_V4L
 #else
-		capture = new VideoCapture(id);
+		capture = new VideoCapture(id, CAP_DSHOW);
 #endif
 		if (capture == nullptr)
 			return 0;

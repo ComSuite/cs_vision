@@ -18,7 +18,7 @@
                         "is_use_gpu": false,
                         "kind": 2,
                         "labels_path": "G:/Projects/comsuite/sources/cs_vision/settings/win/coco.names",
-                        "model_path": "G:/Projects/comsuite/sources/cs_vision/models/winRTX5080TI/rtdetr-l.engine",
+                        "model_path": "G:/Projects/comsuite/sources/cs_vision/models/winRTX5080TI/yolo12n.engine",
                         "name": "Yolo Objects",
                         "neural_network_id": 1,
                         "output_tensor_name": "output0",
@@ -41,7 +41,7 @@
 				"device2" : "rtsp://admin:1234567890@192.168.0.192/iphone/11",
                 "id": "1",
 				"frame_width" : 1920,
-				"frame_height" : 1080,
+				"frame_height" : 1280,
 				"is_sort_results": true,
                 "is_convert_to_gray": false,
                 "is_display": false,
@@ -73,7 +73,8 @@
                 "video_stream_password": "",
                 "video_stream_port": 8088,
 				"additional" : [
-					{"name": "video_stream_max_output_fps", "val": 0}
+					{"name": "video_stream_max_output_fps", "val": 0},
+					{"name": "mqtt_request_topic", "val": "comsuite/request"}
 				],
 				"is_use_super_resolution": false,
 				"super_resolution_name": "lapsrn",

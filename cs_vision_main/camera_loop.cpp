@@ -118,6 +118,18 @@ void create_video_streamer(DetectorEnvironment* environment, camera_settings* se
 #endif 
 }
 
+void on_camera_message(struct mosquitto* mosq, const char* topic, const char* payload, void* data)
+{
+	if (data == nullptr)
+		return;
+
+	cs::camera_settings* set = (cs::camera_settings*)data;
+	if (set == nullptr)
+		return;
+
+	cout << "Received message on topic: " << topic << " Payload: " << payload << endl;
+}
+
 bool connect_to_mqtt_broker(camera_settings* settings, DetectorEnvironment* env)
 {
 	env->mqtt_client = new MQTTClient();
@@ -126,12 +138,15 @@ bool connect_to_mqtt_broker(camera_settings* settings, DetectorEnvironment* env)
 	}
 
 	if (!env->mqtt_client->connect(settings->mqtt_client_name.c_str(), settings->mqtt_broker_ip.c_str(), settings->mqtt_broker_port)) {
-		delete env->mqtt_client;
-		env->mqtt_client = NULL;
-		return false;
+		//delete env->mqtt_client;
+		//env->mqtt_client = NULL;
+		//return false;
 	}
 
-	env->mqtt_client->start_background_loop();
+	auto topic = settings->additional.get<string>("mqtt_request_topic", "");
+	env->mqtt_client->subscribe(topic.c_str(), settings, on_camera_message);
+
+	//env->mqtt_client->start_background_loop();
 
 	return true;
 }
@@ -600,7 +615,7 @@ void* camera_loop(void* arg)
 		capture->set_detector_buffer(detector->width * detector->height);
 	}
 
-	environment.mqtt_client->loop();
+	//environment.mqtt_client->start_background_loop(); // ->loop();
 
 #ifdef _DEBUG_
 	fps_counter fps;
@@ -626,6 +641,9 @@ void* camera_loop(void* arg)
 	cv::Mat* frame = &buffers[ind];
 
 	for (;;) {
+		//if (environment.mqtt_client != nullptr)
+		//	environment.mqtt_client->loop(); 
+
 		if (!capture->is_ready()) {
 			cout << "Capture is not ready" << endl;
 			continue;

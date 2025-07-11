@@ -40,6 +40,7 @@ std::vector<MQTTSubscriber> MQTTWrapper::callbacks;
 void mqtt_on_connect(struct mosquitto* mosq, void* data, int);
 void mqtt_on_disconnect(struct mosquitto* mosq, void* data, int);
 void mqtt_on_message(struct mosquitto* mosq, void* data, const struct mosquitto_message* msg);
+void mqtt_on_subscribe(struct mosquitto* mosq, void* data, int mid, int qos_count, const int* granted_qos);
 
 MQTTWrapper::MQTTWrapper()
 {
@@ -64,23 +65,35 @@ int MQTTWrapper::connect(const char* client, const char* host, int port)
 {
 	cout << "Trying connect to Mosquitto broker. Client: " << client << " Host: " << host << " Port: " << port << endl;
 
-	mosq = mosquitto_new(client, true, 0);
+	//mosquitto_user_data_set
+	mosq = mosquitto_new(client, true, this);
 	if (mosq == NULL)
 	{
 		cout << "mosquitto_new returned NULL" << endl;
 		return 0;
 	}
 
-	if (mosquitto_connect(mosq, host, port, 100) == MOSQ_ERR_SUCCESS)
+	mosquitto_disconnect_callback_set(mosq, mqtt_on_disconnect);
+	mosquitto_connect_callback_set(mosq, mqtt_on_connect);
+	mosquitto_message_callback_set(mosq, mqtt_on_message);
+	mosquitto_subscribe_callback_set(mosq, mqtt_on_subscribe);
+
+	if (mosquitto_connect(mosq, host, port, 100) == MOSQ_ERR_SUCCESS) {
+		while(!is_connect) {
+			//int rc = mosquitto_loop(mosq, 100, 1);
+			//if (rc != MOSQ_ERR_SUCCESS) {
+			//	cout << "Mosquitto loop error: " << rc << " : " << mosquitto_strerror(rc) << endl;
+			//	this_thread::sleep_for(chrono::milliseconds(100));
+			//}
+		}
 		cout << "Mosquitto server connected" << endl;
+	}
 	else {
 		cout << "Failed to connect Mosquitto server" << endl;
 		return 0;
 	}
 
-	mosquitto_threaded_set(mosq, true);
-
-	mosquitto_disconnect_callback_set(mosq, mqtt_on_disconnect);
+	mosquitto_threaded_set(mosq, false);
 
 	return 1;
 }
@@ -135,16 +148,12 @@ int MQTTWrapper::send(const char* topic, const char* payload)
 
 int MQTTWrapper::subscribe(const char* topic, void* data, on_message callback)
 {
-	//if (callback != NULL) {
-	//	on_message_callback = callback;
-	//}
-
-	//if (data != NULL) {
-	//	mosquitto_user_data_set(mosq, data);
-	//}
+	if (topic == NULL || strlen(topic) == 0 || callback == nullptr)
+		return 0;
 
 	int ret = mosquitto_subscribe(mosq, NULL, topic, 1);
 	if (ret == MOSQ_ERR_SUCCESS) {
+		cout << "Subscribed to topic: " << topic << endl;
 		mosquitto_message_callback_set(mosq, mqtt_on_message);
 	}
 
@@ -213,8 +222,14 @@ void mqtt_on_message(struct mosquitto* mosq, void* data, const struct mosquitto_
 
 void mqtt_on_connect(struct mosquitto* mosq, void* data, int)
 {
-	cout << "mqtt_on_connect" << endl;
+	if (data == NULL) {
+		cout << "mqtt_on_connect: data is NULL" << endl;
+		return;
+	}
 
+	cout << "mqtt_on_connect" << endl;
+	MQTTWrapper* mqtt = (MQTTWrapper*)data;
+	mqtt->is_connect = true;
 }
 
 void mqtt_on_disconnect(struct mosquitto* mosq, void* data, int)
@@ -223,4 +238,12 @@ void mqtt_on_disconnect(struct mosquitto* mosq, void* data, int)
 	mosquitto_reconnect(mosq);
 }
 
+void mqtt_on_subscribe(struct mosquitto* mosq, void* data, int mid, int qos_count, const int* granted_qos)
+{
+	cout << "mqtt_on_subscribe: mid: " << mid << " qos_count: " << qos_count << " granted_qos: ";
+	for (int i = 0; i < qos_count; i++) {
+		cout << granted_qos[i] << " ";
+	}
+	cout << endl;
+}
 

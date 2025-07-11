@@ -66,6 +66,7 @@ namespace cs
 		int cleanup();
 		struct mosquitto* get_handle() { return mosq; };
 
+		bool is_connect = false;
 		//static on_message on_message_callback;
 		static std::vector<MQTTSubscriber> callbacks;
 	protected:
