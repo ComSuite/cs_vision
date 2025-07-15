@@ -37,8 +37,11 @@
 						]
                     }
                 ],
-                "device": 0,
+                "device": 1,
 				"device2" : "rtsp://admin:1234567890@192.168.0.192/iphone/11",
+				"intrinsic_matrix": [696.3284424851936, 0, 388.0619715284266, 0, 677.8605013814445, 359.2107600365375, 0, 0, 1],
+				"distortion_coefficients": [0.4047574584204019, -4.864375677925083, 26.8718304899105, -51.4077981427654],
+				"is_undistort": true,
                 "id": "1",
 				"frame_width" : 1920,
 				"frame_height" : 1280,
@@ -108,7 +111,7 @@
         "mqtt_settings_get_topic": "comsuite/settings_get",
         "mqtt_settings_set_topic": "comsuite/settings_set",
         "mqtt_tls_cert_file": "",
-        "name": "Jetson Nanao",
+        "name": "Windows 11 5080 workstation",
 		"is_use_readonly_checker": false,
 		"readonly_checker_dictionary": "G:/Projects/comsuite/sources/cs_vision/settings/win/read_only_settings.txt",
 		"settings_backup_path": "G:/Projects/comsuite/sources/cs_vision/settings/win/",

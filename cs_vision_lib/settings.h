@@ -169,6 +169,10 @@ namespace cs
 		std::string id = "";
 		std::string name = "";
 
+		bool is_undistort = false;
+		cv::Mat K = cv::Mat::eye(3, 3, CV_64F); // Intrinsic matrix
+		cv::Mat D = cv::Mat::zeros(4, 1, CV_64F); // Distortion coefficients
+
 		dynamic_settings additional;
 
 		bool is_display = false;

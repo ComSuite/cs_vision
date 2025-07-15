@@ -73,6 +73,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "video_streamer_rtsp", "vide
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cs_vision_ollama_svc", "cs_vision_ollama_svc\cs_vision_ollama_svc.vcxitems", "{3F27E16E-E8E1-4390-80A0-43EF06A9681E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "camera_calibration", "camera_calibration\camera_calibration.vcxproj", "{83D1F29A-2A87-4BCA-AFE7-F0D200E058BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -307,6 +309,26 @@ Global
 		{3E290B58-6817-4275-804F-754C8F5CEE27}.Release|x64.Build.0 = Release|x64
 		{3E290B58-6817-4275-804F-754C8F5CEE27}.Release|x86.ActiveCfg = Release|Win32
 		{3E290B58-6817-4275-804F-754C8F5CEE27}.Release|x86.Build.0 = Release|Win32
+		{83D1F29A-2A87-4BCA-AFE7-F0D200E058BE}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{83D1F29A-2A87-4BCA-AFE7-F0D200E058BE}.Debug|Any CPU.Build.0 = Debug|x64
+		{83D1F29A-2A87-4BCA-AFE7-F0D200E058BE}.Debug|ARM.ActiveCfg = Debug|x64
+		{83D1F29A-2A87-4BCA-AFE7-F0D200E058BE}.Debug|ARM.Build.0 = Debug|x64
+		{83D1F29A-2A87-4BCA-AFE7-F0D200E058BE}.Debug|ARM64.ActiveCfg = Debug|x64
+		{83D1F29A-2A87-4BCA-AFE7-F0D200E058BE}.Debug|ARM64.Build.0 = Debug|x64
+		{83D1F29A-2A87-4BCA-AFE7-F0D200E058BE}.Debug|x64.ActiveCfg = Debug|x64
+		{83D1F29A-2A87-4BCA-AFE7-F0D200E058BE}.Debug|x64.Build.0 = Debug|x64
+		{83D1F29A-2A87-4BCA-AFE7-F0D200E058BE}.Debug|x86.ActiveCfg = Debug|Win32
+		{83D1F29A-2A87-4BCA-AFE7-F0D200E058BE}.Debug|x86.Build.0 = Debug|Win32
+		{83D1F29A-2A87-4BCA-AFE7-F0D200E058BE}.Release|Any CPU.ActiveCfg = Release|x64
+		{83D1F29A-2A87-4BCA-AFE7-F0D200E058BE}.Release|Any CPU.Build.0 = Release|x64
+		{83D1F29A-2A87-4BCA-AFE7-F0D200E058BE}.Release|ARM.ActiveCfg = Release|x64
+		{83D1F29A-2A87-4BCA-AFE7-F0D200E058BE}.Release|ARM.Build.0 = Release|x64
+		{83D1F29A-2A87-4BCA-AFE7-F0D200E058BE}.Release|ARM64.ActiveCfg = Release|x64
+		{83D1F29A-2A87-4BCA-AFE7-F0D200E058BE}.Release|ARM64.Build.0 = Release|x64
+		{83D1F29A-2A87-4BCA-AFE7-F0D200E058BE}.Release|x64.ActiveCfg = Release|x64
+		{83D1F29A-2A87-4BCA-AFE7-F0D200E058BE}.Release|x64.Build.0 = Release|x64
+		{83D1F29A-2A87-4BCA-AFE7-F0D200E058BE}.Release|x86.ActiveCfg = Release|Win32
+		{83D1F29A-2A87-4BCA-AFE7-F0D200E058BE}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

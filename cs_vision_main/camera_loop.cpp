@@ -205,6 +205,16 @@ bool init_detectors_environment(DetectorEnvironment* environment, camera_setting
 	if (!set)
 		return false;
 
+	///////////////////////////////////////////
+	cv::Mat K = (cv::Mat_<double>(3, 3) << 1559.80507376553, 0, 912.9549412920452, 0, 1561.939887101958, 710.3280104684843, 0, 0, 1); // Camera matrix
+	cv::Mat D = (cv::Mat_<double>(4, 1) << 0.2848917273476514, -5.383880058336969, 42.29918759990855, -117.3985513026267); // Distortion coefficients
+
+	cv::Mat R = cv::Mat::eye(3, 3, CV_64F); // Identity matrix for no rotation
+	cv::Mat newK = K.clone();               // Adjusted camera matrix (can modify focal length, etc.)
+
+	cv::fisheye::initUndistortRectifyMap(K, D, R, newK, cv::Size(1920, 1280), CV_16SC2, environment->map1, environment->map2);
+	/////////////////////////////////////////
+
 	environment->is_sort_results = set->is_sort_results;
 	environment->mqtt = set->mqtt;
 	environment->mqtt_detection_topic = set->mqtt_detection_topic;
@@ -521,8 +531,14 @@ void thread_func(DetectorEnvironment* env)
 
 void process_frame(ICamera* capture, cs::camera_settings* set, DetectorEnvironment* environment, Mat& frame)
 {
-	//if (frame.empty())
-	//	return;
+	if (frame.empty())
+		return;
+
+	if (environment->is_undistort) {
+		if (!environment->map1.empty() && !environment->map2.empty()) {
+			cv::remap(frame, frame, environment->map1, environment->map2, cv::INTER_LINEAR);
+		}
+	}
 
 	if (environment->detector_ready) {
 		environment->original_size = frame.size();

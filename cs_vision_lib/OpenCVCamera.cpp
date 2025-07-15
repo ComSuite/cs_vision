@@ -130,13 +130,11 @@ int OpenCVCamera::open(int id, const int frame_width, const int frame_height)
 			return 0;
 
 		cout << "OpenCV backend: " << capture->getBackendName() << endl;
-		if (frame_width > 0 && frame_height > 0) {
+		if (frame_width > 0 || frame_height > 0) {
 			capture->set(CAP_PROP_FRAME_WIDTH, frame_width);
 			capture->set(CAP_PROP_FRAME_HEIGHT, frame_height);
 		}
 
-		//capture->set(CAP_PROP_FPS, 5);
-		//capture->set(CAP_PROP_MONOCHROME, 1.0);
 		if (capture->isOpened()) {
 			cout << "Video from device: #" << id << endl;
 			return info();

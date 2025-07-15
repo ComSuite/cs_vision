@@ -71,22 +71,13 @@ namespace cs
 		}
 
 		std::atomic_bool detector_ready = true;
-		//std::mutex detector_mutex;
+		std::atomic_bool is_can_show = true;
 
 		std::list<IObjectDetector*> detectors; //to do: shold be changed to map<int, IObjectDetector*>?
 
-		std::atomic_bool is_can_show = true;
-/*
-#ifdef __HAS_CUDA__
-		//BaseQueue<cv::cuda::GpuMat> queue;
-		cv::cuda::GpuMat detect_frame;
-		cv::cuda::GpuMat show_frame;
-#else
-		//BaseQueue<cvMat> queue;
-		cv::Mat detect_frame;
-		cv::Mat show_frame;
-#endif
-*/
+		bool is_undistort = false;
+		cv::Mat map1, map2;
+
 		cv::Mat* detect_frame;
 		cv::Mat show_frame;
 
