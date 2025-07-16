@@ -108,16 +108,6 @@ int detector_settings::parse(rapidjson::Value& root)
 	return 1;
 }
 
-bool json_get_array(rapidjson::Value& doc, const char* topic, rapidjson::Value& val)
-{
-	if (doc.HasMember(topic) && doc[topic].IsArray()) {
-		val = doc[topic].GetArray();
-		return true;
-	}
-
-	return false;
-}
-
 //******************************************************************************************
 int camera_settings::parse(rapidjson::Value& root)
 {

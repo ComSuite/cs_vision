@@ -280,8 +280,6 @@ bool init_detectors_environment(DetectorEnvironment* environment, camera_setting
 		}
 	}
 
-	//environment->is_show_mask = set->is_show_mask;
-
 	if (set->is_use_super_resolution) {
 		environment->super_resolution = new cv::dnn_superres::DnnSuperResImpl();
 		if (environment->super_resolution != nullptr) {

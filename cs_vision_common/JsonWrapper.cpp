@@ -179,6 +179,15 @@ std::variant<int, std::string, float, double, bool> JsonWrapper::json_get_varian
 	return defval;
 }
 
+bool JsonWrapper::json_get_array(rapidjson::Value& doc, const char* topic, rapidjson::Value& val)
+{
+	if (doc.HasMember(topic) && doc[topic].IsArray()) {
+		val = doc[topic].GetArray();
+		return true;
+	}
+
+	return false;
+}
 
 double JsonWrapper::json_get_double(rapidjson::Value& doc, const char* topic, double defval)
 {

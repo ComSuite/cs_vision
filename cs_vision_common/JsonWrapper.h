@@ -53,6 +53,7 @@ namespace cs
 		const char* json_get_string(rapidjson::GenericObject<false, rapidjson::Value>& doc, const char* topic, const char* defval);
 		std::variant<int, std::string, float, double, bool> json_get_variant(rapidjson::GenericObject<false, rapidjson::Value>& doc, const char* topic, std::variant<int, std::string, float, double, bool>& defval);
 
+		bool json_get_array(rapidjson::Value& doc, const char* topic, rapidjson::Value& val);
 		int json_get_int(rapidjson::Value& doc, const char* topic, int defval);
 		uint64_t json_get_uint64(rapidjson::Value& doc, const char* topic, int defval);
 		bool json_get_bool(rapidjson::Value& doc, const char* topic, bool defval);
