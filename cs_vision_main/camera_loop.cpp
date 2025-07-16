@@ -130,21 +130,28 @@ void on_camera_message(struct mosquitto* mosq, const char* topic, const char* pa
 	cout << "Received message on topic: " << topic << " Payload: " << payload << endl;
 }
 
-bool connect_to_mqtt_broker(camera_settings* settings, DetectorEnvironment* env)
+bool connect_to_mqtt_broker(camera_settings* settings, DetectorEnvironment* env, MQTTClient* mqtt_client)
 {
-	env->mqtt_client = new MQTTClient();
-	if (env->mqtt_client == NULL) {
-		return false;
+	if (mqtt_client != nullptr) {
+		env->mqtt_client = new MQTTClient(mqtt_client->get_handle());
 	}
+	else {
+		env->mqtt_client = new MQTTClient();
+		if (env->mqtt_client == NULL) {
+			return false;
+		}
 
-	if (!env->mqtt_client->connect(settings->mqtt_client_name.c_str(), settings->mqtt_broker_ip.c_str(), settings->mqtt_broker_port)) {
-		//delete env->mqtt_client;
-		//env->mqtt_client = NULL;
-		//return false;
+		if (!env->mqtt_client->connect(settings->mqtt_client_name.c_str(), settings->mqtt_broker_ip.c_str(), settings->mqtt_broker_port)) {
+			//delete env->mqtt_client;
+			//env->mqtt_client = NULL;
+			//return false;
+		}
 	}
 
 	auto topic = settings->additional.get<string>("mqtt_request_topic", "");
-	env->mqtt_client->subscribe(topic.c_str(), settings, on_camera_message);
+	if (!topic.empty()) {
+		env->mqtt_client->subscribe(topic.c_str(), settings, on_camera_message);
+	}
 
 	//env->mqtt_client->start_background_loop();
 
@@ -197,7 +204,7 @@ bool cleanup_detectors_environment(DetectorEnvironment* environment)
 	environment->original_size = Size(0, 0);
 }
 
-bool init_detectors_environment(DetectorEnvironment* environment, camera_settings* set, ICamera* capture)
+bool init_detectors_environment(DetectorEnvironment* environment, camera_settings* set, ICamera* capture, MQTTClient* mqtt_client)
 {
 	if (!environment || !set || !capture)
 		return false;
@@ -234,7 +241,7 @@ bool init_detectors_environment(DetectorEnvironment* environment, camera_setting
 	environment->http_server_queue = set->http_server_queue;
 
 	create_video_streamer(environment, set, capture);
-	connect_to_mqtt_broker(set, environment);
+	connect_to_mqtt_broker(set, environment, mqtt_client);
 
 #ifdef __WITH_SCRIPT_LANG__
 	environment->script = new cs::CSScript();
@@ -604,7 +611,13 @@ void* camera_loop(void* arg)
 	signal(SIGPIPE, SIG_IGN);
 	signal(0, SIG_IGN);
 #endif
-	cs::camera_settings* set = (cs::camera_settings*)arg;
+	camera_loop_params* params = (camera_loop_params*)arg;
+	if (params == nullptr) {
+		cout << "Invalid camera_loop_params paramsL NULL" << endl;
+		return nullptr;
+	}
+
+	cs::camera_settings* set = params->settings;
 	if (set == nullptr)
 		return nullptr;
 
@@ -621,7 +634,7 @@ void* camera_loop(void* arg)
 	}
 
 	DetectorEnvironment environment;
-	if (!init_detectors_environment(&environment, set, capture)) {
+	if (!init_detectors_environment(&environment, set, capture, params->mqtt_client)) {
 		delete capture;
 		return nullptr;
 	}

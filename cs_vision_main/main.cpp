@@ -240,12 +240,6 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    //sem_t* semaphore;
-    //if (!check_process_instance(&semaphore)) {
-    //    cout << "\nError! Only one instance of this application available." << endl << endl;
-        //return 1;
-    //}
-
 #ifndef _DEBUG_
     cv::utils::logging::setLogLevel(cv::utils::logging::LogLevel::LOG_LEVEL_SILENT);
 #endif
@@ -277,23 +271,6 @@ int main(int argc, char* argv[])
     }
 #endif
 
-    list<camera_thread_description*> camera_threads;
-    for (auto& camera : settings->cameras) {
-#ifdef __WITH_MONGOOSE_SERVER__
-        if (http_arg != nullptr) {
-            camera->http_server_queue = http_arg->queue;
-        }
-#endif
-
-        camera_thread_description* descr = new camera_thread_description();
-
-        pthread_create(&descr->camera_thread, NULL, camera_loop, camera);
-        pthread_detach(descr->camera_thread);
-        descr->camera_set = camera;
-
-        camera_threads.push_back(descr);
-    }
-
     MQTTClient* mqtt = nullptr;
     if (settings->mqtt && settings->mqtt_broker_ip.size() > 0 && settings->mqtt_broker_port > 0) {
         mqtt = new MQTTClient();
@@ -306,6 +283,27 @@ int main(int argc, char* argv[])
         }
         else
             cout << "Cannot allocate memory for command`s topic MQTT client. Broker IP: " << settings->mqtt_broker_ip.c_str() << " port: " << settings->mqtt_broker_port << endl;
+    }
+
+    list<camera_thread_description*> camera_threads;
+    for (auto& camera : settings->cameras) {
+#ifdef __WITH_MONGOOSE_SERVER__
+        if (http_arg != nullptr) {
+            camera->http_server_queue = http_arg->queue;
+        }
+#endif
+
+        camera_thread_description* descr = new camera_thread_description();
+
+		camera_loop_params* cam_prams = new camera_loop_params();
+		cam_prams->settings = camera;
+		cam_prams->mqtt_client = mqtt;
+
+        pthread_create(&descr->camera_thread, NULL, camera_loop, cam_prams); //camera
+        pthread_detach(descr->camera_thread);
+        descr->camera_set = camera;
+
+        camera_threads.push_back(descr);
     }
 
 #ifdef __WITH_MONGOOSE_SERVER__

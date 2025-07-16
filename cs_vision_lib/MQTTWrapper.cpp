@@ -65,7 +65,6 @@ int MQTTWrapper::connect(const char* client, const char* host, int port)
 {
 	cout << "Trying connect to Mosquitto broker. Client: " << client << " Host: " << host << " Port: " << port << endl;
 
-	//mosquitto_user_data_set
 	mosq = mosquitto_new(client, true, this);
 	if (mosq == NULL)
 	{
@@ -80,11 +79,11 @@ int MQTTWrapper::connect(const char* client, const char* host, int port)
 
 	if (mosquitto_connect(mosq, host, port, 100) == MOSQ_ERR_SUCCESS) {
 		while(!is_connect) {
-			//int rc = mosquitto_loop(mosq, 100, 1);
-			//if (rc != MOSQ_ERR_SUCCESS) {
-			//	cout << "Mosquitto loop error: " << rc << " : " << mosquitto_strerror(rc) << endl;
-			//	this_thread::sleep_for(chrono::milliseconds(100));
-			//}
+			int rc = mosquitto_loop(mosq, 100, 1);
+			if (rc != MOSQ_ERR_SUCCESS) {
+				cout << "Mosquitto loop error: " << rc << " : " << mosquitto_strerror(rc) << endl;
+				this_thread::sleep_for(chrono::milliseconds(100));
+			}
 		}
 		cout << "Mosquitto server connected" << endl;
 	}
@@ -93,7 +92,7 @@ int MQTTWrapper::connect(const char* client, const char* host, int port)
 		return 0;
 	}
 
-	mosquitto_threaded_set(mosq, false);
+	mosquitto_threaded_set(mosq, true);
 
 	return 1;
 }
@@ -111,7 +110,12 @@ int MQTTWrapper::connect(const char* client, const char* login, const char* pass
 
 int MQTTWrapper::disconnect()
 {
-	mosquitto_destroy(mosq);
+	if (mosq == NULL)
+		return 0;
+
+	if (is_connect) {
+		mosquitto_destroy(mosq);
+	}
 
 	return 1;
 }
@@ -154,7 +158,7 @@ int MQTTWrapper::subscribe(const char* topic, void* data, on_message callback)
 	int ret = mosquitto_subscribe(mosq, NULL, topic, 1);
 	if (ret == MOSQ_ERR_SUCCESS) {
 		cout << "Subscribed to topic: " << topic << endl;
-		mosquitto_message_callback_set(mosq, mqtt_on_message);
+		//mosquitto_message_callback_set(mosq, mqtt_on_message);
 	}
 
 	MQTTWrapper::callbacks.push_back({ std::string(topic), data, callback });
@@ -194,7 +198,7 @@ int MQTTWrapper::loop()
 	if (mosquitto_loop(mosq, 100, 1) != MOSQ_ERR_SUCCESS) {
 		cout << "!!!!!!!!!!Reconnect!!!!!!!!!!!" << endl;
 		this_thread::sleep_for(chrono::milliseconds(20));
-		mosquitto_reconnect(mosq);
+		//mosquitto_reconnect(mosq);
 	}
 
 	return 1;

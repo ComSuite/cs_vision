@@ -23,6 +23,17 @@
 
 #pragma once
 #include "settings.h"
+#include "MQTTClient.h"
+
+namespace cs
+{
+	class camera_loop_params
+	{
+	public:
+		MQTTClient* mqtt_client = nullptr;
+		camera_settings* settings = nullptr;
+	};
+}
 
 void* camera_loop(void* set);
 
