@@ -391,6 +391,7 @@ Global
 		user_interface\user_interface.vcxitems*{72bc0788-965d-48a3-94fc-ac9585307a70}*SharedItemsImports = 9
 		cs_vision_face_detector_dlib\cs_vision_face_detector_dlib.vcxitems*{77fa4b48-1987-41b1-aebf-e0099158307a}*SharedItemsImports = 9
 		cs_vision_haar_cascade\cs_vision_haar_cascade.vcxitems*{82d588a6-86aa-4b07-8198-cd1e37e95264}*SharedItemsImports = 9
+		command_line_parcer\command_line_parcer.vcxitems*{83d1f29a-2a87-4bca-afe7-f0d200e058be}*SharedItemsImports = 4
 		command_line_parcer\command_line_parcer.vcxitems*{8a061d43-3dad-496c-8328-3b98d901a191}*SharedItemsImports = 4
 		cs_vision_common\cs_vision_common.vcxitems*{8a061d43-3dad-496c-8328-3b98d901a191}*SharedItemsImports = 4
 		cs_vision_lib\cs_vision_lib.vcxitems*{8a061d43-3dad-496c-8328-3b98d901a191}*SharedItemsImports = 4

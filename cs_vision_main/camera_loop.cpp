@@ -199,13 +199,9 @@ bool cleanup_detectors_environment(DetectorEnvironment* environment)
 
 bool init_detectors_environment(DetectorEnvironment* environment, camera_settings* set, ICamera* capture)
 {
-	if (!environment)
+	if (!environment || !set || !capture)
 		return false;
 
-	if (!set)
-		return false;
-
-	///////////////////////////////////////////
 	environment->is_undistort = set->is_undistort;
 	if (environment->is_undistort && set->camera_matrix.size() == 9 && set->distortion_coefficients.size() == 4) {
 		cv::Mat K = (cv::Mat_<double>(3, 3)); 
@@ -216,7 +212,7 @@ bool init_detectors_environment(DetectorEnvironment* environment, camera_setting
 		cv::Mat R = cv::Mat::eye(3, 3, CV_64F); // Identity matrix for no rotation
 		cv::Mat newK = K.clone();               // Adjusted camera matrix (can modify focal length, etc.)
 
-		cv::fisheye::initUndistortRectifyMap(K, D, R, newK, cv::Size(1920, 1080), CV_16SC2, environment->map1, environment->map2);
+		cv::fisheye::initUndistortRectifyMap(K, D, R, newK, cv::Size(capture->get_width(), capture->get_height()), CV_16SC2, environment->map1, environment->map2);
 	}
 	else {
 		environment->is_undistort = false;
