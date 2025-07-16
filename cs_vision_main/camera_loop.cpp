@@ -606,24 +606,24 @@ void* camera_loop(void* arg)
 #endif
 	cs::camera_settings* set = (cs::camera_settings*)arg;
 	if (set == nullptr)
-		return NULL;
+		return nullptr;
 
 	ICamera* capture = create_input_device(set);
 	if (!capture) {
-		return NULL;
+		return nullptr;
 	}
 	capture->prepare();
 
 	if (!capture->open(set->device, set->frame_width, set->frame_height) || capture->get_height() <= 0 || capture->get_width() <= 0) {
 		cout << "Can not open capture: " << get<string>(set->device).c_str() << endl;
 		delete capture;
-		return NULL;
+		return nullptr;
 	}
 
 	DetectorEnvironment environment;
 	if (!init_detectors_environment(&environment, set, capture)) {
 		delete capture;
-		return NULL;
+		return nullptr;
 	}
 
 	gpu_setup_device();
@@ -671,7 +671,6 @@ void* camera_loop(void* arg)
 				process_frame(capture, set, &environment, *frame);
 				ind = 1 - ind;
 				frame = &buffers[ind];
-				//frame->release();
 			}
 		}
 
