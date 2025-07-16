@@ -206,14 +206,21 @@ bool init_detectors_environment(DetectorEnvironment* environment, camera_setting
 		return false;
 
 	///////////////////////////////////////////
-	cv::Mat K = (cv::Mat_<double>(3, 3) << 1559.80507376553, 0, 912.9549412920452, 0, 1561.939887101958, 710.3280104684843, 0, 0, 1); // Camera matrix
-	cv::Mat D = (cv::Mat_<double>(4, 1) << 0.2848917273476514, -5.383880058336969, 42.29918759990855, -117.3985513026267); // Distortion coefficients
+	environment->is_undistort = set->is_undistort;
+	if (environment->is_undistort && set->camera_matrix.size() == 9 && set->distortion_coefficients.size() == 4) {
+		cv::Mat K = (cv::Mat_<double>(3, 3)); 
+		memcpy(K.data, set->camera_matrix.data(), sizeof(double) * 9);
+		cv::Mat D = (cv::Mat_<double>(4, 1));
+		memcpy(D.data, set->distortion_coefficients.data(), sizeof(double) * 4);
 
-	cv::Mat R = cv::Mat::eye(3, 3, CV_64F); // Identity matrix for no rotation
-	cv::Mat newK = K.clone();               // Adjusted camera matrix (can modify focal length, etc.)
+		cv::Mat R = cv::Mat::eye(3, 3, CV_64F); // Identity matrix for no rotation
+		cv::Mat newK = K.clone();               // Adjusted camera matrix (can modify focal length, etc.)
 
-	cv::fisheye::initUndistortRectifyMap(K, D, R, newK, cv::Size(1920, 1280), CV_16SC2, environment->map1, environment->map2);
-	/////////////////////////////////////////
+		cv::fisheye::initUndistortRectifyMap(K, D, R, newK, cv::Size(1920, 1080), CV_16SC2, environment->map1, environment->map2);
+	}
+	else {
+		environment->is_undistort = false;
+	}
 
 	environment->is_sort_results = set->is_sort_results;
 	environment->mqtt = set->mqtt;

@@ -27,6 +27,7 @@
 #include <map>
 #include <variant>
 #include <list>
+#include <vector>
 #include <opencv2/core.hpp>
 #include "JsonWrapper.h"
 #include "types.h"
@@ -170,8 +171,8 @@ namespace cs
 		std::string name = "";
 
 		bool is_undistort = false;
-		cv::Mat K = cv::Mat::eye(3, 3, CV_64F); // Intrinsic matrix
-		cv::Mat D = cv::Mat::zeros(4, 1, CV_64F); // Distortion coefficients
+		std::vector<double> camera_matrix; // 3x3 matrix
+		std::vector<double> distortion_coefficients; // 4x1 vector
 
 		dynamic_settings additional;
 

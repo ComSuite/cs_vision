@@ -108,6 +108,16 @@ int detector_settings::parse(rapidjson::Value& root)
 	return 1;
 }
 
+bool json_get_array(rapidjson::Value& doc, const char* topic, rapidjson::Value& val)
+{
+	if (doc.HasMember(topic) && doc[topic].IsArray()) {
+		val = doc[topic].GetArray();
+		return true;
+	}
+
+	return false;
+}
+
 //******************************************************************************************
 int camera_settings::parse(rapidjson::Value& root)
 {
@@ -118,6 +128,24 @@ int camera_settings::parse(rapidjson::Value& root)
 		device = dev;
 	else
 		device = json_get_string(root, "device", "");
+
+	is_undistort = json_get_bool(root, "is_undistort", is_undistort);
+	rapidjson::Value d, k;
+	camera_matrix.clear();
+	distortion_coefficients.clear();
+	auto b = json_get_array(root, "camera_matrix", d);
+	if (b && d.IsArray() && d.Size() == 9) {
+		b = json_get_array(root, "distortion_coefficients", k);
+		if (k.IsArray() && k.Size() == 4) {
+			for (int i = 0; i < 9; i++) {
+				camera_matrix.push_back(d[i].GetDouble());
+			}
+
+			for (int i = 0; i < 4; i++) {
+				distortion_coefficients.push_back(k[i].GetDouble());
+			}
+		}
+	}
 
 	id = json_get_string(root, "id", id.c_str());
 	name = json_get_string(root, "name", name.c_str());
