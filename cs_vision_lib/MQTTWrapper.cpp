@@ -134,12 +134,12 @@ int MQTTWrapper::send(const char* topic, const char* payload, bool retained)
 		return 0;
 	}
 	else {
-		try {
-			mosquitto_loop_write(mosq, 1);
-		}
-		catch (...) {
-			cout << "Error in mosquitto_loop_write" << endl;
-		}
+		//try {
+			//mosquitto_loop_write(mosq, 1);
+		//}
+		//catch (...) {
+		//	cout << "Error in mosquitto_loop_write" << endl;
+		//}
 	}
 
 	return 1;
@@ -195,11 +195,16 @@ int MQTTWrapper::unsubscribe(const char* topic, on_message callback)
 
 int MQTTWrapper::loop()
 {
+	mosquitto_loop_write(mosq, 1);
+	mosquitto_loop_read(mosq, 1);
+
+	/*
 	if (mosquitto_loop(mosq, 100, 1) != MOSQ_ERR_SUCCESS) {
 		cout << "!!!!!!!!!!Reconnect!!!!!!!!!!!" << endl;
 		this_thread::sleep_for(chrono::milliseconds(20));
-		//mosquitto_reconnect(mosq);
+		mosquitto_reconnect(mosq);
 	}
+	*/
 
 	return 1;
 }

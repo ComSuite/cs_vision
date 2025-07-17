@@ -319,6 +319,9 @@ int main(int argc, char* argv[])
 
     auto begin_time = std::chrono::steady_clock::now();
 
+    //if (mqtt != nullptr)
+	//	mqtt->start_background_loop(); // Start MQTT background loop
+
     for (;;) {
         if (mqtt != nullptr)
             mqtt->loop();
