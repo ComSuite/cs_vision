@@ -34,7 +34,6 @@ using namespace std;
 using namespace std::chrono;
 using namespace cs;
 
-//on_message MQTTWrapper::on_message_callback = NULL;
 std::vector<MQTTSubscriber> MQTTWrapper::callbacks;
 
 void mqtt_on_connect(struct mosquitto* mosq, void* data, int);
@@ -133,14 +132,6 @@ int MQTTWrapper::send(const char* topic, const char* payload, bool retained)
 		cout << "<mosquitto_publish> Mosquitto Error: " << err << " : " << mosquitto_strerror(err) << " System Error: " << errno << endl;
 		return 0;
 	}
-	else {
-		//try {
-			//mosquitto_loop_write(mosq, 1);
-		//}
-		//catch (...) {
-		//	cout << "Error in mosquitto_loop_write" << endl;
-		//}
-	}
 
 	return 1;
 }
@@ -219,9 +210,6 @@ int MQTTWrapper::start_background_loop()
 //************************************************************************************************
 void mqtt_on_message(struct mosquitto* mosq, void* data, const struct mosquitto_message* msg)
 {
-	//if (MQTTWrapper::on_message_callback != NULL)
-	//	MQTTWrapper::on_message_callback(mosq, msg->topic, (const char*)msg->payload, data);
-
 	for (auto& subscriber : MQTTWrapper::callbacks) {
 		if (subscriber.topic == msg->topic && subscriber.callback != NULL) {
 			subscriber.callback(mosq, msg->topic, (const char*)msg->payload, subscriber.user_data);

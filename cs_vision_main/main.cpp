@@ -228,8 +228,6 @@ static void signal_handler(int sig_num)
 {
 	cout << "Signal: " << sig_num << " received. Exit." << endl;
     exit(0);
-    //signal(sig_num, signal_handler);
-    //s_sig_num = sig_num;
 }
 
 int main(int argc, char* argv[])

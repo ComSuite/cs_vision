@@ -153,8 +153,6 @@ bool connect_to_mqtt_broker(camera_settings* settings, DetectorEnvironment* env,
 		env->mqtt_client->subscribe(topic.c_str(), settings, on_camera_message);
 	}
 
-	//env->mqtt_client->start_background_loop();
-
 	return true;
 }
 
@@ -645,8 +643,6 @@ void* camera_loop(void* arg)
 		capture->set_detector_buffer(detector->width * detector->height);
 	}
 
-	//environment.mqtt_client->start_background_loop(); // ->loop();
-
 #ifdef _DEBUG_
 	fps_counter fps;
 	if (set->input_kind == INPUT_OUTPUT_DEVICE_KIND::INPUT_OUTPUT_DEVICE_KIND_CAMERA) {
@@ -671,9 +667,6 @@ void* camera_loop(void* arg)
 	cv::Mat* frame = &buffers[ind];
 
 	for (;;) {
-		//if (environment.mqtt_client != nullptr)
-		//	environment.mqtt_client->loop(); 
-
 		if (!capture->is_ready()) {
 			cout << "Capture is not ready" << endl;
 			continue;
