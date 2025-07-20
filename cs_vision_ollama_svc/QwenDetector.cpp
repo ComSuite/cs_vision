@@ -15,7 +15,6 @@ void on_detector_message(struct mosquitto* mosq, const char* topic, const char* 
 		return;
 
 	QwenDetector* detector = static_cast<QwenDetector*>(data);
-	std::cout << "QwenDetector::on_detector_message: topic: " << topic << " payload: " << payload << std::endl;
 
 	command_processor* command = new command_processor();
 	if (command == nullptr) {
