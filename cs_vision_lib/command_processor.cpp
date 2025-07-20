@@ -44,6 +44,19 @@ command_processor::~command_processor()
 	clear<item_value, std::list>(values);
 }
 
+item_value* command_processor::get_item_value(const char* path)
+{
+	if (path == nullptr || strlen(path) == 0)
+		return nullptr;
+
+	for (auto& v : values) {
+		if (v->path == path)
+			return v;
+	}
+
+	return nullptr;
+}
+
 int command_processor::parse(rapidjson::Document& root)
 {
 	int ret = 1;

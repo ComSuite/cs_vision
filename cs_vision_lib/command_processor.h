@@ -67,10 +67,13 @@ namespace cs
 		static const int COMMAND_ID_GET_BACKUPS_LIST = 7; //return list of saved bacup files
 		static const int COMMAND_ID_RESTORE_FROM_BACKUP = 8; //restore config for buckup. if no params - from last backup
 		static const int COMMAND_ID_PING = 9; //ping
+		static const int COMMAND_ID_SET_LLM_PROMPT = 10; //get device info
 
 		virtual ~command_processor();
 		bool execute(cs::JsonWriter* root, cs::ReadOnlyValues* checker = nullptr, const char* settings_file_path = nullptr, bool is_backup = false);
 		bool hide_secrets(cs::JsonWriter* root, std::list<std::string>& secrets, std::string& json);
+
+		item_value* get_item_value(const char* path);
 
 		int command_id = COMMAND_ID_NO;
 		std::string device_id = "";

@@ -3,6 +3,7 @@
 #include "../rapidjson/writer.h"
 #include "../rapidjson/stringbuffer.h"
 #include "../rapidjson/rapidjson.h"
+#include "command_processor.h"
 
 using namespace rapidjson;
 using namespace cs;
@@ -15,6 +16,31 @@ void on_detector_message(struct mosquitto* mosq, const char* topic, const char* 
 
 	QwenDetector* detector = static_cast<QwenDetector*>(data);
 	std::cout << "QwenDetector::on_detector_message: topic: " << topic << " payload: " << payload << std::endl;
+
+	command_processor* command = new command_processor();
+	if (command == nullptr) {
+		return;
+	}
+
+	((JsonWrapper*)command)->parse(payload);
+	switch (command->command_id)
+	{
+	case command_processor::COMMAND_ID_SET_LLM_PROMPT:
+	{
+		auto val = command->get_item_value("prompt");
+		if (val != nullptr) {
+			std::string prompt = std::get<std::string>(val->value);
+			detector->set_prompt(prompt);
+			cout << "QwenDetector::on_detector_message: Set prompt: " << prompt << endl;
+		}
+		else {
+			cout << "QwenDetector::on_detector_message: No prompt found in command" << endl;
+		}
+		break;
+	}
+	default:
+		break;
+	}
 }
 
 int QwenDetector::init(object_detector_environment& env)
