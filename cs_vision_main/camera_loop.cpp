@@ -255,7 +255,17 @@ bool init_detectors_environment(DetectorEnvironment* environment, camera_setting
 	for (auto& detector : set->detectors) {
 		IObjectDetector* _detector = create_detector(detector->kind);
 		if (_detector != nullptr) {
-			_detector->init(detector->model_path.c_str(), detector->labels_path.c_str(), detector->rules_path.c_str(), detector->input_tensor_name.c_str(), detector->output_tensor_name.c_str(), detector->is_use_gpu);
+			object_detector_environment detector_env;
+			detector_env.model_path = detector->model_path;
+			detector_env.label_path = detector->labels_path;
+			detector_env.rules_path = detector->rules_path;
+			detector_env.input_tensor_name = detector->input_tensor_name;
+			detector_env.output_tensor_name = detector->output_tensor_name;
+			detector_env.is_use_gpu = detector->is_use_gpu;
+			detector_env.additional = &detector->additional;
+			detector_env.param = nullptr;
+			_detector->init(detector_env);
+
 			_detector->name = detector->name;
 			_detector->id = detector->id;
 			_detector->neural_network_id = detector->neural_network_id;

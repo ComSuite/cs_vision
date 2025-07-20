@@ -35,6 +35,7 @@
 #include "types.h"
 #include "rapidjson.h"
 #include "JsonWrapper.h"
+#include "dynamic_settings.h"
 
 void default_error_reporter(void* user_data, const char* format, va_list args);
 
@@ -127,16 +128,33 @@ namespace cs
 		void set_is_send_result(bool send) { is_send_result = send; }
 	};
 
+	class object_detector_environment
+	{
+	public:
+		std::string model_path = "";
+		std::string label_path = "";
+		std::string rules_path = "";
+		std::string input_tensor_name = "";
+		std::string output_tensor_name = "";
+		bool is_use_gpu = false;
+		dynamic_settings* additional = nullptr;
+		void* param = nullptr; 
+	};
+
 	class IObjectDetector : public JsonWrapper
 	{
 	public:
 		IObjectDetector() {};
 		virtual ~IObjectDetector() {};
 
-		virtual int init(const char* model_path, const char* label_path, const char* rules_path, bool is_use_gpu = false) = 0;
-		virtual int init(const char* model_path, const char* label_path, const char* rules_path, const char* input_tensor_name, const char* output_tensor_name, bool is_use_gpu = false) = 0;
-		virtual int init(void* param, bool is_use_gpu = false) = 0;
+		virtual int init(object_detector_environment& env) = 0;
+
+		//virtual int init(const char* model_path, const char* label_path, const char* rules_path, bool is_use_gpu = false) = 0;
+		//virtual int init(const char* model_path, const char* label_path, const char* rules_path, const char* input_tensor_name, const char* output_tensor_name, bool is_use_gpu = false) = 0;
+		//virtual int init(void* param, bool is_use_gpu = false) = 0;
+
 		virtual void clear() = 0;
+
 		virtual int detect(cv::Mat* input, int& current_id, bool is_draw = false) = 0;
 		virtual int detect(cv::cuda::GpuMat* input, int& current_id, bool is_draw = false) = 0;
 		virtual int detect_batch(const std::vector<cv::Mat*>& input, int& current_id, bool is_draw = false) = 0;

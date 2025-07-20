@@ -66,31 +66,23 @@ TFYOLOv5ObjectDetector::~TFYOLOv5ObjectDetector()
     clear();
 }
 
-int TFYOLOv5ObjectDetector::init(const char* model_path, const char* label_path, const char* rules_path, bool is_use_gpu)
+int TFYOLOv5ObjectDetector::init(object_detector_environment& env)
 {
     yolo_model.confThreshold = 0.30;
     yolo_model.nmsThreshold = 0.40;
     yolo_model.nthreads = 4;
 
-    yolo_model.loadModel(model_path);
-    yolo_model.getLabelsName(label_path, labels);
+    yolo_model.loadModel(env.model_path);
+    yolo_model.getLabelsName(env.label_path, labels);
 
     cout << "[TFYOLOv5ObjectDetector] Label Count: " << labels.size() << "\n" << endl;
-    //for (auto& lbl : labels) {
-    //    cout << lbl << endl;
-    //}
 
-    load_rules(rules_path);
+    load_rules(env.rules_path.c_str());
 
     width = yolo_model._in_width;
     height = yolo_model._in_height;
 
-	return 1;
-}
-
-int TFYOLOv5ObjectDetector::init(const char* model_path, const char* label_path, const char* rules_path, const char* input_tensor_name, const char* output_tensor_name, bool is_use_gpu)
-{ 
-    return init(model_path, label_path, rules_path, is_use_gpu); 
+    return 1;
 }
 
 void TFYOLOv5ObjectDetector::clear()

@@ -44,17 +44,12 @@ TRTYoloObjectDetector::~TRTYoloObjectDetector()
 
 }
 
-int TRTYoloObjectDetector::init(const char* model_path, const char* label_path, const char* rules_path, bool is_use_gpu)
+int TRTYoloObjectDetector::init(object_detector_environment& env)
 {
-	return init(model_path, label_path, rules_path, default_input_tensor_name, default_output_tensor_name, is_use_gpu);
-}
+	load_rules(env.rules_path.c_str());
+	load_labels(env.label_path.c_str());
 
-int TRTYoloObjectDetector::init(const char* model_path, const char* label_path, const char* rules_path, const char* input_tensor_name, const char* output_tensor_name, bool is_use_gpu)
-{
-	load_rules(rules_path);
-	load_labels(label_path);
-
-	detector = make_unique<YOLOv11>(model_path, trt_yolo_logger);
+	detector = make_unique<YOLOv11>(env.model_path, trt_yolo_logger);
 
 	return 1;
 }

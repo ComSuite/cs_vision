@@ -34,6 +34,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)command_processor.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)cv_utils.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DetectorEnvironment.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)dynamic_settings.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)http_server_settings.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ICamera.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)IObjectDetector.h" />

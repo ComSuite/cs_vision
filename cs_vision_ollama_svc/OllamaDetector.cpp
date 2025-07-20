@@ -47,19 +47,13 @@ OllamaDetector::~OllamaDetector()
 	clear();
 }
 
-int OllamaDetector::init(const char* model_path, const char* label_path, const char* rules_path, bool is_use_gpu)
+int OllamaDetector::init(object_detector_environment& env)
 {
-	// Initialize the detector with the provided model, label, and rules paths
-	// Use GPU if is_use_gpu is true
-	// Return 0 on success, or an error code on failure
-	return 0;
-}
-
-int OllamaDetector::init(const char* model_path, const char* label_path, const char* rules_path, const char* input_tensor_name, const char* output_tensor_name, bool is_use_gpu)
-{
-	model = model_path;
-	prompt = input_tensor_name;
-	endpoint = "http://192.168.0.128:11434/api/generate";
+	if (env.additional != nullptr) {
+		model = env.additional->get<std::string>("model", "");
+		prompt = env.additional->get<std::string>("prompt", "");
+		endpoint = env.additional->get<std::string>("endpoint", "http://192.168.0.128:11434/api/generate");
+	}
 
 	try
 	{

@@ -8,6 +8,14 @@ using namespace rapidjson;
 using namespace cs;
 using namespace std;
 
+
+int QwenDetector::init(object_detector_environment& env)
+{
+	OllamaDetector::init(env);
+
+	return 0;
+}
+
 void QwenDetector::parse(const std::string& response, int& current_id)
 {
 	const std::string pattern_begin = "```json";
