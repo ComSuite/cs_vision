@@ -8,10 +8,28 @@ using namespace rapidjson;
 using namespace cs;
 using namespace std;
 
+void on_detector_message(struct mosquitto* mosq, const char* topic, const char* payload, void* data)
+{
+	if (data == nullptr)
+		return;
+
+	QwenDetector* detector = static_cast<QwenDetector*>(data);
+	std::cout << "QwenDetector::on_detector_message: topic: " << topic << " payload: " << payload << std::endl;
+}
 
 int QwenDetector::init(object_detector_environment& env)
 {
 	OllamaDetector::init(env);
+
+	if (env.mqtt_wrapper == nullptr) {
+		return 0;
+	}
+
+	if (env.additional != nullptr) {
+		std::string topic = env.additional->get<std::string>("mqtt_request_topic", "");
+		
+		mqtt_subscribe(env.mqtt_wrapper, topic.c_str(), this, on_detector_message);
+	}
 
 	return 0;
 }

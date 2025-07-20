@@ -264,6 +264,7 @@ bool init_detectors_environment(DetectorEnvironment* environment, camera_setting
 			detector_env.is_use_gpu = detector->is_use_gpu;
 			detector_env.additional = &detector->additional;
 			detector_env.param = nullptr;
+			detector_env.mqtt_wrapper = environment->mqtt_client;
 			_detector->init(detector_env);
 
 			_detector->name = detector->name;

@@ -12,13 +12,13 @@
                         "width": 640,
                         "height": 640,
                         "id": 0,
-                        "input_tensor_name": "Detect persons and cats in the image and return their locations and label (person, cat) in the form of coordinates.",
+                        "input_tensor_name": "",
                         "is_draw_detections": true,
                         "is_send_results": true,
                         "is_use_gpu": false,
                         "kind": 12,
                         "labels_path": "",
-                        "model_path": "qwen2.5vl:3b",
+                        "model_path": "",
                         "name": "Qwen2.5",
                         "neural_network_id": 1,
                         "output_tensor_name": "output0",
@@ -33,7 +33,11 @@
 						"execute_always": false,
 						"execute_mode": 0,
 						"additional" : [
-								{"name": "illustration_mode", "val": 4, "descr": "0-none, 1-box, 2-box and text, 3-mask, 4-mask and text"}
+								{"name": "illustration_mode", "val": 4, "descr": "0-none, 1-box, 2-box and text, 3-mask, 4-mask and text"},
+								{"name": "model", "val": "qwen2.5vl:3b"},
+								{"name": "prompt", "val": "Detect persons and cats in the image and return their locations and label (person, cat) in the form of coordinates."},
+								{"name": "endpoint", "val": "http://192.168.0.128:11434/api/generate"},
+								{"name": "mqtt_request_topic", "val": "comsuite/qwen_prompt"}
 						]
                     }
                 ],

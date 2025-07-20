@@ -36,6 +36,7 @@
 #include "rapidjson.h"
 #include "JsonWrapper.h"
 #include "dynamic_settings.h"
+#include "MQTTWrapper.h"
 
 void default_error_reporter(void* user_data, const char* format, va_list args);
 
@@ -139,6 +140,7 @@ namespace cs
 		bool is_use_gpu = false;
 		dynamic_settings* additional = nullptr;
 		void* param = nullptr; 
+		MQTTWrapper* mqtt_wrapper = nullptr;
 	};
 
 	class IObjectDetector : public JsonWrapper
@@ -148,10 +150,6 @@ namespace cs
 		virtual ~IObjectDetector() {};
 
 		virtual int init(object_detector_environment& env) = 0;
-
-		//virtual int init(const char* model_path, const char* label_path, const char* rules_path, bool is_use_gpu = false) = 0;
-		//virtual int init(const char* model_path, const char* label_path, const char* rules_path, const char* input_tensor_name, const char* output_tensor_name, bool is_use_gpu = false) = 0;
-		//virtual int init(void* param, bool is_use_gpu = false) = 0;
 
 		virtual void clear() = 0;
 
@@ -225,8 +223,11 @@ namespace cs
 
 		float detect_time = 0;
 		int64_t detections_count = 0;
+
+		void mqtt_subscribe(MQTTWrapper* mqtt_wrapper, const char* topic, void* data, on_message callback);
 	private:
 		bool if_json(const char* label_path);
 		int parse(rapidjson::Document& root) override;
+		MQTTWrapper* mqtt_wrapper = nullptr;
 	};
 }

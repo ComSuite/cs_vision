@@ -35,9 +35,6 @@ namespace cs
 
 		virtual int init(object_detector_environment& env) override;
 
-		//virtual int init(const char* model_path, const char* label_path, const char* rules_path, bool is_use_gpu = false)  override;
-		//virtual int init(const char* model_path, const char* label_path, const char* rules_path, const char* input_tensor_name, const char* output_tensor_name, bool is_use_gpu = false)  override;
-		//virtual int init(void* param, bool is_use_gpu = false)  override { return 0; };
 		virtual void clear();
 
 		virtual int detect(cv::Mat* input, int& current_id, bool is_draw = false) override;
@@ -45,6 +42,10 @@ namespace cs
 		virtual int detect_batch(const std::vector<cv::Mat*>& input, int& current_id, bool is_draw = false) override;
 
 		virtual void parse(const std::string& payload, int& current_id);
+
+		virtual void set_prompt(const std::string& prompt) {
+			this->prompt = prompt;
+		}
 	private:
 		std::string endpoint = "";
 		std::string model = "";

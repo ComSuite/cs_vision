@@ -343,3 +343,19 @@ void IObjectDetector::draw_label(Mat& input_image, string& label, int left, int 
     putText(input_image, label.c_str(), Point(left, top + label_size.height), FONT_HERSHEY_COMPLEX, 0.7, generate_contrast_color(background_color), 1, false);
 }
 
+void IObjectDetector::mqtt_subscribe(MQTTWrapper* mqtt, const char* topic, void* data, on_message callback)
+{
+    if (mqtt_wrapper == nullptr) {
+        mqtt_wrapper = new MQTTWrapper(mqtt->get_handle());
+    }
+
+    if (mqtt_wrapper == nullptr) {
+        return;
+    }
+
+    if (topic == nullptr || strlen(topic) == 0) {
+        return;
+    }
+
+    mqtt_wrapper->subscribe(topic, data, callback);
+}

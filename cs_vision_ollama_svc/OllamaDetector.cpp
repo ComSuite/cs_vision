@@ -52,7 +52,7 @@ int OllamaDetector::init(object_detector_environment& env)
 	if (env.additional != nullptr) {
 		model = env.additional->get<std::string>("model", "");
 		prompt = env.additional->get<std::string>("prompt", "");
-		endpoint = env.additional->get<std::string>("endpoint", "http://192.168.0.128:11434/api/generate");
+		endpoint = env.additional->get<std::string>("endpoint", "");
 	}
 
 	try
