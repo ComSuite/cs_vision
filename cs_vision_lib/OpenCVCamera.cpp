@@ -79,6 +79,22 @@ bool OpenCVCamera::is_end_of_file()
 		return false;
 }
 
+int OpenCVCamera::open(camera_settings* settings, void* param)
+{
+	if (settings == nullptr)
+		return 0;
+
+	auto device = settings->device;
+	if (std::holds_alternative<int>(device)) {
+		return open(std::get<int>(device), settings->frame_width, settings->frame_height);
+	}
+	else if (std::holds_alternative<std::string>(device)) {
+		return open(std::get<string>(device).c_str());
+	}
+
+	return 0;
+}
+
 int OpenCVCamera::open(std::variant<std::string, int> device, const int frame_width, const int frame_height)
 {
 	if (std::holds_alternative<int>(device)) {
@@ -171,37 +187,6 @@ int OpenCVCamera::prepare()
 	return ret;
 }
 
-/*
-int OpenCVCamera::grab()
-{ 
-	int ret = 1;
-
-	try {
-		if (capture && capture->isOpened()) {
-			*capture >> frame;
-		}
-	}
-	catch (...) {
-		ret = 0;
-	}
-
-	return ret; 
-};
-
-int OpenCVCamera::grab(const char* name)
-{
-	int ret = 0;
-
-	frame = imread(name, IMREAD_GRAYSCALE);
-	if (frame.empty()) {
-	    cout << "Could not open or find the image!\n" << endl;
-	    return -1;
-	}
-
-	return ret;
-}
-*/
-
 int OpenCVCamera::get_frame(const char* name, cv::Mat& frame, bool convert_to_gray)
 {
 	return 0;
@@ -260,11 +245,6 @@ int OpenCVCamera::save_to_file()
 
 	return ret;
 }
-
-//char* FileCamera::get_frame()
-//{
-//	return (char*)frame.data;
-//}
 
 int OpenCVCamera::get_width()
 {

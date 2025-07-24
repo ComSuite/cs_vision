@@ -25,6 +25,7 @@
 
 #include <variant>
 #include <atomic>
+#include <thread>
 #include <opencv2/core.hpp>
 #include <opencv2/videoio.hpp>
 #include "settings.h"
@@ -39,25 +40,32 @@ namespace cs
 
 		virtual int info() = 0;
 
-		virtual int open(std::variant<std::string, int> device, const int frame_width = 0, const int frame_height = 0) = 0;
-		virtual int open(const int id, const int frame_width = 0, const int frame_height = 0) = 0;
-		virtual int open(const char* name) = 0;
-		virtual int open(const int id, int attempts_count);
-		virtual int open(const char* name, int attempts_count);
-		virtual int open(camera_settings* settings)
+		//virtual int open(std::variant<std::string, int> device, const int frame_width = 0, const int frame_height = 0) = 0;
+		//virtual int open(const int id, const int frame_width = 0, const int frame_height = 0) = 0;
+		//virtual int open(const char* name) = 0;
+
+		//virtual int open(const int id, int attempts_count);
+		//virtual int open(const char* name, int attempts_count);
+
+		virtual int open(camera_settings* settings, void* param = nullptr) = 0;
+		virtual int open(camera_settings* settings, void* param, int attempts_count)
 		{
-			if (settings == nullptr)
-				return -1;
-			auto device = settings->device;
-			//source_is_file = settings->source_is_file;
-			return open(device, settings->frame_width, settings->frame_height);
+			int i = 0;
+
+			for (i = 0; i < attempts_count; i++) {
+				if (this->open(settings, param))
+					return 1;
+
+				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+			}
+
+			std::cout << "count: " << i << " from attempts: " << attempts_count << std::endl;
+			return 0;
 		}
 
 		int start_save_video(const int id, const char* output_movie_name);
 		virtual int close();
 		virtual int prepare() = 0;
-		//virtual int grab() = 0;
-		//virtual int grab(const char* name) = 0;
 		virtual int save_to_file() = 0;
 
 #ifdef  __HAS_CUDA__

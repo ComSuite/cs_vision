@@ -1,0 +1,85 @@
+Я разрабатываю решения в области видеоаналитики для embedded/edge устройств. 
+Например, систем безопасности или робототехники. 
+Проблема производительности для подобных систем одна из наиболее актуальных. 
+
+Далее я буду использовать псевдо-код в стиле C/C++, иллюстрирующий алгоритмы.
+
+Стандартный алгоритм для работы с камерой с использованием, например OpenCV 
+
+samples: 
+https://github.com/opencv/opencv/blob/4.x/samples/cpp/videocapture_starter.cpp 
+https://github.com/opencv/opencv/blob/4.x/samples/cpp/videocapture_camera.cpp
+
+выглядит слежующим образом:
+
+atomic<bool> ready = false;
+cv::Mat image;
+
+void thread_function() 
+{
+	while(true) {
+		if (ready) {
+			// Processing (e.g., object detection, streaming)
+			
+			ready = false;
+		}
+	}
+}
+
+void camera_loop()
+{
+	cv::Mat img;
+	cv::VideoCapture capture("rtsp://....");
+	
+	create_thread(thread_function);
+	
+	while(true) {
+		capture >> img;
+		
+		if (!ready) {
+			img.copyTo(image);
+			ready = true;
+		}
+	}
+}
+ 
+Очевидно, что обработка изображения в отдельном потоке необходима для предотвращения рассинхронизации с источником сигнала. В реальных проектах используются другие методы передачи информации между потоками, но в данном случае это не имеет значения.
+
+Для увеличения производительности следует использовать другой алгоритм позволяющий существенно увеличить скорость работы, как минимум в полтора раза:
+
+atomic<bool> ready = false;
+cv::Mat* pimage;
+
+void thread_function() 
+{
+	while(true) {
+		if (ready) {
+			// Processing (e.g., object recognition, streaming)
+			
+			ready = false;
+		}
+	}
+}
+
+void camera_loop()
+{
+	cv::Mat img[2];
+	int i = 0;
+
+	cv::VideoCapture capture("rtsp://....");
+	create_thread(thread_function);
+	while(true) {
+		if (ready && !img[i].empty()) {
+			pimage = &img[i];  // Swap pointer instead of copying
+			i = 1 - i;          
+			ready = true;
+		}
+
+		capture >> img[i];  // Capture next frame into the inactive buffer
+	}
+}
+ 
+
+Безусловно, этот алгоритм может быть использован для обработки информации от любых сенсоров (микрофонов &etc).
+
+ 

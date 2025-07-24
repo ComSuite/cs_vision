@@ -46,15 +46,16 @@ namespace cs
 		virtual ~OpenCVCamera();
 
 		int info();
-		int open(std::variant<std::string, int> device, const int frame_width = 0, const int frame_height = 0) override;
+
+		virtual int open(camera_settings* settings, void* param = nullptr) override;
+
+		int open(std::variant<std::string, int> device, const int frame_width = 0, const int frame_height = 0);
 		int open(const int id, const int frame_width = 0, const int frame_height = 0);
 		int open(const char* name);
+
 		virtual int close();
 		virtual int prepare();
-		//int grab();
-		//int grab(const char* name);
 		int save_to_file();
-		//char* get_frame();
 		int get_frame(const char* name, cv::Mat& frame, bool convert_to_gray);
 		int get_frame(const char* name, cv::cuda::GpuMat& frame, bool convert_to_gray);
 		int get_frame(cv::Mat& frame, bool convert_to_gray);

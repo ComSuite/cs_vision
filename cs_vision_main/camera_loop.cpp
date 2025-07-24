@@ -50,6 +50,7 @@
 #include "ICamera.h"
 #include "OpenCVCamera.h"
 #include "OpenCVCamera_GPU.h"
+#include "MQTTRequest.h"
 #ifdef __WITH_AUDIO_PROCESSING__
 //#include "PortAudioMicrophone.h"
 #endif
@@ -142,9 +143,9 @@ bool connect_to_mqtt_broker(camera_settings* settings, DetectorEnvironment* env,
 		}
 
 		if (!env->mqtt_client->connect(settings->mqtt_client_name.c_str(), settings->mqtt_broker_ip.c_str(), settings->mqtt_broker_port)) {
-			//delete env->mqtt_client;
-			//env->mqtt_client = NULL;
-			//return false;
+			delete env->mqtt_client;
+			env->mqtt_client = NULL;
+			return false;
 		}
 	}
 
@@ -162,7 +163,6 @@ bool cleanup_detectors_environment(DetectorEnvironment* environment)
 		return false;
 
 	if (environment->mqtt_client != nullptr) {
-		//environment->mqtt_client->stop_background_loop();
 		delete environment->mqtt_client;
 		environment->mqtt_client = nullptr;
 	}
@@ -604,11 +604,14 @@ ICamera* create_input_device(cs::camera_settings* set)
 		return new OpenCVCamera();
 #endif
 		break;
-//#ifdef __WITH_AUDIO_PROCESSING__
-//	case INPUT_OUTPUT_DEVICE_KIND::INPUT_OUTPUT_DEVICE_KIND_MICROPHONE:
-//		return new PortAudioMicrophone();
-//		break;
-//#endif
+#ifdef __WITH_AUDIO_PROCESSING__
+	case INPUT_OUTPUT_DEVICE_KIND::INPUT_OUTPUT_DEVICE_KIND_MICROPHONE:
+		return new PortAudioMicrophone();
+		break;
+#endif
+	case INPUT_OUTPUT_DEVICE_KIND::INPUT_OUTPUT_DEVICE_KIND_MQTT_REQUEST:
+		return new MQTTRequest();
+		break;
 	}
 
 	return nullptr;
@@ -632,11 +635,13 @@ void* camera_loop(void* arg)
 
 	ICamera* capture = create_input_device(set);
 	if (!capture) {
+		cout << "Can not create capture: " << get<string>(set->device).c_str() << endl;
 		return nullptr;
 	}
 	capture->prepare();
 
-	if (!capture->open(set->device, set->frame_width, set->frame_height) || capture->get_height() <= 0 || capture->get_width() <= 0) {
+	//if (!capture->open(set->device, set->frame_width, set->frame_height) || capture->get_height() <= 0 || capture->get_width() <= 0) {
+	if (!capture->open(set, params->mqtt_client) || capture->get_height() <= 0 || capture->get_width() <= 0) {
 		cout << "Can not open capture: " << get<string>(set->device).c_str() << endl;
 		delete capture;
 		return nullptr;

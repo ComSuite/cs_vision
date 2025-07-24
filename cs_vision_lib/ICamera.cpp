@@ -42,42 +42,6 @@ using namespace std;
 using namespace cv;
 using namespace cs;
 
-int ICamera::open(const int id, int attempts_count)
-{
-	int isopen = 0;
-	int i = 0;
-
-	for (i = 0; i < attempts_count && !isopen; i++) {
-		isopen = this->open(id);
-
-		if (!isopen) {
-			this_thread::sleep_for(chrono::milliseconds(1000));
-		}
-	}
-
-	cout << "count: " << i << " from attempts: " << attempts_count << endl;
-
-	return isopen;
-}
-
-int ICamera::open(const char* name, int attempts_count)
-{
-	int isopen = 0;
-	int i = 0;
-
-	for (i = 0; i < attempts_count && !isopen; i++) {
-		isopen = this->open(name);
-
-		if (!isopen) {
-			this_thread::sleep_for(chrono::milliseconds(1000));
-		}
-	}
-
-	cout << "count: " << i << " from attempts: "  << attempts_count << endl;
-
-	return isopen;
-}
-
 int ICamera::start_save_video(const int id, const char* output_movie_name)
 {
 	int ret = 1;

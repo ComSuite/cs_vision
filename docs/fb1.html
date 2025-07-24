@@ -1,0 +1,116 @@
+<!DOCTYPE html []>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="author" content="MarkdownViewer++" />
+    <title>new 8</title>
+    <style type="text/css">
+            
+/* Avoid page breaks inside the most common attributes, especially for exports (i.e. PDF) */
+td, h1, h2, h3, h4, h5, p, ul, ol, li {
+    page-break-inside: avoid; 
+}
+
+        </style>
+  </head>
+  <body>
+    <h3 id="optimizing-video-input-for-embeddededge-devices">
+      <strong>Optimizing Video Input for Embedded/Edge Devices</strong>
+    </h3>
+    <p>I specialize in video analytics solutions for <strong>embedded/edge devices</strong>, particularly in <strong>security systems</strong> and <strong>robotics</strong>. One of the most critical challenges in these domains is <strong>performance optimization</strong>.</p>
+    <p>Below, I’ll demonstrate a conventional camera processing algorithm using <strong>C/C++ pseudo-code</strong>, followed by an optimized version that improves throughput by <strong>at least 1.5×</strong>.</p>
+    <hr />
+    <h3 id="standard-approach-using-opencv">
+      <strong>Standard Approach (Using OpenCV)</strong>
+    </h3>
+    <p>The typical implementation (similar to OpenCV’s samples: <a href="https://github.com/opencv/opencv/blob/4.x/samples/cpp/videocapture_starter.cpp">videocapture_starter.cpp</a>, <a href="https://github.com/opencv/opencv/blob/4.x/samples/cpp/videocapture_camera.cpp">videocapture_camera.cpp</a>) processes frames in a separate thread to avoid sync issues:</p>
+    <pre>
+      <code class="language-cpp">atomic&lt;bool&gt; ready = false;
+cv::Mat image;
+
+void thread_function() {
+    while(true) {
+        if (ready) {
+            // Processing (e.g., object detection, streaming)
+            ready = false;
+        }
+    }
+}
+
+void camera_loop() {
+    cv::Mat img;
+    cv::VideoCapture capture("rtsp://....");
+    create_thread(thread_function);
+    
+    while(true) {
+        capture &gt;&gt; img;
+        if (!ready) {
+            img.copyTo(image);  // Copy operation introduces overhead
+            ready = true;
+        }
+    }
+}
+</code>
+    </pre>
+    <p>
+      <strong>Drawback</strong>: <code>img.copyTo()</code> creates unnecessary memory copies, throttling performance.</p>
+    <hr />
+    <h3 id="optimized-algorithm-pointer-swapping-double-buffering">
+      <strong>Optimized Algorithm: Pointer Swapping + Double Buffering</strong>
+    </h3>
+    <p>By using <strong>two frame buffers</strong> and <strong>pointer swapping</strong>, we eliminate redundant copies:</p>
+    <pre>
+      <code class="language-cpp">atomic&lt;bool&gt; ready = false;
+cv::Mat* pimage;
+
+void thread_function() {
+    while(true) {
+        if (ready) {
+            // Processing (e.g., object recognition, streaming)
+            ready = false;
+        }
+    }
+}
+
+void camera_loop() {
+    cv::Mat img[2];
+    int i = 0;
+    cv::VideoCapture capture("rtsp://....");
+    create_thread(thread_function);
+    
+    while(true) {
+        if (!ready &amp;&amp; !img[i].empty()) {
+            pimage = &amp;img[i];  // Swap pointer (zero-copy)
+            i = 1 - i;          // Toggle buffer index
+            ready = true;
+        }
+        capture &gt;&gt; img[i];      // Async capture into inactive buffer
+    }
+}
+</code>
+    </pre>
+    <h4 id="key-advantages">
+      <strong>Key Advantages</strong>
+    </h4>
+    <ol>
+      <li>
+        <strong>Zero-Copy Optimization</strong>: Pointer swaps replace memory-heavy <code>copyTo()</code>.</li>
+      <li>
+        <strong>Double Buffering</strong>: Overlaps capture and processing (no pipeline stalls).</li>
+      <li>
+        <strong>Scalability</strong>: Adaptable to other sensors (microphones, LiDAR, etc.).</li>
+    </ol>
+    <hr />
+    <h3 id="why-this-matters">
+      <strong>Why This Matters</strong>
+    </h3>
+    <ul>
+      <li>
+        <strong>Edge Devices</strong>: Critical for latency-sensitive applications (e.g., drones, surveillance).</li>
+      <li>
+        <strong>Resource Efficiency</strong>: Reduces CPU/GPU load, extending battery life in IoT systems.</li>
+    </ul>
+    <p>
+      <strong>Discussion</strong>: Could this be further optimized with triple buffering or lock-free queues? Share your thoughts!</p>
+  </body>
+</html>

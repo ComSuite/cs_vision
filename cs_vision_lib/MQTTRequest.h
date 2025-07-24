@@ -12,21 +12,32 @@ namespace cs
 		MQTTRequest() : ICamera() {};
 		virtual ~MQTTRequest() {};
 
-		int info() override { return 0; }
+		virtual int info() override { return 0; }
+		virtual int open(camera_settings* settings, void* param = nullptr) override;
+		virtual int close() override { return 0; }
+		virtual int prepare() override { return 0; }
+		virtual int save_to_file() override { return 0; }
 
-		int open(std::variant<std::string, int> device, const int frame_width = 0, const int frame_height = 0) override { return 0; }
-		int open(const int id, const int frame_width = 0, const int frame_height = 0) override { return 0; }
-		int open(const char* name) override { return 0; }
-		int open(const int id, int attempts_count) override { return 0; }
-		int open(const char* name, int attempts_count) override { return 0; }
-		int open(camera_settings* settings) override;
+#ifdef  __HAS_CUDA__
+		virtual int get_frame(cv::cuda::GpuMat& frame, bool convert_to_gray) override { return 0; }
+		virtual int get_frame(const char* name, cv::cuda::GpuMat& frame, bool convert_to_gray) override { return 0; }
+#endif 
 
-		int close() override { return 0; }
+		virtual int get_frame(const char* name, cv::Mat& frame, bool convert_to_gray) override { return 0; }
+		virtual int get_frame(cv::Mat& frame, bool convert_to_gray) override { return 0; }
 
-		int prepare() override { return 0; }
-		int save_to_file() override { return 0; }
+		virtual int get_width() override { return 0; }
+		virtual int get_height() override { return 0; }
+		virtual int get_fps() override { return 0; }
+
+		virtual bool is_end_of_file() override { return 0; }
+
+		virtual bool is_opened() override { return 0; }
+		virtual void bring_to_start() override { }
+
+		void on_request_message(const std::string& topic, const std::string& payload);
 	private:
-		cs::MQTTWrapper mqtt;
+		cs::MQTTWrapper* mqtt;
 		std::string mqtt_request_topic = "";
 	};
 }
