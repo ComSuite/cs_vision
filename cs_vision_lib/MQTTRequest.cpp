@@ -8,10 +8,16 @@ void on_request_message(struct mosquitto* mosq, const char* topic, const char* p
 		return;
 
 	MQTTRequest* request = (MQTTRequest*)data;
+	request->on_request(topic, payload);
 }
 
-void MQTTRequest::on_request_message(const std::string& topic, const std::string& payload)
+void MQTTRequest::on_request(const std::string& topic, const std::string& payload)
 {
+	if (topic != mqtt_request_topic)
+		return;
+
+	std::cout << "Received request on topic: " << topic << " Payload: " << payload << std::endl;
+	// Process the request payload here
 
 }
 

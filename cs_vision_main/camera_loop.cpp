@@ -52,6 +52,7 @@
 #include "OpenCVCamera_GPU.h"
 #include "MQTTRequest.h"
 #ifdef __WITH_AUDIO_PROCESSING__
+#undef __WITH_AUDIO_PROCESSING__
 //#include "PortAudioMicrophone.h"
 #endif
 #include "cv_utils.h"

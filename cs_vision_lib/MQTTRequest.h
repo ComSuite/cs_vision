@@ -35,7 +35,7 @@ namespace cs
 		virtual bool is_opened() override { return 0; }
 		virtual void bring_to_start() override { }
 
-		void on_request_message(const std::string& topic, const std::string& payload);
+		void on_request(const std::string& topic, const std::string& payload);
 	private:
 		cs::MQTTWrapper* mqtt;
 		std::string mqtt_request_topic = "";

@@ -3,7 +3,6 @@
 #include "../rapidjson/writer.h"
 #include "../rapidjson/stringbuffer.h"
 #include "../rapidjson/rapidjson.h"
-#include "command_processor.h"
 
 using namespace rapidjson;
 using namespace cs;
@@ -16,7 +15,7 @@ void on_detector_message(struct mosquitto* mosq, const char* topic, const char* 
 
 	QwenDetector* detector = static_cast<QwenDetector*>(data);
 
-	command_processor* command = new command_processor();
+	command_processor* command = detector->get_command_processor();
 	if (command == nullptr) {
 		return;
 	}
@@ -47,6 +46,11 @@ int QwenDetector::init(object_detector_environment& env)
 	OllamaDetector::init(env);
 
 	if (env.mqtt_wrapper == nullptr) {
+		return 0;
+	}
+
+	command = new command_processor();
+	if (command == nullptr) {
 		return 0;
 	}
 

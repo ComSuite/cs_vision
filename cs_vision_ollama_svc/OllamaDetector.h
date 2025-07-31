@@ -24,6 +24,7 @@
 #pragma once
 
 #include "IObjectDetector.h"
+#include "command_processor.h"
 
 namespace cs
 {
