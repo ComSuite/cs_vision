@@ -22,13 +22,13 @@
  */
 
 #include "camera_loop_utils.h"
-//#include "TRTYOLOv5ObjectDetector.h"
 //#include "OCVYOLOv8ObjectDetector.h"
 #include "NullObjectDetector.h"
 #include "TFYOLOv5ObjectDetector.h"
 #include "TRTYOLOObjectDetector.h"
 #include "GemmaDetector.h"
 #include "QwenDetector.h"
+#include "TrackerByteTrack.h"
 #include "cv_utils.h"
 #ifdef __HAS_CUDA__
 #include <opencv2/core/cuda.hpp>
@@ -50,6 +50,7 @@ IObjectDetector* create_detector(int kind)
 	case ObjectDetectorKind::OBJECT_DETECTOR_TENSORRT_YOLO: return new TRTYoloObjectDetector();
 	case ObjectDetectorKind::OBJECT_DETECTOR_SVC_GEMMA3: return new GemmaDetector();
 	case ObjectDetectorKind::OBJECT_DETECTOR_SVC_QWEN: return new QwenDetector();
+	case ObjectDetectorKind::OBJECT_DETECTOR_MOT_BYTETRACK: return new TrackerByteTrack();
 	}
 
 	return nullptr;

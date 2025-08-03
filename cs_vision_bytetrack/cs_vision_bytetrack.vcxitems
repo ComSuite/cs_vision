@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{c8fac0a2-34f8-42db-a7f7-22a293d1687b}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)BytekalmanFilter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)BYTETracker.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)dataType.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)lapjv.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)STrack.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TrackerByteTrack.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)BytekalmanFilter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)BYTETracker.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)lapjv.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)STrack.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)TrackerByteTrack.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)utils.cpp" />
+  </ItemGroup>
+</Project>
