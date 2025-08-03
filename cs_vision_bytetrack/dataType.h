@@ -15,8 +15,8 @@
 
 const int k_feature_dim=512;//feature dim
 
-const std::string  k_feature_model_path ="./feature.onnx";
-const std::string  k_detect_model_path ="./yolov5s.onnx";
+//const std::string  k_feature_model_path ="./feature.onnx";
+//const std::string  k_detect_model_path ="./yolov5s.onnx";
 
 
 typedef Eigen::Matrix<float, 1, 4, Eigen::RowMajor> DETECTBOX;

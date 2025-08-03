@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{9b009a7e-3d49-4c22-b0b7-38c615051abf}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)FeatureTensor.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)hungarianoper.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)kalmanfilter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)linear_assignment.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)matrix.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)model.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)munkres.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)nn_matching.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)track.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)tracker.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TrackerDeepSORT.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)FeatureTensor.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hungarianoper.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)kalmanfilter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)linear_assignment.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)model.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)munkres.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)nn_matching.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)track.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)tracker.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)TrackerDeepSORT.cpp" />
+  </ItemGroup>
+</Project>

@@ -34,6 +34,7 @@ int TrackerByteTrack::detect(cv::Mat* input, int& current_id, bool is_draw, std:
 		std::cerr << "Input frame is empty or null." << std::endl;
 		return 0;
 	}
+
 	if (detections == nullptr || detections->empty())
 	{
 		std::cerr << "No detections provided." << std::endl;

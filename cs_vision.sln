@@ -77,6 +77,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "camera_calibration", "camer
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cs_vision_bytetrack", "cs_vision_bytetrack\cs_vision_bytetrack.vcxitems", "{C8FAC0A2-34F8-42DB-A7F7-22A293D1687B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cs_vision_deepsort", "cs_vision_deepsort\cs_vision_deepsort.vcxitems", "{9B009A7E-3D49-4C22-B0B7-38C615051ABF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -346,6 +348,7 @@ Global
 		cs_vision_bytetrack\cs_vision_bytetrack.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
 		cs_vision_common\cs_vision_common.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
 		cs_vision_cred_storage\cs_vision_cred_storage.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
+		cs_vision_deepsort\cs_vision_deepsort.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
 		cs_vision_lib\cs_vision_lib.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
 		cs_vision_main\cs_vision_main.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
 		cs_vision_ollama_svc\cs_vision_ollama_svc.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
@@ -405,6 +408,7 @@ Global
 		rapidjson\rapidjson.vcxitems*{8a061d43-3dad-496c-8328-3b98d901a191}*SharedItemsImports = 4
 		video_streamer\video_streamer.vcxitems*{8a061d43-3dad-496c-8328-3b98d901a191}*SharedItemsImports = 4
 		yolov8_ocvdnn\yolov8_ocvdnn.vcxitems*{8d162a0b-8bd6-4dd7-a243-73f5b0d155a6}*SharedItemsImports = 9
+		cs_vision_deepsort\cs_vision_deepsort.vcxitems*{9b009a7e-3d49-4c22-b0b7-38c615051abf}*SharedItemsImports = 9
 		mongoose\mongoose.vcxitems*{a22ef9e6-3884-4a39-a3d9-5cbb4a8a4fa7}*SharedItemsImports = 9
 		cs_vision_yolov5_tflite\cs_vision_yolov5_tflite.vcxitems*{a2f476b3-5b9a-4958-a90c-4265cb6693d8}*SharedItemsImports = 9
 		command_line_parcer\command_line_parcer.vcxitems*{a6bf81a0-a5a9-41d9-a32c-0ef2016232b5}*SharedItemsImports = 4
