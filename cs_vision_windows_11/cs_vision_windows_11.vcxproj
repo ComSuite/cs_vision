@@ -90,8 +90,8 @@
     <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>G:\Nvidia\TensorRT-RTX-1.0.0.21.Windows.win10.cuda-12.9\TensorRT-RTX-1.0.0.21\include;$(CUDA_PATH)\include;$(MOSQUITTO_DIR)\devel;G:\Projects\ocv\build\install\include;$(TENSORFLOW_LITE_PATH)\include;C:\Program Files\NVIDIA\CUDNN\v9.2\include;../ChaiScript/include;$(EIGEN_ROOT_PATH);$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
-    <LibraryPath>$(CUDA_PATH)\lib\x64;C:\Program Files\NVIDIA\CUDNN\v9.2\lib;G:\Projects\ocv\build\install\x64\vc17\lib;C:\Program Files\mosquitto\devel;G:\Projects\comsuite\sources\cs_vision\packages\portaudio.0.19.1\build\native\lib\x64\v120\Release;G:\Nvidia\TensorRT-RTX-1.0.0.21.Windows.win10.cuda-12.9\TensorRT-RTX-1.0.0.21\lib;$(TENSORFLOW_LITE_PATH)\libs\windows_x86_64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <IncludePath>$(TENSORRT_RTX_PATH)\include;$(CUDA_PATH)\include;$(MOSQUITTO_DIR)\devel;$(OPENCV_PATH)\include;$(TENSORFLOW_LITE_PATH)\include;$(CUDNN_PATH)\include;../ChaiScript/include;$(EIGEN_ROOT_PATH);$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <LibraryPath>$(CUDA_PATH)\lib\x64;$(CUDNN_PATH)\lib;$(OPENCV_PATH)\x64\vc17\lib;$(MOSQUITTO_DIR)\devel;G:\Projects\comsuite\sources\cs_vision\packages\portaudio.0.19.1\build\native\lib\x64\v120\Release;$(TENSORRT_RTX_PATH)\lib;$(TENSORFLOW_LITE_PATH)\libs\windows_x86_64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
