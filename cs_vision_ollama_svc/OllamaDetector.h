@@ -38,7 +38,7 @@ namespace cs
 
 		virtual void clear();
 
-		virtual int detect(cv::Mat* input, int& current_id, bool is_draw = false) override;
+		virtual int detect(cv::Mat* input, int& current_id, bool is_draw = false, std::list<DetectionItem*>* detections = nullptr) override;
 		virtual int detect(cv::cuda::GpuMat* input, int& current_id, bool is_draw = false) override;
 		virtual int detect_batch(const std::vector<cv::Mat*>& input, int& current_id, bool is_draw = false) override;
 

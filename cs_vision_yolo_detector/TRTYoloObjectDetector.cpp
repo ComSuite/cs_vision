@@ -112,7 +112,7 @@ void TRTYoloObjectDetector::postprocess(std::vector<Detection>* detections, int&
 	}
 }
 
-int TRTYoloObjectDetector::detect(cv::Mat* input, int& current_id, bool is_draw)
+int TRTYoloObjectDetector::detect(cv::Mat* input, int& current_id, bool is_draw, std::list<DetectionItem*>* detections)
 {
 	if (input == nullptr)
 		return 0;

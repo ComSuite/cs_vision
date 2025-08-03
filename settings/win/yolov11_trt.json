@@ -35,7 +35,37 @@
 						"additional" : [
 								{"name": "illustration_mode", "val": 4, "descr": "0-none, 1-box, 2-box and text, 3-mask, 4-mask and text"}
 						]
+                    },
+                    {
+						"chnls": 3,
+                        "width": 640,
+                        "height": 640,
+                        "id": 1,
+                        "input_tensor_name": "images",
+                        "is_draw_detections": true,
+                        "is_send_results": true,
+                        "is_use_gpu": false,
+                        "kind": 14,
+                        "labels_path": "G:/Projects/comsuite/sources/cs_vision/settings/win/coco.names",
+                        "model_path": "G:/Projects/comsuite/sources/cs_vision/models/winRTX5080TI/yolo12n.engine",
+                        "name": "Yolo Objects",
+                        "neural_network_id": 1,
+                        "output_tensor_name": "output0",
+                        "predecessor": {
+                            "class": 0,
+                            "id": -1
+                        },
+                        "results_mapping_rule": 1,
+                        "rules_path": "G:/Projects/comsuite/sources/cs_vision/settings/win/coco.rules",
+						"color": "0x00FF0000",
+						"on_detect": "G:/Projects/comsuite/sources/cs_vision/settings/win/detect.chai",
+						"execute_always": false,
+						"execute_mode": 0,
+						"additional" : [
+								{"name": "illustration_mode", "val": 4, "descr": "0-none, 1-box, 2-box and text, 3-mask, 4-mask and text"}
+						]
                     }
+					
                 ],
                 "device": 1,
 				"device2" : "rtsp://admin:1234567890@192.168.0.192/iphone/11",

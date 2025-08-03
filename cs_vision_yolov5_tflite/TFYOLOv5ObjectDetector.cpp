@@ -101,7 +101,7 @@ int TFYOLOv5ObjectDetector::detect(cv::cuda::GpuMat* input, int& current_id, boo
     return detect(&image, current_id, is_draw);
 }
 
-int TFYOLOv5ObjectDetector::detect(Mat* image, int& current_id, bool is_draw)
+int TFYOLOv5ObjectDetector::detect(Mat* image, int& current_id, bool is_draw, std::list<DetectionItem*>* detections)
 {
     if (!image)
         return 0;

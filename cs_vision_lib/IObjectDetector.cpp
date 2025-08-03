@@ -304,8 +304,22 @@ void IObjectDetector::draw_detection(cv::Mat* detect_frame, DetectionItem* detec
             break;
         case static_cast<int>(ILLUSTRATION_STYLE::ILLUSTRATION_STYLE_MASK_AND_TEXT):
             draw_mask(detection, detect_frame, detection->color);
-			draw_label(*detect_frame, detection->label, detection->box.x, detection->box.y, detection->color);
+            draw_label(*detect_frame, detection->label, detection->box.x, detection->box.y, detection->color);
             break;
+        case static_cast<int>(ILLUSTRATION_STYLE::ILLUSTRATION_STYLE_BOX_AND_TEXT_AND_SCORE):
+        {
+            rectangle(*detect_frame, static_cast<Rect>(detection->box), detection->color, 2, LINE_8);
+            std::string label = std::format("{} ({:.2f})", detection->label, detection->score);
+            draw_label(*detect_frame, label, detection->box.x, detection->box.y, detection->color);
+            break;
+        }
+        case static_cast<int>(ILLUSTRATION_STYLE::ILLUSTRATION_STYLE_MASK_AND_TEXT_AND_SCORE):
+        {
+            draw_mask(detection, detect_frame, detection->color);
+            std::string label = std::format("{} ({:.2f})", detection->label, detection->score);
+            draw_label(*detect_frame, label, detection->box.x, detection->box.y, detection->color);
+            break;
+        }
         default:
 			break;
     }

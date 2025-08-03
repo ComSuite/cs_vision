@@ -263,9 +263,14 @@ bool init_detectors_environment(DetectorEnvironment* environment, camera_setting
 			detector_env.input_tensor_name = detector->input_tensor_name;
 			detector_env.output_tensor_name = detector->output_tensor_name;
 			detector_env.is_use_gpu = detector->is_use_gpu;
+			detector_env.fps = capture->get_fps();
+			if (detector_env.fps <= 0) {
+				detector_env.fps = CAMERA_DEFAULT_MAX_FPS;
+			}
 			detector_env.additional = &detector->additional;
 			detector_env.param = nullptr;
 			detector_env.mqtt_wrapper = environment->mqtt_client;
+
 			_detector->init(detector_env);
 
 			_detector->name = detector->name;
@@ -463,7 +468,7 @@ void detect_func(DetectorEnvironment* env)
 
 		for (auto& img : images) {
 			if (img != nullptr && img->image != nullptr && !img->image->empty()) {
-				if (detector->detect(img->image, id, false) == 1) { 
+				if (detector->detect(img->image, id, false, &detections) == 1) {
 					for (auto& d : detector->last_detections) {
 						DetectionItem* detection_item = new DetectionItem(d);
 

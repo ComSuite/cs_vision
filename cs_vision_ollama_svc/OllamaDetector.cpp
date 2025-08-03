@@ -92,7 +92,7 @@ void OllamaDetector::clear()
 	// This may include freeing memory, closing files, etc.
 }
 
-int OllamaDetector::detect(cv::Mat* input, int& current_id, bool is_draw)
+int OllamaDetector::detect(cv::Mat* input, int& current_id, bool is_draw, std::list<DetectionItem*>* detections)
 {
 	clear_last_detections();
 

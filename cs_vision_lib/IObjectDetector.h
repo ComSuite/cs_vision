@@ -138,6 +138,7 @@ namespace cs
 		std::string input_tensor_name = "";
 		std::string output_tensor_name = "";
 		bool is_use_gpu = false;
+		int fps = 0;
 		dynamic_settings* additional = nullptr;
 		void* param = nullptr; 
 		MQTTWrapper* mqtt_wrapper = nullptr;
@@ -153,21 +154,15 @@ namespace cs
 
 		virtual void clear() = 0;
 
-		virtual int detect(cv::Mat* input, int& current_id, bool is_draw = false) = 0;
+		virtual int detect(cv::Mat* input, int& current_id, bool is_draw = false, std::list<DetectionItem*>* detections = nullptr) = 0;
 		virtual int detect(cv::cuda::GpuMat* input, int& current_id, bool is_draw = false) = 0;
 		virtual int detect_batch(const std::vector<cv::Mat*>& input, int& current_id, bool is_draw = false) = 0;
 
 		int infer(cv::Mat* input, int& current_id, bool show_mean, bool is_draw = true);
 		float get_mean_detect_duration();
 
-//#ifdef __HAS_CUDA__
-//		virtual void draw_detection(cv::cuda::GpuMat* detect_frame, DetectionItem* detection, cv::Scalar& background_color, bool is_show_mask);
-//		void draw_mask(DetectionItem* det, cv::cuda::GpuMat* frame, const cv::Scalar& color = cv::Scalar(255, 255, 255));
-//#else
 		virtual void draw_detection(cv::Mat* detect_frame, DetectionItem* detection);
 		void draw_mask(DetectionItem* det, cv::Mat* frame, const cv::Scalar color = cv::Scalar(255, 255, 255));
-//#endif
-
 		void draw_label(cv::Mat& input_image, std::string& label, int left, int top, cv::Scalar& background_color);
 
 		std::string name = "";
@@ -180,6 +175,7 @@ namespace cs
 		int width = 0;
 		int height = 0;
 		int channels = 0;
+		int fps = 0;
 
 		bool is_send_results = false;
 		bool is_use_gpu = false;

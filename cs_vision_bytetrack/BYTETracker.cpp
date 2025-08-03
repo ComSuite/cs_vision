@@ -15,7 +15,7 @@ BYTETracker::~BYTETracker()
 {
 }
 
- std::vector<STrack> BYTETracker::update(const  std::vector<cs::DetectionItem>& objects)
+ std::vector<STrack> BYTETracker::update(const std::vector<cs::DetectionItem*>& objects)
 {
 
 	////////////////// Step 1: Get detections //////////////////
@@ -37,30 +37,28 @@ BYTETracker::~BYTETracker()
 	 std::vector<STrack*> strack_pool;
 	 std::vector<STrack*> r_tracked_stracks;
 
-	if (objects.size() > 0)
-	{
-		for (int i = 0; i < objects.size(); i++)
+	//for (int i = 0; i < objects->size(); i++)
+	 for (auto obj : objects)
+	 {
+		std::vector<float> tlbr_;
+		tlbr_.resize(4);
+        tlbr_[0] = obj->box.x;
+        tlbr_[1] = obj->box.y;
+        tlbr_[2] = obj->box.x + obj->box.width;
+        tlbr_[3] = obj->box.y + obj->box.height;
+
+        float score = obj->score;
+
+		STrack strack(STrack::tlbr_to_tlwh(tlbr_), score);
+		if (score >= track_thresh)
 		{
-			 std::vector<float> tlbr_;
-			tlbr_.resize(4);
-            tlbr_[0] = objects[i].box.x;
-            tlbr_[1] = objects[i].box.y;
-            tlbr_[2] = objects[i].box.x + objects[i].box.width;
-            tlbr_[3] = objects[i].box.y + objects[i].box.height;
-
-            float score = objects[i].score;
-
-			STrack strack(STrack::tlbr_to_tlwh(tlbr_), score);
-			if (score >= track_thresh)
-			{
-				detections.push_back(strack);
-			}
-			else
-			{
-				detections_low.push_back(strack);
-			}
-			
+			detections.push_back(strack);
 		}
+		else
+		{
+			detections_low.push_back(strack);
+		}
+			
 	}
 
 	// Add newly detected tracklets to tracked_stracks

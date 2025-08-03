@@ -10,7 +10,7 @@ public:
 	BYTETracker(int frame_rate = 30, int track_buffer = 30);
 	~BYTETracker();
 
-	std::vector<STrack> update(const  std::vector<cs::DetectionItem>& objects);
+	std::vector<STrack> update(const std::vector<cs::DetectionItem*>& objects);
     cv::Scalar get_color(int idx);
 
 private:
