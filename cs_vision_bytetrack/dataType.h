@@ -13,7 +13,7 @@
 #include <Eigen/Dense>
 
 
-const int k_feature_dim=512;//feature dim
+const int k_feature_dim = 128;//feature dim
 
 //const std::string  k_feature_model_path ="./feature.onnx";
 //const std::string  k_detect_model_path ="./yolov5s.onnx";

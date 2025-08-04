@@ -1,3 +1,26 @@
+/**
+ * @file
+ *
+ * @author      Alexander Epstine
+ * @mail        a@epstine.com
+ * @brief
+ *
+ **************************************************************************************
+ * Copyright (c) 2021 - 2025, Alexander Epstine (a@epstine.com)
+ **************************************************************************************
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
+ */
+
 #include "TrackerDeepSORT.h"
 #include "FeatureTensor.h"
 
@@ -8,12 +31,15 @@ int TrackerDeepSORT::init(object_detector_environment& env)
 	load_rules(env.rules_path.c_str());
 	load_labels(env.label_path.c_str());
 
+	model_path = env.model_path;
+	input_tensor_name = env.input_tensor_name;
+	output_tensor_name = env.output_tensor_name;
+
 	tracker = new ::tracker(0.5, 30, 0.7, 30, 3);
 	if (tracker == nullptr) {
 		std::cerr << "Failed to create tracker instance." << std::endl;
 		return 0;
 	}
-
 
 	return 1;
 }
@@ -25,60 +51,68 @@ void TrackerDeepSORT::clear()
 
 int TrackerDeepSORT::detect(cv::Mat* input, int& current_id, bool is_draw, std::list<DetectionItem*>* detections)
 {
-	if (input == nullptr || input->empty())
-	{
-		std::cerr << "Input frame is empty or null." << std::endl;
+	if (input == nullptr || input->empty()) {
 		return 0;
 	}
 
-	if (detections == nullptr || detections->empty())
-	{
-		std::cerr << "No detections provided." << std::endl;
+	if (detections == nullptr || detections->empty()) {
 		return 0;
 	}
 
 	clear_last_detections();
-	std::vector<DetectionItem*> input_detections;
+
+	std::vector<DETECTION_ROW> input_detections;
+	cv::Mat frame = *input;
+
 	for (auto& detection : *detections) {
 		if (detection == nullptr)
 			continue;
 
 		if (detection->class_id == this->predecessor_class || this->predecessor_class < 0) {
-			input_detections.push_back(detection);
+			cv::rectangle(frame, detection->box, cv::Scalar(255, 0, 0), 2);
+
+			DETECTION_ROW detect;
+			detect.tlwh = DETECTBOX(detection->box.x, detection->box.y, detection->box.width, detection->box.height);
+			detect.confidence = detection->score;
+			detect.class_id = detection->class_id;
+
+			input_detections.push_back(detect);
 		}
 	}
 
-	std::cout << "begin track" << std::endl;
-	if (FeatureTensor::getInstance()->getRectsFeature(*input, input_detections))
-	{
-		std::cout << "get feature succeed!" << std::endl;
+	wchar_t* model_path_w = const_cast<wchar_t*>(ascii_to_wchar(model_path.c_str()));
+	if (FeatureTensor::getInstance(model_path_w)->getRectsFeature(frame, input_detections, this->input_tensor_name.c_str(), this->output_tensor_name.c_str())) {
 		tracker->predict();
 		tracker->update(input_detections);
 
 		std::vector<RESULT_DATA> result;
-		for (Track& track : tracker->tracks) {
-			if (!track.is_confirmed() || track.time_since_update > 1) continue;
-			result.push_back(std::make_pair(track.track_id, track.to_tlwh()));
-		}
+		for (int i = 0; i < tracker->tracks.size(); i++) { //Track& track : tracker->tracks
+			if (!tracker->tracks[i].is_confirmed() || tracker->tracks[i].time_since_update > 1)
+				continue;
 
-		for (unsigned int k = 0; k < input_detections.size(); k++)
-		{
-			//DETECTBOX tmpbox = detections[k].tlwh;
-			//cv::Rect rect(tmpbox(0), tmpbox(1), tmpbox(2), tmpbox(3));
-			//cv::rectangle(frame, rect, cv::Scalar(0, 0, 255), 4);
+			DetectionItem* item = new DetectionItem();
+			item->color = color;
+			item->id = current_id;
+			current_id++;
 
-			//for (unsigned int k = 0; k < result.size(); k++)
-			//{
-			//	DETECTBOX tmp = result[k].second;
-			//	cv::Rect rect = cv::Rect(tmp(0), tmp(1), tmp(2), tmp(3));
-			//	rectangle(frame, rect, cv::Scalar(255, 255, 0), 2);
+			item->kind = ObjectDetectorKind::OBJECT_DETECTOR_MOT_BYTETRACK;
+			item->class_id = input_detections[i].class_id;
+			item->detector_id = id;
 
-			//	std::string label = cv::format("%d", result[k].first);
-			//	cv::putText(frame, label, cv::Point(rect.x, rect.y), cv::FONT_HERSHEY_SIMPLEX, 0.8, cv::Scalar(255, 255, 0), 2);
-			//}
+			std::string label;
+			get_rule_label(item->class_id, label);
+			item->priority = get_rule_priority(item->class_id);
+			item->label = trim(label);
+			item->score = input_detections[i].confidence;
+			item->box.y = tracker->tracks[i].to_tlwh()[1];
+			item->box.x = tracker->tracks[i].to_tlwh()[0];
+			item->box.width = tracker->tracks[i].to_tlwh()[2];
+			item->box.height = tracker->tracks[i].to_tlwh()[3];
+
+			item->neural_network_id = neural_network_id;
+			last_detections.push_back(item);
 		}
 	}
-
 
 	return 1;
 }

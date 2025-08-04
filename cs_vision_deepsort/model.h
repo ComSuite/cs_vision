@@ -11,6 +11,7 @@
 class DETECTION_ROW
 {
 public:
+    int class_id = 0;
     DETECTBOX tlwh;
     float confidence;
     FEATURE feature;

@@ -50,12 +50,12 @@ std::ostream &operator<<(std::ostream &os, const std::vector<T> &v)
 class FeatureTensor
 {
 public:
-    static FeatureTensor *getInstance();
-    bool getRectsFeature(const cv::Mat &img, const std::vector<cs::DetectionItem*>& d);
+    static FeatureTensor* getInstance(const wchar_t* model_path);
+    bool getRectsFeature(const cv::Mat &img, DETECTIONS& d, const char* input_tensor_name, const char* output_tensor_name);
     void preprocess(cv::Mat &imageBGR, std::vector<float> &inputTensorValues, size_t &inputTensorSize);
 
 private:
-    FeatureTensor();
+    FeatureTensor(const wchar_t* model_path);
     FeatureTensor(const FeatureTensor &);
     FeatureTensor &operator=(const FeatureTensor &);
     static FeatureTensor *instance;
@@ -74,9 +74,9 @@ public:
 
     std::array<float, k_feature_dim> results_{};
 
-    Ort::Env env;
+    Ort::Env env_;
 	Ort::SessionOptions options_{ nullptr };
-    Ort::Session session_{ env, (const ORTCHAR_T*)k_feature_model_path.c_str(), (const Ort::SessionOptions&)options_ };
+    Ort::Session session_{ nullptr };// env, (const ORTCHAR_T*)L"G:\\Projects\\comsuite\\sources\\cs_vision\\models\\winRTX5080TI\\deepsort_features.onnx", options_
 
     Ort::Value input_tensor_{nullptr};
     std::array<int64_t, 4> input_shape_{1, 3, width_, height_};

@@ -119,3 +119,5 @@ T to_lower(const T& str)
 
 	return result;
 }
+
+const wchar_t* ascii_to_wchar(const char* c);

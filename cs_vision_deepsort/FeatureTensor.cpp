@@ -7,29 +7,26 @@
 #include "FeatureTensor.h"
 #include <iostream>
 
-FeatureTensor *FeatureTensor::instance = NULL;
+FeatureTensor* FeatureTensor::instance = NULL;
 
-FeatureTensor *FeatureTensor::getInstance()
+FeatureTensor* FeatureTensor::getInstance(const wchar_t* model_path)
 {
-    if (instance == NULL)
-    {
-        instance = new FeatureTensor();
+    if (instance == NULL) {
+        instance = new FeatureTensor(model_path);
     }
+
     return instance;
 }
 
-FeatureTensor::FeatureTensor()
+FeatureTensor::FeatureTensor(const wchar_t* model_path)
 {
-    // prepare model:
-    bool status = init();
-    if (status == false)
-    {
-        std::cout << "init failed" << std::endl;
-        exit(1);
-    }
-    else
-    {
+    session_ = Ort::Session{ env_, model_path, options_ };
+
+    if (init()) {
         std::cout << "init succeed" << std::endl;
+    }
+    else {
+        std::cout << "init failed" << std::endl;
     }
 }
 
@@ -39,7 +36,6 @@ FeatureTensor::~FeatureTensor()
 
 bool FeatureTensor::init()
 {
-
     Ort::TypeInfo inputTypeInfo = session_.GetInputTypeInfo(0);
     auto inputTensorInfo = inputTypeInfo.GetTensorTypeAndShapeInfo();
 
@@ -51,13 +47,15 @@ bool FeatureTensor::init()
     inputDims_[0] = 1;
     std::cout << "FeatureTensor::init() " << std::endl;
 
-
     return true;
 }
 
 void FeatureTensor::preprocess(cv::Mat &imageBGR, std::vector<float> &inputTensorValues, size_t &inputTensorSize)
 {
-
+    if (imageBGR.empty()) {
+        std::cerr << "Error: Input image is empty." << std::endl;
+        return;
+	}
     // pre-processing the Image
     //  step 1: Read an image in HWC BGR UINT8 format.
     //  cv::Mat imageBGR = cv::imread(imageFilepath, cv::ImreadModes::IMREAD_COLOR);
@@ -98,56 +96,74 @@ void FeatureTensor::preprocess(cv::Mat &imageBGR, std::vector<float> &inputTenso
     inputTensorSize = vectorProduct(inputDims_);
     inputTensorValues.assign(preprocessedImage.begin<float>(),
                              preprocessedImage.end<float>());
-
-    std::cout << "inputTensorSize:" << inputTensorValues.size() << std::endl;
 }
 
-bool FeatureTensor::getRectsFeature(const cv::Mat &img, const std::vector<cs::DetectionItem*>& d)
+bool FeatureTensor::getRectsFeature(const cv::Mat &img, DETECTIONS& d, const char* input_tensor_name, const char* output_tensor_name)
 {
-    for (auto &dbox : d)
+    if (img.empty()) {
+        std::cerr << "Error: Input image is empty." << std::endl;
+		return false;
+	}
+
+    if (d.empty()) {
+		std::cerr << "Error: No detections provided." << std::endl;
+		return false;   
+	}
+
+    for (DETECTION_ROW& dbox : d)
     {
-        cv::Rect rc = cv::Rect(int(dbox->box.y), int(int(dbox->box.x)),
-                               int(dbox->box.width), int(dbox->box.height));
+        cv::Rect rc = cv::Rect(int(dbox.tlwh(0)), int(dbox.tlwh(1)),
+            int(dbox.tlwh(2)), int(dbox.tlwh(3)));
         rc.x -= (rc.height * 0.5 - rc.width) * 0.5;
         rc.width = rc.height * 0.5;
         rc.x = (rc.x >= 0 ? rc.x : 0);
         rc.y = (rc.y >= 0 ? rc.y : 0);
         rc.width = (rc.x + rc.width <= img.cols ? rc.width : (img.cols - rc.x));
         rc.height = (rc.y + rc.height <= img.rows ? rc.height : (img.rows - rc.y));
+        if (rc.x < 0 || rc.y < 0 || rc.width <= 0 || rc.height <= 0) {
+            std::cout << "Error: Invalid rectangle: " << rc << std::endl;
+            return false;
+		}
 
         cv::Mat mattmp = img(rc).clone();
 
         std::vector<float> inputTensorValues;
         size_t inputTensorSize;
         preprocess(mattmp, inputTensorValues, inputTensorSize);
-
-        const char *input_names[] = {"input"};
-        const char *output_names[] = {"output"};
+        if (inputTensorValues.empty()) {
+            std::cerr << "Error: Preprocessed input tensor values are empty." << std::endl;
+            return false;
+		}
 
         auto memory_info = Ort::MemoryInfo::CreateCpu(OrtDeviceAllocator, OrtMemTypeDefault);
         output_tensor_ = Ort::Value::CreateTensor<float>(memory_info, results_.data(), results_.size(), output_shape_.data(), output_shape_.size());
 
         std::vector<Ort::Value> inputTensors;
         inputTensors.push_back(Ort::Value::CreateTensor<float>(
-            memory_info, inputTensorValues.data(), inputTensorSize, inputDims_.data(), inputDims_.size()));
+            memory_info, inputTensorValues.data(), inputTensorSize, inputDims_.data(),
+            inputDims_.size()));
 
-        session_.Run(Ort::RunOptions{nullptr}, input_names, inputTensors.data(), 1, output_names, &output_tensor_, 1);
-     
+        Ort::RunOptions opt{};
+        //opt.SetRunLogVerbosityLevel(ORT_LOGGING_LEVEL_VERBOSE);
+		//opt.SetRunLogVerbosityLevel(100); 
+        try {
+            session_.Run(opt, &input_tensor_name, inputTensors.data(), 1, &output_tensor_name, &output_tensor_, 1);
+        } catch (const Ort::Exception& e) {
+            std::cerr << "Ort::Exception caught: " << e.what() << std::endl;
+			return false; // Handle the exception appropriately
+		}
+
         Ort::TensorTypeAndShapeInfo shape_info = output_tensor_.GetTensorTypeAndShapeInfo();
 
         size_t dim_count = shape_info.GetDimensionsCount();
-        std::cout << "dim_count:" << dim_count << std::endl;
-  
+
         int64_t dims[2];
-        auto a = shape_info.GetShape();// dims, sizeof(dims) / sizeof(dims[0]));
+        auto a = shape_info.GetShape();
 		dims[0] = a[0];
 		dims[1] = a[1];
 
-        std::cout << "output shape:" << dims[0] << "," << dims[1] << std::endl;
-
-        float *f = output_tensor_.GetTensorMutableData<float>();
-        for (int i = 0; i < dims[1]; i++) 
-        {
+        float* f = output_tensor_.GetTensorMutableData<float>();
+        for (int i = 0; i < dims[1]; i++) {
             dbox.feature[i] = f[i];
         }
     }

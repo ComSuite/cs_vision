@@ -13,7 +13,7 @@
                         "height": 640,
                         "id": 0,
                         "input_tensor_name": "images",
-                        "is_draw_detections": true,
+                        "is_draw_detections": false,
                         "is_send_results": true,
                         "is_use_gpu": false,
                         "kind": 2,
@@ -41,7 +41,8 @@
                         "width": 640,
                         "height": 640,
                         "id": 1,
-                        "input_tensor_name": "images",
+                        "input_tensor_name": "input_1",
+                        "output_tensor_name": "output_1",
                         "is_draw_detections": true,
                         "is_send_results": true,
                         "is_use_gpu": false,
@@ -50,7 +51,6 @@
                         "model_path": "G:/Projects/comsuite/sources/cs_vision/models/winRTX5080TI/deepsort_features.onnx",
                         "name": "Yolo Objects",
                         "neural_network_id": 1,
-                        "output_tensor_name": "output0",
                         "predecessor": {
                             "class": 0,
                             "id": -1
@@ -62,7 +62,7 @@
 						"execute_always": false,
 						"execute_mode": 0,
 						"additional" : [
-								{"name": "illustration_mode", "val": 4, "descr": "0-none, 1-box, 2-box and text, 3-mask, 4-mask and text"}
+								{"name": "illustration_mode", "val": 6, "descr": "0-none, 1-box, 2-box and text, 3-mask, 4-mask and text"}
 						]
                     }
 					
