@@ -62,15 +62,12 @@ int TrackerDeepSORT::detect(cv::Mat* input, int& current_id, bool is_draw, std::
 	clear_last_detections();
 
 	std::vector<DETECTION_ROW> input_detections;
-	cv::Mat frame = *input;
 
 	for (auto& detection : *detections) {
 		if (detection == nullptr)
 			continue;
 
 		if (detection->class_id == this->predecessor_class || this->predecessor_class < 0) {
-			cv::rectangle(frame, detection->box, cv::Scalar(255, 0, 0), 2);
-
 			DETECTION_ROW detect;
 			detect.tlwh = DETECTBOX(detection->box.x, detection->box.y, detection->box.width, detection->box.height);
 			detect.confidence = detection->score;
@@ -81,7 +78,7 @@ int TrackerDeepSORT::detect(cv::Mat* input, int& current_id, bool is_draw, std::
 	}
 
 	wchar_t* model_path_w = const_cast<wchar_t*>(ascii_to_wchar(model_path.c_str()));
-	if (FeatureTensor::getInstance(model_path_w)->getRectsFeature(frame, input_detections, this->input_tensor_name.c_str(), this->output_tensor_name.c_str())) {
+	if (FeatureTensor::getInstance(model_path_w)->getRectsFeature(*input, input_detections, this->input_tensor_name.c_str(), this->output_tensor_name.c_str())) {
 		tracker->predict();
 		tracker->update(input_detections);
 
