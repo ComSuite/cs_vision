@@ -78,6 +78,11 @@ int TrackerDeepSORT::detect(cv::Mat* input, int& current_id, bool is_draw, std::
 	}
 
 	wchar_t* model_path_w = const_cast<wchar_t*>(ascii_to_wchar(model_path.c_str()));
+	if (model_path_w == nullptr) {
+		std::cerr << "Failed to convert model path to wide string." << std::endl;
+		return 0;
+	}
+
 	if (FeatureTensor::getInstance(model_path_w)->getRectsFeature(*input, input_detections, this->input_tensor_name.c_str(), this->output_tensor_name.c_str())) {
 		tracker->predict();
 		tracker->update(input_detections);
@@ -110,6 +115,8 @@ int TrackerDeepSORT::detect(cv::Mat* input, int& current_id, bool is_draw, std::
 			last_detections.push_back(item);
 		}
 	}
+
+	delete[] model_path_w;
 
 	return 1;
 }

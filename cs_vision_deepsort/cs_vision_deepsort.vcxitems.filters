@@ -36,6 +36,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)tracker.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)TrackerDeepSORT.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)FeatureTensor.h">
@@ -68,5 +69,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)tracker.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)TrackerDeepSORT.h" />
   </ItemGroup>
 </Project>

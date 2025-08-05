@@ -171,7 +171,7 @@
       <CLanguageStandard>gnu11</CLanguageStandard>
     </ClCompile>
     <ClCompile>
-      <CppLanguageStandard>c++2a</CppLanguageStandard>
+      <CppLanguageStandard>c++20</CppLanguageStandard>
       <PreprocessorDefinitions>NDEBUG;__LINUX__;_DEBUG_;__WITH_FILESYSTEM_CXX__;__WITH_SCRIPT_LANG__;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;__USE_POSIX199309L;_____GPIO_NVIDIA_JETSON____;DBUILD_ZLIB=ON;__HAS_CUDA__;YOLOV5_OPENCV_HAS_CUDA;__WITH_AUDIO_PROCESSING__;__WITH_MONGOOSE_SERVER__;__WITH_VIDEO_STREAMER__;__WITH_RTSP_STREAMER__;_WITH_VPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
