@@ -18,15 +18,31 @@ int OllamaTextPromptDetector::detect(cv::Mat* input, int& current_id, bool is_dr
 {
 	const char* prompt = (const char*)input->data;
 	if (prompt == nullptr || strlen(prompt) == 0) {
-		return 0; // No prompt provided
+		return 0; 
 	}
 
+	set_prompt(prompt);
+
 	std::cout << "OllamaTextPromptDetector::detect: Using prompt: " << prompt << std::endl;
+	OllamaDetector::detect(nullptr, current_id, is_draw, detections);
 
 	return 1;
 }
 
 void OllamaTextPromptDetector::parse(const std::string& response, int& current_id)
 {
+	if (response.empty()) {
+		std::cerr << "OllamaTextPromptDetector::parse: Empty response received." << std::endl;
+		return;
+	}
+
+	std::cout << "OllamaTextPromptDetector::parse: Response: " << response << std::endl;
+	DetectionItem* item = new DetectionItem();
+	item->id = current_id;
+	current_id++;
+	item->label = response;
+	item->score = 1.0f;
+
+	last_detections.push_back(item);
 }
 

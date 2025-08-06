@@ -64,6 +64,7 @@ bool MQTTRequest::is_opened()
 int MQTTRequest::get_frame(cv::Mat& frame, bool convert_to_gray)
 {
 	frame.release();
+
 	if (requests.empty())
 		return 0;
 	

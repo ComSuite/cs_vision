@@ -109,17 +109,19 @@ int OllamaDetector::detect(cv::Mat* input, int& current_id, bool is_draw, std::l
 		root.AddMember("prompt", Value().SetString(prompt.c_str(), prompt.length()), allocator);
 		root.AddMember("stream", false, allocator);
 
-		double k = 0.50;
-		cv::Mat img; 
-		cv::resize(*input, img, cv::Size(), k, k);
+		if (input != nullptr) {
+			double k = 0.50;
+			cv::Mat img;
+			cv::resize(*input, img, cv::Size(), k, k);
 
-		std::vector<uchar> buf;
-		cv::imencode(".jpg", img, buf);
-		std::string encoded = base64_encode(buf.data(), buf.size());
-		Value image_array(kArrayType);
-		image_array.PushBack(Value().SetString(encoded.c_str(), encoded.length()), allocator);
+			std::vector<uchar> buf;
+			cv::imencode(".jpg", img, buf);
+			std::string encoded = base64_encode(buf.data(), buf.size());
+			Value image_array(kArrayType);
+			image_array.PushBack(Value().SetString(encoded.c_str(), encoded.length()), allocator);
 
-		root.AddMember("images", image_array, root.GetAllocator());
+			root.AddMember("images", image_array, root.GetAllocator());
+		}
 
 		StringBuffer buffer;
 		Writer<StringBuffer> writer(buffer);

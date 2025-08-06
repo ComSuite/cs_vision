@@ -129,7 +129,7 @@ void on_camera_message(struct mosquitto* mosq, const char* topic, const char* pa
 	if (set == nullptr)
 		return;
 
-	cout << "Received message on topic: " << topic << " Payload: " << payload << endl;
+	//cout << "Received message on topic: " << topic << " Payload: " << payload << endl;
 }
 
 bool connect_to_mqtt_broker(camera_settings* settings, DetectorEnvironment* env, MQTTClient* mqtt_client)
