@@ -148,7 +148,10 @@
 						"execute_always": false,
 						"execute_mode": 0,
 						"additional" : [
-								{"name": "illustration_mode", "val": 6, "descr": "0-none, 1-box, 2-box and text, 3-mask, 4-mask and text"}
+								{"name": "illustration_mode", "val": 6, "descr": "0-none, 1-box, 2-box and text, 3-mask, 4-mask and text"},
+								{"name": "model", "val": "qwen2.5vl:3b"},
+								{"name": "prompt", "val": ""},
+								{"name": "endpoint", "val": "http://192.168.0.128:11434/api/generate"}
 						]
 					}
 				],
@@ -182,12 +185,12 @@
                 "resize_x": 1960,
                 "resize_y": 1280,
                 "rotate_angle": 0,
-                "video_stream_channel": "/camera2",
+                "video_stream_channel": "/ollama",
                 "video_stream_engine": 1,
                 "video_stream_login": "",
-                "video_stream_mode": 2,
+                "video_stream_mode": 0,
                 "video_stream_password": "",
-                "video_stream_port": 8088,
+                "video_stream_port": 8089,
 				"additional" : [
 					{"name": "video_stream_max_output_fps", "val": 0},
 					{"name": "mqtt_request_topic", "val": "ollama/request"}

@@ -35,6 +35,7 @@ namespace cs
 
 		virtual bool is_opened() override;
 		virtual void bring_to_start() override {}
+		virtual void set_ready(bool val) override { ready_flag = true; }
 
 		void on_request(const std::string& topic, const std::string& payload);
 	private:
@@ -42,7 +43,7 @@ namespace cs
 		std::string mqtt_request_topic = "";
 
 		std::vector<std::string> requests;
-		command_processor command;
+		command_processor* command = nullptr;
 	};
 }
 

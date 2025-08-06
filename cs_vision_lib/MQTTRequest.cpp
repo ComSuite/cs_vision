@@ -16,20 +16,23 @@ void MQTTRequest::on_request(const std::string& topic, const std::string& payloa
 	if (topic != mqtt_request_topic)
 		return;
 
-	std::cout << "Received request on topic: " << topic << " Payload: " << payload << std::endl;
-	((JsonWrapper)command).parse(payload.c_str());
-	switch (command.command_id)
+	if (command == nullptr) {
+		command = new command_processor();
+		if (command == nullptr)
+			return;
+	}
+
+	((JsonWrapper*)command)->parse(payload.c_str());
+	switch (command->command_id)
 	{
 	case command_processor::COMMAND_ID_SET_LLM_PROMPT:
 	{
-		auto val = command.get_item_value("prompt");
+		auto val = command->get_item_value("prompt");
 		if (val != nullptr) {
 			std::string prompt = std::get<std::string>(val->value);
 			requests.push_back(prompt);
 		}
-		else {
-			std::cout << "MQTTRequest::on_request: No prompt found in command" << std::endl;
-		}
+
 		break;
 	}
 	default:
@@ -60,6 +63,7 @@ bool MQTTRequest::is_opened()
 
 int MQTTRequest::get_frame(cv::Mat& frame, bool convert_to_gray)
 {
+	frame.release();
 	if (requests.empty())
 		return 0;
 	
