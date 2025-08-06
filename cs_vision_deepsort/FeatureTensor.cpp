@@ -100,18 +100,11 @@ void FeatureTensor::preprocess(cv::Mat &imageBGR, std::vector<float> &inputTenso
 
 bool FeatureTensor::getRectsFeature(const cv::Mat &img, DETECTIONS& d, const char* input_tensor_name, const char* output_tensor_name)
 {
-    if (img.empty()) {
-        std::cerr << "Error: Input image is empty." << std::endl;
+    if (img.empty() || d.empty()) {
 		return false;
 	}
 
-    if (d.empty()) {
-		std::cerr << "Error: No detections provided." << std::endl;
-		return false;   
-	}
-
-    for (DETECTION_ROW& dbox : d)
-    {
+    for (DETECTION_ROW& dbox : d) {
         cv::Rect rc = cv::Rect(int(dbox.tlwh(0)), int(dbox.tlwh(1)),
             int(dbox.tlwh(2)), int(dbox.tlwh(3)));
         rc.x -= (rc.height * 0.5 - rc.width) * 0.5;
@@ -174,27 +167,25 @@ bool FeatureTensor::getRectsFeature(const cv::Mat &img, DETECTIONS& d, const cha
 void FeatureTensor::tobuffer(const std::vector<cv::Mat> &imgs, uint8 *buf)
 {
     int pos = 0;
-    for (const cv::Mat &img : imgs)
-    {
+    for (const cv::Mat &img : imgs) {
         int Lenth = img.rows * img.cols * 3;
         int nr = img.rows;
         int nc = img.cols;
-        if (img.isContinuous())
-        {
+        if (img.isContinuous()) {
             nr = 1;
             nc = Lenth;
         }
-        for (int i = 0; i < nr; i++)
-        {
+
+        for (int i = 0; i < nr; i++) {
             const uchar *inData = img.ptr<uchar>(i);
-            for (int j = 0; j < nc; j++)
-            {
+            for (int j = 0; j < nc; j++) {
                 buf[pos] = *inData++;
                 pos++;
             }
-        } // end for
-    }     // end imgs;
+        }
+    }
 }
+
 void FeatureTensor::test()
 {
     return;
