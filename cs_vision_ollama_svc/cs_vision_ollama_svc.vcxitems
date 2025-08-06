@@ -17,6 +17,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)base64.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GemmaDetector.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)OllamaDetector.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)OllamaTextPromptDetector.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)QwenDetector.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -24,6 +25,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)GemmaDetector.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)HTTPRequest.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)OllamaDetector.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)OllamaTextPromptDetector.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)QwenDetector.h" />
   </ItemGroup>
 </Project>

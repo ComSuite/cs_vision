@@ -28,6 +28,7 @@
 #include "TRTYOLOObjectDetector.h"
 #include "GemmaDetector.h"
 #include "QwenDetector.h"
+#include "OllamaTextPromptDetector.h"
 #include "TrackerByteTrack.h"
 #include "TrackerDeepSORT.h"
 #include "cv_utils.h"
@@ -53,6 +54,7 @@ IObjectDetector* create_detector(int kind)
 	case ObjectDetectorKind::OBJECT_DETECTOR_SVC_QWEN: return new QwenDetector();
 	case ObjectDetectorKind::OBJECT_DETECTOR_MOT_BYTETRACK: return new TrackerByteTrack();
 	case ObjectDetectorKind::OBJECT_DETECTOR_MOT_DEEPSORT: return new TrackerDeepSORT();
+	case ObjectDetectorKind::OBJECT_DETECTOR_OLLAMA_PROMPT: return new OllamaTextPromptDetector();
 	}
 
 	return nullptr;
