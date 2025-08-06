@@ -208,6 +208,8 @@ bool init_detectors_environment(DetectorEnvironment* environment, camera_setting
 	if (!environment || !set || !capture)
 		return false;
 
+	environment->camera_id = set->id;
+
 	environment->is_undistort = set->is_undistort;
 	if (environment->is_undistort && set->camera_matrix.size() == 9 && set->distortion_coefficients.size() == 4) {
 		cv::Mat K = (cv::Mat_<double>(3, 3)); 
