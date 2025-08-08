@@ -543,7 +543,7 @@ void detect_func(DetectorEnvironment* env)
 
 void thread_func(DetectorEnvironment* env)
 {
-	while (true) {
+	while (true) { ///////////////////////////////////////////////////////
 		if (!env->detector_ready) {
 			detect_func(env);
 #ifdef _DEBUG_
@@ -681,8 +681,10 @@ void* camera_loop(void* arg)
 	thread detect_tread(thread_func, &environment);
 	detect_tread.detach();
 
-	thread stream_tread(stream_thread_func, &environment);
-	stream_tread.detach();
+	if (set->video_stream_mode != VIDEO_STREAM_MODE::VIDEO_STREAM_MODE_NONE && environment.video_streamer != nullptr) {
+		thread stream_tread(stream_thread_func, &environment);
+		stream_tread.detach();
+	}
 
 	cv::Mat buffers[2]{cv::Mat(capture->get_height(), capture->get_width(), CV_8UC3), cv::Mat(capture->get_height(), capture->get_width(), CV_8UC3)};
 	buffers[0].release();

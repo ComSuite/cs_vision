@@ -90,6 +90,8 @@ namespace cs
 		std::string id = "";
 		std::string name = "";
 
+		bool is_enabled = true;
+
 		bool is_undistort = false;
 		std::vector<double> camera_matrix; // 3x3 matrix
 		std::vector<double> distortion_coefficients; // 4x1 vector

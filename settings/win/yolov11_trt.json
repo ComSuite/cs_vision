@@ -156,7 +156,8 @@
 					}
 				],
                 "device": 1,
-				"device2" : "rtsp://admin:1234567890@192.168.0.192/iphone/11",
+				"device2": "",
+				"is_enabled": false,
 				"is_undistort": false,
                 "id": "2",
 				"frame_width" : 1920,

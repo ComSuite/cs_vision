@@ -285,23 +285,25 @@ int main(int argc, char* argv[])
 
     list<camera_thread_description*> camera_threads;
     for (auto& camera : settings->cameras) {
+        if (camera->is_enabled) {
 #ifdef __WITH_MONGOOSE_SERVER__
-        if (http_arg != nullptr) {
-            camera->http_server_queue = http_arg->queue;
-        }
+            if (http_arg != nullptr) {
+                camera->http_server_queue = http_arg->queue;
+            }
 #endif
 
-        camera_thread_description* descr = new camera_thread_description();
+            camera_thread_description* descr = new camera_thread_description();
 
-		camera_loop_params* cam_prams = new camera_loop_params();
-		cam_prams->settings = camera;
-		cam_prams->mqtt_client = mqtt;
+            camera_loop_params* cam_prams = new camera_loop_params();
+            cam_prams->settings = camera;
+            cam_prams->mqtt_client = mqtt;
 
-        pthread_create(&descr->camera_thread, NULL, camera_loop, cam_prams); //camera
-        pthread_detach(descr->camera_thread);
-        descr->camera_set = camera;
+            pthread_create(&descr->camera_thread, NULL, camera_loop, cam_prams); //camera
+            pthread_detach(descr->camera_thread);
+            descr->camera_set = camera;
 
-        camera_threads.push_back(descr);
+            camera_threads.push_back(descr);
+        }
     }
 
 #ifdef __WITH_MONGOOSE_SERVER__

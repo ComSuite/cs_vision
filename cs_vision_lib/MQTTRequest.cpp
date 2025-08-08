@@ -63,6 +63,7 @@ bool MQTTRequest::is_opened()
 
 int MQTTRequest::get_frame(cv::Mat& frame, bool convert_to_gray)
 {
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	frame.release();
 
 	if (requests.empty())

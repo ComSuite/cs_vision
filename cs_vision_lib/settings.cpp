@@ -119,6 +119,8 @@ int camera_settings::parse(rapidjson::Value& root)
 	else
 		device = json_get_string(root, "device", "");
 
+	is_enabled = json_get_bool(root, "is_enabled", is_enabled);
+
 	is_undistort = json_get_bool(root, "is_undistort", is_undistort);
 	rapidjson::Value d, k;
 	camera_matrix.clear();
