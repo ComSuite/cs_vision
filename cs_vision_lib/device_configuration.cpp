@@ -37,8 +37,6 @@ bool device_configuration::get_config()
 	return true;
 }
 #else
-#include <winsock2.h>
-#include <iphlpapi.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <WS2tcpip.h>
@@ -53,7 +51,7 @@ bool device_configuration::get_config()
 
 #define INET6_ADDRSTRLEN 46
 
-void print_ip_address(PIP_ADAPTER_UNICAST_ADDRESS pUnicast)
+void device_configuration::print_ip_address(PIP_ADAPTER_UNICAST_ADDRESS pUnicast, std::vector<std::string>& addresses)
 {
     char address[INET6_ADDRSTRLEN];
     if (pUnicast->Address.lpSockaddr->sa_family == AF_INET) {
@@ -82,6 +80,8 @@ bool device_configuration::get_config()
 
     PIP_ADAPTER_ADDRESSES pCurrAddresses = NULL;
     PIP_ADAPTER_UNICAST_ADDRESS pUnicast = NULL;
+
+    std::vector<std::string> addresses;
 
     outBufLen = WORKING_BUFFER_SIZE;
 
@@ -118,9 +118,8 @@ bool device_configuration::get_config()
                     !wcsstr(pCurrAddresses->Description, L"Bluetooth")
                     ) {
                     pUnicast = pCurrAddresses->FirstUnicastAddress;
-                    printf("\tDescription: %wS\n", pCurrAddresses->Description);
                     while (pUnicast != NULL) {
-                        print_ip_address(pUnicast);
+                        print_ip_address(pUnicast, addresses);
                         pUnicast = pUnicast->Next;
                     }
                 }
@@ -134,7 +133,6 @@ bool device_configuration::get_config()
         FREE(pAddresses);
     }
 
-    std::cout << "Device configuration retrieval is not implemented for this platform." << std::endl;
     return false;
 }
 #endif
