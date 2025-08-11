@@ -49,11 +49,10 @@ bool device_configuration::get_config()
 #define MALLOC(x) HeapAlloc(GetProcessHeap(), 0, (x))
 #define FREE(x) HeapFree(GetProcessHeap(), 0, (x))
 
-#define INET6_ADDRSTRLEN 46
-
 void device_configuration::print_ip_address(PIP_ADAPTER_UNICAST_ADDRESS pUnicast, std::vector<std::string>& addresses)
 {
     char address[INET6_ADDRSTRLEN];
+
     if (pUnicast->Address.lpSockaddr->sa_family == AF_INET) {
         struct sockaddr_in* sa_in = (struct sockaddr_in*)pUnicast->Address.lpSockaddr;
         inet_ntop(AF_INET, &sa_in->sin_addr, address, sizeof(address));
@@ -62,10 +61,12 @@ void device_configuration::print_ip_address(PIP_ADAPTER_UNICAST_ADDRESS pUnicast
         struct sockaddr_in6* sa_in6 = (struct sockaddr_in6*)pUnicast->Address.lpSockaddr;
         inet_ntop(AF_INET6, &sa_in6->sin6_addr, address, sizeof(address));
     }
+
+	addresses.push_back(address);
     printf("\tIP Address: %s\n", address);
 }
 
-bool device_configuration::get_config()
+void device_configuration::get_ip_addresses(std::vector<std::string>& addresses)
 {
     DWORD dwRetVal = 0;
     unsigned int i = 0;
@@ -81,15 +82,13 @@ bool device_configuration::get_config()
     PIP_ADAPTER_ADDRESSES pCurrAddresses = NULL;
     PIP_ADAPTER_UNICAST_ADDRESS pUnicast = NULL;
 
-    std::vector<std::string> addresses;
-
     outBufLen = WORKING_BUFFER_SIZE;
 
     do {
 
         pAddresses = (IP_ADAPTER_ADDRESSES*)MALLOC(outBufLen);
         if (pAddresses == NULL) {
-            return false;
+            return;
         }
 
         dwRetVal = GetAdaptersAddresses(family, flags, NULL, pAddresses, &outBufLen);
@@ -111,7 +110,7 @@ bool device_configuration::get_config()
         pCurrAddresses = pAddresses;
         while (pCurrAddresses) {
             if ((pCurrAddresses->IfType == IF_TYPE_IEEE80211 || pCurrAddresses->IfType == IF_TYPE_ETHERNET_CSMACD) && pCurrAddresses->PhysicalAddressLength > 0) {
-				if (pCurrAddresses->OperStatus == IfOperStatusUp &&
+                if (pCurrAddresses->OperStatus == IfOperStatusUp &&
                     !wcsstr(pCurrAddresses->Description, L"Virtual") &&
                     !wcsstr(pCurrAddresses->Description, L"VMware") &&
                     !wcsstr(pCurrAddresses->Description, L"Loopback") &&
@@ -132,8 +131,15 @@ bool device_configuration::get_config()
     if (pAddresses) {
         FREE(pAddresses);
     }
+}
 
-    return false;
+bool device_configuration::get_config()
+{
+    std::vector<std::string> addresses;
+
+    get_ip_addresses(addresses);
+
+    return true;
 }
 #endif
 
