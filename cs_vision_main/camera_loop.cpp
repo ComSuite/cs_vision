@@ -80,7 +80,7 @@ using namespace cv::cuda;
 #endif
 using namespace cs;
 
-void cpu_preprocessing(Mat& frame, camera_settings* set, Mat& image, Size& border_dims);
+void cpu_preprocessing(Mat& frame, camera_settings* set, Size& border_dims);
 
 void create_video_streamer(DetectorEnvironment* environment, camera_settings* set, ICamera* capture)
 {
@@ -201,6 +201,8 @@ bool cleanup_detectors_environment(DetectorEnvironment* environment)
 	environment->is_can_show = false;
 	environment->detector_ready = false;
 	environment->original_size = Size(0, 0);
+
+	return true;
 }
 
 bool init_detectors_environment(DetectorEnvironment* environment, camera_settings* set, ICamera* capture, MQTTClient* mqtt_client)
@@ -543,8 +545,9 @@ void detect_func(DetectorEnvironment* env)
 
 void thread_func(DetectorEnvironment* env)
 {
-	while (true) { ///////////////////////////////////////////////////////
+	while (true) { // smphSignalMainToThread.acquire(); - wait for signal to start detection
 		if (!env->detector_ready) {
+			//env->smphSignalMainToThread.acquire();
 			detect_func(env);
 #ifdef _DEBUG_
 			env->fps.tick("##########Output FPS: ", env->camera_id.c_str(), env->http_server_queue);
@@ -568,29 +571,11 @@ void process_frame(ICamera* capture, cs::camera_settings* set, DetectorEnvironme
 	if (environment->detector_ready) {
 		environment->original_size = frame.size();
 
-#ifdef __HAS_CUDA__
-		//cv::cuda::GpuMat* image = new cv::cuda::GpuMat();
-
-		//if (set->is_use_gpu)
-		//	gpu_preprocessing(frame, set, environment->detect_frame, environment->border_dims);
-		//else {
-		//	Mat img;
-		//	cpu_preprocessing(frame, set, img, environment->border_dims);
-		//	environment->detect_frame.upload(img);
-		//}
-#else
-		//cv::Mat* image = new cv::Mat();
-
-		if (set->is_use_gpu) {
-			gpu_preprocessing(frame, set, environment->detect_frame, environment->border_dims);
-		}
-		else {
-			cpu_preprocessing(frame, set, environment->detect_frame, environment->border_dims);
-		}
-#endif
+		cpu_preprocessing(frame, set, environment->border_dims);
 		environment->detect_frame = &frame;
 
 		capture->set_ready(false);
+		//environment->smphSignalMainToThread.release(); // signal to start detection
 		environment->detector_ready = false;
 	}
 }
@@ -648,7 +633,6 @@ void* camera_loop(void* arg)
 	}
 	capture->prepare();
 
-	//if (!capture->open(set->device, set->frame_width, set->frame_height) || capture->get_height() <= 0 || capture->get_width() <= 0) {
 	if (!capture->open(set, params->mqtt_client) || capture->get_height() <= 0 || capture->get_width() <= 0) {
 		cout << "Can not open capture: " << get<string>(set->device).c_str() << endl;
 		delete capture;
@@ -698,6 +682,7 @@ void* camera_loop(void* arg)
 			continue;
 		}
 
+		//environment.smphSignalMainToThread.acquire(); // wait for signal to start detection
 		if (frame != nullptr && environment.detector_ready) {
 			if (!frame->empty()) {
 				process_frame(capture, set, &environment, *frame);
@@ -739,7 +724,7 @@ void* camera_loop(void* arg)
 	return NULL;
 }
 
-void cpu_preprocessing(Mat& frame, camera_settings* set, Mat& image, Size& border_dims)
+void cpu_preprocessing(Mat& frame, camera_settings* set, Size& border_dims)
 {
 	border_dims.width = 0;
 	border_dims.height = 0;
@@ -753,7 +738,5 @@ void cpu_preprocessing(Mat& frame, camera_settings* set, Mat& image, Size& borde
 		cpu_rotate(frame, rotate, set->get_rotate_angle());
 		rotate.copyTo(frame);
 	}
-
-	frame.copyTo(image);
 }
 

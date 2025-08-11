@@ -69,6 +69,7 @@ namespace cs
 		static const int COMMAND_ID_PING = 9; //ping
 		static const int COMMAND_ID_SET_LLM_PROMPT = 10; //set LLM prompt for VLLM & LLM detectors
 		static const int COMMAND_ID_MQTT_REQUEST = 11; //set LLM prompt for VLLM & LLM detectors
+		static const int COMMAND_ID_GET_CONFIGURATION = 12; //get current configuration
 
 		virtual ~command_processor();
 		bool execute(cs::JsonWriter* root, cs::ReadOnlyValues* checker = nullptr, const char* settings_file_path = nullptr, bool is_backup = false);

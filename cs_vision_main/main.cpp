@@ -37,6 +37,7 @@
 #include "MQTTClient.h"
 #include "JsonWriter.h"
 #include "command_processor.h"
+#include "device_configuration.h"
 #include "ReadOnlyValues.h"
 #include "std_utils.h"
 #include "FileBackup.h"
@@ -189,6 +190,9 @@ void process_command(MQTTClient* mqtt, device_settings* settings)
             break;
         case command_processor::COMMAND_ID_PING:
             send_ping(mqtt, settings, command);
+            break;
+        case command_processor::COMMAND_ID_GET_CONFIGURATION:
+			device_configuration::get_config();
             break;
         default:
             send_response(mqtt, settings, command, error_codes::__ERROR_BAD_COMMAND_ID);

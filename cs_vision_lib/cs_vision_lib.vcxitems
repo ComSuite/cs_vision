@@ -17,6 +17,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)aliases.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)command_processor.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)cv_utils.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)device_configuration.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ICamera.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)IObjectDetector.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MQTTClient.cpp" />
@@ -34,6 +35,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)command_processor.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)cv_utils.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DetectorEnvironment.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)device_configuration.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)dynamic_settings.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)http_server_settings.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ICamera.h" />

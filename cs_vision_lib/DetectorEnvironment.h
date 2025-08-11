@@ -44,6 +44,7 @@
 #include "aliases.h"
 #include "BaseQueue.h"
 #include "fps_counter.h"
+#include <semaphore>
 
 namespace cs
 {
@@ -70,6 +71,7 @@ namespace cs
 				delete image_writer;
 		}
 
+		//std::binary_semaphore smphSignalMainToThread = std::binary_semaphore(0);
 		std::atomic_bool detector_ready = true;
 		std::atomic_bool is_can_show = true;
 
