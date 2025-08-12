@@ -176,13 +176,18 @@ bool device_configuration::get_config(device_settings* device, std::string& conf
         Value stream_obj(kObjectType);
 		stream_obj.AddMember("name", Value().SetString(stream->name.c_str(), stream->name.length()), allocator);
 		stream_obj.AddMember("id", Value().SetString(stream->id.c_str(), stream->id.length()), allocator);
-		stream_obj.AddMember("video_stream_port", stream->video_stream_port, allocator);
-        stream_obj.AddMember("video_stream_channel", Value().SetString(stream->video_stream_channel.c_str(), stream->video_stream_channel.length()), allocator);
-        stream_obj.AddMember("is_mqtt", stream->mqtt, allocator);
-        stream_obj.AddMember("mqtt_broker_ip", Value().SetString(stream->mqtt_broker_ip.c_str(), stream->mqtt_broker_ip.length()), allocator);
-        stream_obj.AddMember("mqtt_broker_port", stream->mqtt_broker_port, allocator);
-        stream_obj.AddMember("mqtt_detection_topic", Value().SetString(stream->mqtt_detection_topic.c_str(), stream->mqtt_detection_topic.length()), allocator);
-        stream_obj.AddMember("mqtt_is_send_empty", stream->mqtt_is_send_empty, allocator);
+        if (stream->video_stream_mode != VIDEO_STREAM_MODE::VIDEO_STREAM_MODE_NONE) {
+            stream_obj.AddMember("video_stream_mode", static_cast<int>(stream->video_stream_mode), allocator);
+            stream_obj.AddMember("video_stream_port", stream->video_stream_port, allocator);
+            stream_obj.AddMember("video_stream_channel", Value().SetString(stream->video_stream_channel.c_str(), stream->video_stream_channel.length()), allocator);
+        }
+
+        if (stream->mqtt) {
+            stream_obj.AddMember("mqtt_broker_ip", Value().SetString(stream->mqtt_broker_ip.c_str(), stream->mqtt_broker_ip.length()), allocator);
+            stream_obj.AddMember("mqtt_broker_port", stream->mqtt_broker_port, allocator);
+            stream_obj.AddMember("mqtt_detection_topic", Value().SetString(stream->mqtt_detection_topic.c_str(), stream->mqtt_detection_topic.length()), allocator);
+            stream_obj.AddMember("mqtt_is_send_empty", stream->mqtt_is_send_empty, allocator);
+        }
 
 		stream_array.PushBack(stream_obj, allocator);
 	}
