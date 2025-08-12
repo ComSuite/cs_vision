@@ -24,8 +24,13 @@
 #include "device_configuration.h"
 #include <iostream>
 #include <cstring>
+#include "../rapidjson/document.h"
+#include "../rapidjson/writer.h"
+#include "../rapidjson/stringbuffer.h"
+#include "../rapidjson/rapidjson.h"
 
 using namespace cs;
+using namespace rapidjson;
 
 #ifdef __LINUX__
 #include <ifaddrs.h>
@@ -155,11 +160,46 @@ void device_configuration::get_ip_addresses(std::vector<std::string>& addresses)
     }
 }
 
-bool device_configuration::get_config()
+bool device_configuration::get_config(device_settings* device, std::string& config)
 {
     std::vector<std::string> addresses;
 
     get_ip_addresses(addresses);
+
+    Document root;
+
+    root.SetObject();
+    auto& allocator = root.GetAllocator();
+
+    Value stream_array(kArrayType);
+    for (const auto& stream : device->cameras) {
+        Value stream_obj(kObjectType);
+		stream_obj.AddMember("name", Value().SetString(stream->name.c_str(), stream->name.length()), allocator);
+		stream_obj.AddMember("id", Value().SetString(stream->id.c_str(), stream->id.length()), allocator);
+		stream_obj.AddMember("video_stream_port", stream->video_stream_port, allocator);
+        stream_obj.AddMember("video_stream_channel", Value().SetString(stream->video_stream_channel.c_str(), stream->video_stream_channel.length()), allocator);
+        stream_obj.AddMember("is_mqtt", stream->mqtt, allocator);
+        stream_obj.AddMember("mqtt_broker_ip", Value().SetString(stream->mqtt_broker_ip.c_str(), stream->mqtt_broker_ip.length()), allocator);
+        stream_obj.AddMember("mqtt_broker_port", stream->mqtt_broker_port, allocator);
+        stream_obj.AddMember("mqtt_detection_topic", Value().SetString(stream->mqtt_detection_topic.c_str(), stream->mqtt_detection_topic.length()), allocator);
+        stream_obj.AddMember("mqtt_is_send_empty", stream->mqtt_is_send_empty, allocator);
+
+		stream_array.PushBack(stream_obj, allocator);
+	}
+	root.AddMember("video_streams", stream_array, allocator);
+
+    Value addr_array(kArrayType);
+    for (const auto& addr : addresses) {
+        Value encoded;
+        encoded.SetString(addr.c_str(), addr.length(), allocator);
+        addr_array.PushBack(encoded, allocator);
+	}
+	root.AddMember("ip_addresses", addr_array, allocator);
+
+    StringBuffer buffer;
+    Writer<StringBuffer> writer(buffer);
+    root.Accept(writer);
+    config = buffer.GetString();
 
     return true;
 }

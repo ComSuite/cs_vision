@@ -33,13 +33,14 @@
 #include <winsock2.h>
 #include <iphlpapi.h>
 #endif
+#include "settings.h"
 
 namespace cs
 {
 	class device_configuration
 	{
 	public:
-		static bool get_config();
+		static bool get_config(device_settings* device, std::string& config);
 	private:
 		static const size_t INET6_ADDRSTRLEN = 46;
 

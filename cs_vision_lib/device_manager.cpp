@@ -113,8 +113,6 @@ void cs::set_settings(MQTTClient* mqtt, device_settings* settings, command_proce
         delete checker;
 }
 
-//list<command_processor*> commands_queue;
-
 void cs::on_message_callback(struct mosquitto* mosq, const char* topic, const char* payload, void* data)
 {
     processed_command_params* params = (processed_command_params*)data;
@@ -178,7 +176,17 @@ void cs::process_command(MQTTClient* mqtt, processed_command_params* params)
             send_ping(mqtt, params->settings, command);
             break;
         case command_processor::COMMAND_ID_GET_CONFIGURATION:
-            device_configuration::get_config();
+        {
+			std::string config;
+            device_configuration::get_config(params->settings, config);
+            if (!config.empty()) {
+                mqtt->send(params->settings->mqtt_response_topic.c_str(), config.c_str());
+                send_response(mqtt, params->settings, command, error_codes::__ERROR_NO_ERROR);
+            }
+            else {
+                send_response(mqtt, params->settings, command, error_codes::__ERROR_INTERNAL_ERROR);
+			}
+        }
             break;
         default:
             send_response(mqtt, params->settings, command, error_codes::__ERROR_BAD_COMMAND_ID);
