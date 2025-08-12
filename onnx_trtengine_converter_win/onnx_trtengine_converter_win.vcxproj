@@ -145,6 +145,14 @@
   <ItemGroup>
     <ResourceCompile Include="onnx_trtengine_converter_win.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Update="G:\Projects\comsuite\sources\cs_vision\cs_vision_lib\device_manager.cpp">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Update="G:\Projects\comsuite\sources\cs_vision\cs_vision_lib\device_manager.cppm">
+      <FileType>Document</FileType>
+    </ClCompile>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

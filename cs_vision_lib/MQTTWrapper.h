@@ -6,7 +6,7 @@
  * @brief       MQTT wrapper
  *
  **************************************************************************************
- * Copyright (c) 2021, Alexander Epstine (a@epstine.com)
+ * Copyright (c) 2021 - 2025, Alexander Epstine (a@epstine.com)
  **************************************************************************************
  *
  * The above copyright notice and this permission notice shall be included in

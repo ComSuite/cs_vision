@@ -149,7 +149,7 @@
 						"execute_mode": 0,
 						"additional" : [
 								{"name": "illustration_mode", "val": 6, "descr": "0-none, 1-box, 2-box and text, 3-mask, 4-mask and text"},
-								{"name": "model", "val": "qwen2.5vl:3b"},
+								{"name": "model", "val": "gpt-oss:20b"},
 								{"name": "prompt", "val": ""},
 								{"name": "endpoint", "val": "http://192.168.0.155:11434/api/generate"}
 						]

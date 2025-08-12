@@ -175,6 +175,12 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Update="G:\Projects\comsuite\sources\cs_vision\cs_vision_lib\device_manager.cpp">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Update="G:\Projects\comsuite\sources\cs_vision\cs_vision_lib\device_manager.cppm">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Update="G:\Projects\comsuite\sources\cs_vision\mongoose\mongoose.c">
       <FileType>CppCode</FileType>
     </ClCompile>

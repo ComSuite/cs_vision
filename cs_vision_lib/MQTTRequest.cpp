@@ -72,8 +72,10 @@ int MQTTRequest::get_frame(cv::Mat& frame, bool convert_to_gray)
 	std::string request = requests.front();
 	requests.erase(requests.begin());
 
+#ifdef _DEBUG_
 	std::cout << "Processing request: " << request << std::endl;
-	// Simulate filling the frame with dummy data
+#endif
+
 	frame = cv::Mat::zeros(1, request.size(), CV_8UC3);
 	memcpy(frame.data, request.c_str(), request.size());
 	

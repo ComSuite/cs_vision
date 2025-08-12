@@ -115,6 +115,12 @@
     <ClCompile Include="camera_loop_utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Update="G:\Projects\comsuite\sources\cs_vision\cs_vision_lib\device_manager.cpp">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Update="G:\Projects\comsuite\sources\cs_vision\cs_vision_lib\device_manager.cppm">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Update="G:\Projects\comsuite\sources\cs_vision\cs_vision_yolov11_trt\preprocess.cu">
       <FileType>Document</FileType>
     </ClCompile>

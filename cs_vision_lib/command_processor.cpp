@@ -61,6 +61,8 @@ int command_processor::parse(rapidjson::Document& root)
 {
 	int ret = 1;
 
+	values.clear();
+
 	try {
 		if (root.IsNull())
 			return 0;
