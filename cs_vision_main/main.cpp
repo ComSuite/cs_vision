@@ -35,13 +35,8 @@
 #include "settings.h"
 #include "camera_loop.h"
 #include "MQTTClient.h"
-#include "JsonWriter.h"
-#include "command_processor.h"
-#include "device_configuration.h"
 #include "device_manager.h";
-#include "ReadOnlyValues.h"
 #include "std_utils.h"
-#include "FileBackup.h"
 #ifdef __WITH_SCRIPT_LANG__
 #include "CSScript.h"
 #endif
@@ -54,8 +49,6 @@
 
 using namespace std;
 using namespace cs;
-
-
 
 class camera_thread_description {
 public:
