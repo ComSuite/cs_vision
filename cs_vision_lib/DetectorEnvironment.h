@@ -55,8 +55,6 @@ namespace cs
 		{
 			clear<IObjectDetector, std::list>(detectors);
 
-			//if (show_frame != nullptr)
-			//	delete show_frame;
 #ifdef __WITH_VIDEO_STREAMER__
 			if (video_streamer != nullptr)
 				delete video_streamer;
@@ -94,6 +92,7 @@ namespace cs
 		cv::Size border_dims;
 		cv::Scalar background_color = cv::Scalar(255, 255, 255);
 		aliases* field_aliases = nullptr;
+		std::string frame_title = "";
 
 		IObjectDetector* get_detector(int detector_id)
 		{

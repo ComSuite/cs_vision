@@ -389,10 +389,31 @@ void stream_thread_func(DetectorEnvironment* env)
 #endif
 }
 
-void stream_frame_(Mat* frame, DetectorEnvironment* env)
+inline void draw_frame_title(cv::Mat* frame, DetectorEnvironment* env)
+{
+	cv::Point topLeft(50, 50);
+	cv::Point bottomRight(frame->cols - 50, frame->rows - 50);
+	cv::Scalar frameColor(0, 0, 0);
+	int thickness = 2;
+
+	int fontFace = cv::FONT_HERSHEY_SIMPLEX;
+	double fontScale = 1.0;
+	int fontThickness = 2;
+	cv::Scalar textColor(0, 0, 255);
+
+	int baseline = 0;
+	cv::Size textSize = cv::getTextSize(env->frame_title, fontFace, fontScale, fontThickness, &baseline);
+	cv::Point textOrigin(topLeft.x + (bottomRight.x - topLeft.x - textSize.width) / 2, topLeft.y - 10);
+
+	cv::putText(*frame, env->frame_title, textOrigin, fontFace, fontScale, textColor, fontThickness);
+}
+
+void stream_frame(cv::Mat* frame, DetectorEnvironment* env)
 {
 	if (env->is_can_show) {
 		frame->copyTo(env->show_frame);
+		if (!env->frame_title.empty())
+			draw_frame_title(&env->show_frame, env);
 		env->is_can_show = false;
 	}
 }
@@ -536,7 +557,7 @@ void detect_func(DetectorEnvironment* env)
 #ifdef __WITH_VIDEO_STREAMER__
 	if (env->video_stream_mode == VIDEO_STREAM_MODE::VIDEO_STREAM_MODE_DETECTOR && env->video_streamer != nullptr) {
 		draw_detections(env, env->detect_frame, detections);
-		stream_frame_(env->detect_frame, env);
+		stream_frame(env->detect_frame, env);
 	}
 #endif
 
@@ -696,7 +717,7 @@ void* camera_loop(void* arg)
 #ifdef __WITH_VIDEO_STREAMER__
 		if (set->video_stream_mode == VIDEO_STREAM_MODE::VIDEO_STREAM_MODE_SOURCE && environment.video_streamer != nullptr) {
 			environment.is_can_show = true;
-			stream_frame_(frame, &environment);
+			stream_frame(frame, &environment);
 		}
 #endif
 
