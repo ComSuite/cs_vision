@@ -93,6 +93,7 @@ namespace cs
 		cv::Scalar background_color = cv::Scalar(255, 255, 255);
 		aliases* field_aliases = nullptr;
 		std::string frame_title = "";
+		bool draw_fps = true;
 
 		IObjectDetector* get_detector(int detector_id)
 		{

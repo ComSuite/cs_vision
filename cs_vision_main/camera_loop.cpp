@@ -396,23 +396,48 @@ inline void draw_frame_title(cv::Mat* frame, DetectorEnvironment* env)
 	cv::Scalar frameColor(0, 0, 0);
 	int thickness = 2;
 
+	std::string title = env->frame_title;
+	title = title + " fps: " + std::to_string(env->fps.get_fps());
+
 	int fontFace = cv::FONT_HERSHEY_SIMPLEX;
 	double fontScale = 1.0;
 	int fontThickness = 2;
 	cv::Scalar textColor(0, 0, 255);
-
 	int baseline = 0;
-	cv::Size textSize = cv::getTextSize(env->frame_title, fontFace, fontScale, fontThickness, &baseline);
-	cv::Point textOrigin(topLeft.x + (bottomRight.x - topLeft.x - textSize.width) / 2, topLeft.y - 10);
+	int lineSpacing = 30;
 
-	cv::putText(*frame, env->frame_title, textOrigin, fontFace, fontScale, textColor, fontThickness);
+	std::istringstream iss(title);
+	std::string word, line;
+	std::vector<std::string> lines;
+
+	while (iss >> word) {
+		std::string testLine = line.empty() ? word : line + " " + word;
+		int textWidth = cv::getTextSize(testLine, fontFace, fontScale, thickness, &baseline).width;
+
+		if (textWidth > bottomRight.x - topLeft.x) {
+			lines.push_back(line);
+			line = word;
+		}
+		else {
+			line = testLine;
+		}
+	}
+	if (!line.empty()) {
+		lines.push_back(line);
+	}
+
+	for (size_t i = 0; i < lines.size(); ++i) {
+		cv::Size textSize = cv::getTextSize(lines[i], fontFace, fontScale, fontThickness, &baseline);
+		cv::Point textOrigin(topLeft.x + (bottomRight.x - topLeft.x - textSize.width) / 2, topLeft.y + i * (baseline + lineSpacing));
+		cv::putText(*frame, lines[i], textOrigin, fontFace, fontScale, textColor, fontThickness);
+	}
 }
 
 void stream_frame(cv::Mat* frame, DetectorEnvironment* env)
 {
 	if (env->is_can_show) {
 		frame->copyTo(env->show_frame);
-		if (!env->frame_title.empty())
+		if (!env->frame_title.empty() || env->draw_fps)
 			draw_frame_title(&env->show_frame, env);
 		env->is_can_show = false;
 	}
@@ -534,6 +559,10 @@ void detect_func(DetectorEnvironment* env)
 		d->box.y = d->box.y / scale_factor + d->original_y;
 		d->box.width = d->box.width / scale_factor;
 		d->box.height = d->box.height / scale_factor;
+
+		if (d->kind == ObjectDetectorKind::OBJECT_DETECTOR_QWEN && d->box.x < 0 && d->box.y < 0) {
+			env->frame_title = d->label;
+		}
 	}
 
 #ifdef __WITH_SCRIPT_LANG__

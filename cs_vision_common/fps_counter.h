@@ -54,6 +54,14 @@ namespace cs
 	class fps_counter
 	{
 	public:
+		int64_t tick()
+		{
+			if (!is_init)
+				return 0;
+
+			counter++;
+		}
+
 		void tick(const char* prompt, const char* id, BaseQueue<fps_counter_info>* queue = nullptr)
 		{
 			if (!is_init)

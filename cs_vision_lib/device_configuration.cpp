@@ -37,7 +37,7 @@ using namespace rapidjson;
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-bool device_configuration::get_config()
+bool device_configuration::get_config(device_settings* device, std::string& config)
 {
     struct ifaddrs* interfaces = nullptr, * ifa = nullptr;
 

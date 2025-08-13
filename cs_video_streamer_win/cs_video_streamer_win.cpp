@@ -207,10 +207,6 @@ void stream_frame(IVideoStreamer* streamer, thread_param* param)
 
 			streamer->show_frame(*frame, param->channel.c_str());
 			delete frame;
-
-				//Mat* show_frame = new Mat(*frame);
-				//thread stream_tread(stream_thread_func, show_frame, channel, streamer, param);
-				//stream_tread.detach();
 		}
 	}
 }

@@ -106,15 +106,43 @@ void QwenDetector::parse(const std::string& response, int& current_id)
 						item->box.height = (box[3].GetFloat() / k - box[1].GetFloat()) / k;
 						item->box.x = box[0].GetFloat() / k;
 						item->box.y = box[1].GetFloat() / k;
-						//cout << "QwenDetector::parse: " << item->label << " " << item->box.x << " " << item->box.y << " " << item->box.width << " " << item->box.height << endl;
 
 						last_detections.push_back(item);
 					}
 				}
 			}
 		}
+		else {
+			DetectionItem* item = new DetectionItem();
+			item->id = current_id;
+			current_id++;
+
+			item->kind = ObjectDetectorKind::OBJECT_DETECTOR_QWEN;
+			item->detector_id = id;
+
+			item->label = resp;
+			item->neural_network_id = neural_network_id;
+
+			item->box.width = -1;
+			item->box.height = -1;
+			item->box.x = -1;
+			item->box.y = -1;
+
+			last_detections.push_back(item);
+		}
 	}
 	catch (...) {
-
 	}
 }
+
+void QwenDetector::draw_detection(cv::Mat* detect_frame, DetectionItem* detection)
+{
+	if (detect_frame == nullptr || detection == nullptr)
+		return;
+
+	if (detection->box.x < 0 || detection->box.y < 0)
+		return;
+
+	IObjectDetector::draw_detection(detect_frame, detection);
+}
+
