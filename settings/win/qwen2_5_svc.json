@@ -35,15 +35,15 @@
 						"additional" : [
 								{"name": "illustration_mode", "val": 4, "descr": "0-none, 1-box, 2-box and text, 3-mask, 4-mask and text"},
 								{"name": "model", "val": "qwen2.5vl:3b"},
-								{"name": "prompt", "val": "Detect persons and cats in the image and return their locations and label (person, cat) in the form of coordinates."},
-								{"name": "prompt2", "val": "What do you see at this image?"},
-								{"name": "prompt1", "val": "Do you see something dangerous at this image? If yes explain if no just answer Nothing danger."},
+								{"name": "prompt2", "val": "Detect persons and cats in the image and return their locations and label (person, cat) in the form of coordinates."},
+								{"name": "prompt1", "val": "Provide a one-sentence caption for the provided image."},
+								{"name": "prompt", "val": "Do you see something dangerous at this image? If yes explain if no just answer Nothing danger."},
 								{"name": "endpoint", "val": "http://192.168.0.128:11434/api/generate"},
 								{"name": "mqtt_request_topic", "val": "comsuite/qwen_prompt"}
 						]
                     }
                 ],
-                "device": 0,
+                "device": 1,
 				"device1" : "/home/marmot/projects/cars.mp4",
 				"device_tmp" : "rtsp://admin:1234567890@192.168.0.192/iphone/11",
                 "id": "1",
@@ -77,7 +77,7 @@
                 "video_stream_channel": "/camera1",
                 "video_stream_engine": 1,
                 "video_stream_login": "",
-                "video_stream_mode": 2,
+                "video_stream_mode": 1,
                 "video_stream_password": "",
                 "video_stream_port": 8088,
 				"is_use_super_resolution": false,

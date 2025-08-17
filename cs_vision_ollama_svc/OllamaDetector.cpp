@@ -103,13 +103,13 @@ int OllamaDetector::detect(cv::Mat* input, int& current_id, bool is_draw, std::l
 		Document root;
 
 		root.SetObject();
-		auto& allocator = root.GetAllocator();
+		rapidjson::Document::AllocatorType& allocator = root.GetAllocator();
 
 		root.AddMember("model", Value().SetString(model.c_str(), model.length()), allocator);
 		root.AddMember("prompt", Value().SetString(prompt.c_str(), prompt.length()), allocator);
 		root.AddMember("stream", false, allocator);
 
-		if (input != nullptr) {
+		if (input != nullptr && !input->empty()) {
 			double k = 0.50;
 			cv::Mat img;
 			cv::resize(*input, img, cv::Size(), k, k);
@@ -120,13 +120,18 @@ int OllamaDetector::detect(cv::Mat* input, int& current_id, bool is_draw, std::l
 			Value image_array(kArrayType);
 			image_array.PushBack(Value().SetString(encoded.c_str(), encoded.length()), allocator);
 
-			root.AddMember("images", image_array, root.GetAllocator());
+			root.AddMember("images", image_array, allocator);
 		}
 
 		StringBuffer buffer;
+		buffer.Clear();
 		Writer<StringBuffer> writer(buffer);
 		root.Accept(writer);
-		const std::string json_string = buffer.GetString();
+		if (buffer.GetSize() == 0) {
+			std::cerr << "JSON serialization failed, buffer is empty." << std::endl;
+			return 0;
+		}
+		std::string json_string(buffer.GetString(), buffer.GetSize());
 
 		const auto response = request.send("POST", json_string, {
 			{"Content-Type", "application/json"}

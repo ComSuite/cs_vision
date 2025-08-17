@@ -382,8 +382,8 @@ void stream_thread_func(DetectorEnvironment* env)
 
 	while (true) {
 		if (!env->is_can_show && !env->show_frame.empty()) {
-			env->is_can_show = true;
 			env->video_streamer->show(env->show_frame, env->video_stream_channel.c_str());
+			env->is_can_show = true;
 		}
 	}
 #endif
@@ -397,7 +397,7 @@ inline void draw_frame_title(cv::Mat* frame, DetectorEnvironment* env)
 	int thickness = 2;
 
 	std::string title = env->frame_title;
-	title = title + " fps: " + std::to_string(env->fps.get_fps());
+	//title = title + " fps: " + std::to_string(env->fps.get_fps());
 
 	int fontFace = cv::FONT_HERSHEY_SIMPLEX;
 	double fontScale = 1.0;
@@ -607,22 +607,27 @@ void thread_func(DetectorEnvironment* env)
 	}
 }
 
-void process_frame(ICamera* capture, cs::camera_settings* set, DetectorEnvironment* environment, Mat& frame)
+void process_frame(ICamera* capture, cs::camera_settings* set, DetectorEnvironment* environment, Mat* frame)
 {
-	if (frame.empty())
+	if (frame == nullptr || environment == nullptr || set == nullptr || capture == nullptr) {
+		cout << "Invalid parameters in process_frame" << endl;
+		return;
+	}
+
+	if (frame->empty())
 		return;
 
 	if (environment->is_undistort) {
 		if (!environment->map1.empty() && !environment->map2.empty()) {
-			cv::remap(frame, frame, environment->map1, environment->map2, cv::INTER_LINEAR);
+			cv::remap(*frame, *frame, environment->map1, environment->map2, cv::INTER_LINEAR);
 		}
 	}
 
 	if (environment->detector_ready) {
-		environment->original_size = frame.size();
+		environment->original_size = frame->size();
 
-		cpu_preprocessing(frame, set, environment->border_dims);
-		environment->detect_frame = &frame;
+		cpu_preprocessing(*frame, set, environment->border_dims);
+		environment->detect_frame = frame;
 
 		capture->set_ready(false);
 		//environment->smphSignalMainToThread.release(); // signal to start detection
@@ -735,7 +740,7 @@ void* camera_loop(void* arg)
 		//environment.smphSignalMainToThread.acquire(); // wait for signal to start detection
 		if (frame != nullptr && environment.detector_ready) {
 			if (!frame->empty()) {
-				process_frame(capture, set, &environment, *frame);
+				process_frame(capture, set, &environment, frame);
 				ind = 1 - ind;
 				frame = &buffers[ind];
 			}
