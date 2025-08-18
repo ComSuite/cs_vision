@@ -372,3 +372,4 @@ FodyWeavers.xsd
 /models/winRTX5080TI/yolo12x.engine
 /models/winRTX5080TI/rtdetr-l.engine
 /models/winRTX5080TI/yolov8s-worldv2.engine
+/models/winRTX5080TI/retinanet-9.engine
