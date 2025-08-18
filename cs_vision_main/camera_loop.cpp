@@ -595,7 +595,7 @@ void detect_func(DetectorEnvironment* env)
 
 void thread_func(DetectorEnvironment* env)
 {
-	while (true) { // smphSignalMainToThread.acquire(); - wait for signal to start detection
+	while (true) {
 		if (!env->detector_ready) {
 			//env->smphSignalMainToThread.acquire();
 			detect_func(env);
