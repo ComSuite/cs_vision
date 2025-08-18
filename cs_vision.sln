@@ -79,6 +79,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cs_vision_bytetrack", "cs_v
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cs_vision_deepsort", "cs_vision_deepsort\cs_vision_deepsort.vcxitems", "{9B009A7E-3D49-4C22-B0B7-38C615051ABF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cs_vision_retinanet", "cs_vision_retinanet\cs_vision_retinanet.vcxitems", "{D11BA5D7-97CD-47E4-B18F-F8D0ED8972C1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -352,6 +354,7 @@ Global
 		cs_vision_lib\cs_vision_lib.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
 		cs_vision_main\cs_vision_main.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
 		cs_vision_ollama_svc\cs_vision_ollama_svc.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
+		cs_vision_retinanet\cs_vision_retinanet.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
 		cs_vision_yolov5_tflite\cs_vision_yolov5_tflite.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
 		cs_vision_yolo_detector\cs_vision_yolo_detector.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
 		cs_vision_yolo_trt\cs_vision_yolo_trt.vcxitems*{04fef7b3-b28a-4a5a-957a-10aa384413c0}*SharedItemsImports = 4
@@ -421,6 +424,7 @@ Global
 		cs_vision_bytetrack\cs_vision_bytetrack.vcxitems*{c8fac0a2-34f8-42db-a7f7-22a293d1687b}*SharedItemsImports = 9
 		onnx_trtengine_converter_lib\onnx_trtengine_converter_lib.vcxitems*{cbe8128c-c213-4847-9bf7-b324829bafbe}*SharedItemsImports = 9
 		os_specific_linux\os_specific_linux.vcxitems*{cca37887-5a52-4927-a7ae-aa4936f27dd7}*SharedItemsImports = 9
+		cs_vision_retinanet\cs_vision_retinanet.vcxitems*{d11ba5d7-97cd-47e4-b18f-f8d0ed8972c1}*SharedItemsImports = 9
 		cs_vision_yolo_trt\cs_vision_yolo_trt.vcxitems*{d3440309-d324-4e15-944d-c026049cecd9}*SharedItemsImports = 9
 		command_line_parcer\command_line_parcer.vcxitems*{d7e1371c-c6d9-4d01-aba0-96ba52678747}*SharedItemsImports = 4
 		cs_vision_common\cs_vision_common.vcxitems*{d7e1371c-c6d9-4d01-aba0-96ba52678747}*SharedItemsImports = 4
