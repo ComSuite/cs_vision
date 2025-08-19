@@ -2,7 +2,7 @@
 
 #include "JsonWrapper.h"
 #include "IObjectDetector.h"
-#include "yolov11.h"
+#include "trt_yolo.h"
 
 namespace cs
 {

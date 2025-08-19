@@ -1,4 +1,4 @@
-#include "yolov11.h"
+#include "trt_yolo.h"
 #include "logging.h"
 #include "cuda_utils.h"
 #include "macros.h"
