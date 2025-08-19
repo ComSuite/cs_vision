@@ -17,8 +17,8 @@ struct Detection
 class TensorRT
 {
 public:
-    //TensorRT() = delete;
     TensorRT(std::string model_path, nvinfer1::ILogger& logger);
+	virtual ~TensorRT();
 
     void preprocess(cv::Mat& image, float* input_buffer);
 

@@ -45,6 +45,17 @@ TensorRT::TensorRT(std::string model_path, nvinfer1::ILogger& logger)
 #endif
 }
 
+TensorRT::~TensorRT()
+{
+    CUDA_CHECK(cudaStreamSynchronize(stream));
+    CUDA_CHECK(cudaStreamDestroy(stream));
+
+    cuda_preprocess_destroy();
+    delete context;
+    delete engine;
+    delete runtime;
+}
+
 void TensorRT::preprocess(Mat& image, float* input_buffer)
 {
     cuda_preprocess(image.ptr(), image.cols, image.rows, input_buffer, input_w, input_h, stream); //gpu_buffers[0]
@@ -139,20 +150,13 @@ TRTYolo::TRTYolo(string model_path, nvinfer1::ILogger& logger) : TensorRT(model_
 
 TRTYolo::~TRTYolo()
 {
-    CUDA_CHECK(cudaStreamSynchronize(stream));
-    CUDA_CHECK(cudaStreamDestroy(stream));
-
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < 2; i++) {
         CUDA_CHECK(cudaFree(gpu_buffers[i]));
+    }
 
     if (cpu_output_buffer != nullptr) {
         delete[] cpu_output_buffer;
     }
-
-    cuda_preprocess_destroy();
-    delete context;
-    delete engine;
-    delete runtime;
 }
 
 void TRTYolo::init()
@@ -189,13 +193,7 @@ void TRTYolo::init()
 #if NV_TENSORRT_MAJOR >= 10 || TRT_BUILD_RTX == 21
 	context->setTensorAddress(engine->getIOTensorName(0), gpu_buffers[0]);
 	context->setTensorAddress(engine->getIOTensorName(1), gpu_buffers[1]);
-#else
-	//context->setTensorAddress(engine->getBindingName(0), (void*)gpu_buffers[0]);
-    //context->setInputShapeBinding(engine->getBindingIndex("images"), (const int32_t*)gpu_buffers[0]);
-    //context->set >setOutputShapeBinding(engine->getBindingIndex("output0"), (const int32_t*)gpu_buffers[1]);
 #endif
-
-    //cuda_preprocess_init(MAX_IMAGE_SIZE);
 
     CUDA_CHECK(cudaStreamCreate(&stream));
 
