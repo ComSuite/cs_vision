@@ -18,6 +18,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)logging.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)macros.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)preprocess.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)print_engine_info.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)trt_yolo.h" />
   </ItemGroup>
   <ItemGroup>
@@ -25,6 +26,7 @@
     <None Include="$(MSBuildThisFileDirectory)preprocess.cu" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)print_engine_info.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)trt_yolo.cpp" />
   </ItemGroup>
   <ItemGroup>

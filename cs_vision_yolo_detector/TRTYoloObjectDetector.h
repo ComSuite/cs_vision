@@ -22,7 +22,7 @@ namespace cs
 		const char* default_input_tensor_name = "";
 		const char* default_output_tensor_name = "";
 
-		std::unique_ptr<YOLOv11> detector = nullptr;
+		std::unique_ptr<TRTYolo> detector = nullptr;
 
 		void postprocess(std::vector<Detection>* detections, int& current_id, bool is_draw, int model_h, int model_w, cv::Mat* image);
 	};

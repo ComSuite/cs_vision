@@ -10,6 +10,7 @@
 #include <filesystem>
 #endif
 #include "std_utils.h"
+#include "print_engine_info.h"
 
 using namespace nvinfer1;
 using namespace std;
@@ -19,11 +20,21 @@ static Logger logger;
 #define isFP16 true
 #define warmup true
 
-YOLOv11::YOLOv11()
+void TensorRT::preprocess(Mat& image, float* input_buffer)
+{
+    cuda_preprocess(image.ptr(), image.cols, image.rows, input_buffer, input_w, input_h, stream); //gpu_buffers[0]
+#ifdef TRT_BUILD_RTX == 21
+    CUDA_CHECK(cudaStreamSynchronize(stream));
+#endif
+}
+
+
+///////////////////////////////////////////////////////////////////////
+TRTYolo::TRTYolo()
 {
 }
 
-YOLOv11::YOLOv11(string model_path, nvinfer1::ILogger& logger)
+TRTYolo::TRTYolo(string model_path, nvinfer1::ILogger& logger)
 {
 #ifdef __WITH_FILESYSTEM_CXX__
     if (to_lower(std::filesystem::path(model_path).extension().string()) == ".onnx") {
@@ -48,7 +59,7 @@ YOLOv11::YOLOv11(string model_path, nvinfer1::ILogger& logger)
 #endif
 }
 
-YOLOv11::~YOLOv11()
+TRTYolo::~TRTYolo()
 {
     CUDA_CHECK(cudaStreamSynchronize(stream));
     CUDA_CHECK(cudaStreamDestroy(stream));
@@ -65,75 +76,7 @@ YOLOv11::~YOLOv11()
     delete runtime;
 }
 
-std::string datatype_to_string(nvinfer1::DataType type)
-{
-    switch (type) {
-    case nvinfer1::DataType::kFLOAT:
-        return "fp32";
-    case nvinfer1::DataType::kHALF:
-        return "fp16";
-    case nvinfer1::DataType::kINT8:
-        return "INT8";
-    case nvinfer1::DataType::kINT32:
-        return "INT32";
-    case nvinfer1::DataType::kBOOL:
-        return "bool8";
-#if NV_TENSORRT_MAJOR >= 10
-    case nvinfer1::DataType::kUINT8:
-        return "UINT8";
-#endif
-    }
-
-	return "unknown";
-}
-
-void print_engine_info(ICudaEngine* engine)
-{
-    std::cout << std::endl << "===== TensorRT Engine Information =====" << std::endl;
-    std::cout << "Name: " << engine->getName() << std::endl;
-
-#if NV_TENSORRT_MAJOR >= 10 || TRT_BUILD_RTX == 21
-    int num_tensors = engine->getNbIOTensors();
-    std::cout << "Number of tensors: " << num_tensors << std::endl;
-
-    for (int i = 0; i < num_tensors; i++) {
-        const char* tensor_name = engine->getIOTensorName(i);
-        std::cout << "\nTensor " << i << ":" << std::endl;
-        std::cout << "  Name: " << tensor_name << std::endl;
-
-        nvinfer1::TensorIOMode io_mode = engine->getTensorIOMode(tensor_name);
-        switch (io_mode) {
-        case nvinfer1::TensorIOMode::kINPUT:
-            std::cout << "  Type: Input" << std::endl;
-            break;
-        case nvinfer1::TensorIOMode::kOUTPUT:
-            std::cout << "  Type: Output" << std::endl;
-            break;
-        default:
-            std::cout << "  Type: Unknown" << std::endl;
-            break;
-        }
-
-        nvinfer1::Dims dims = engine->getTensorShape(tensor_name);
-        std::cout << "  Dimensions: (";
-        for (int j = 0; j < dims.nbDims; j++) {
-            std::cout << dims.d[j];
-            if (j < dims.nbDims - 1) 
-                std::cout << ", ";
-        }
-        std::cout << ")" << std::endl;
-
-        std::cout << "  Data Type: ";
-		std::cout << datatype_to_string(engine->getTensorDataType(tensor_name)) << std::endl << std::endl;
-    }
-#endif
-    int numLayers = engine->getNbLayers();
-    std::cout << "\nNumber of layers: " << numLayers << std::endl;
-
-    std::cout << "=====================================" << std::endl << std::endl;
-}
-
-void YOLOv11::init(std::string engine_path, nvinfer1::ILogger& logger)
+void TRTYolo::init(std::string engine_path, nvinfer1::ILogger& logger)
 {
     ifstream engineStream(engine_path, ios::binary);
     engineStream.seekg(0, ios::end);
@@ -204,15 +147,7 @@ void YOLOv11::init(std::string engine_path, nvinfer1::ILogger& logger)
     }
 }
 
-void YOLOv11::preprocess(Mat& image) 
-{
-    cuda_preprocess(image.ptr(), image.cols, image.rows, gpu_buffers[0], input_w, input_h, stream);
-#ifdef TRT_BUILD_RTX == 21
-    CUDA_CHECK(cudaStreamSynchronize(stream)); 
-#endif
-}
-
-void YOLOv11::infer()
+void TRTYolo::infer()
 {
 #if NV_TENSORRT_MAJOR < 10 && TRT_BUILD_RTX != 21
     context->enqueueV2((void**)gpu_buffers, stream, nullptr);
@@ -221,7 +156,7 @@ void YOLOv11::infer()
 #endif
 }
 
-void YOLOv11::postprocess(vector<Detection>& output)
+void TRTYolo::postprocess(vector<Detection>& output)
 {
 #ifdef TRT_BUILD_RTX == 21
     CUDA_CHECK(cudaMemcpyAsync(cpu_output_buffer, gpu_buffers[1], num_detections * detection_attribute_size * sizeof(float), cudaMemcpyDeviceToHost, stream));
@@ -275,7 +210,7 @@ void YOLOv11::postprocess(vector<Detection>& output)
     }
 }
 
-void YOLOv11::build(std::string onnx_path, nvinfer1::ILogger& logger)
+void TRTYolo::build(std::string onnx_path, nvinfer1::ILogger& logger)
 {
     auto builder = createInferBuilder(logger);
     const auto explicitBatch = 1U << static_cast<uint32_t>(NetworkDefinitionCreationFlag::kEXPLICIT_BATCH);
@@ -300,7 +235,7 @@ void YOLOv11::build(std::string onnx_path, nvinfer1::ILogger& logger)
     delete plan;
 }
 
-bool YOLOv11::save_engine(const std::string& filename)
+bool TRTYolo::save_engine(const std::string& filename)
 {
     // Create an engine path from onnx path
     std::string engine_path;

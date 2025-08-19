@@ -14,36 +14,16 @@ struct Detection
     cv::Rect bbox;
 };
 
-void print_engine_info(nvinfer1::ICudaEngine* engine);
-
-class YOLOv11
+class TensorRT
 {
 public:
-    YOLOv11();
-    YOLOv11(std::string model_path, nvinfer1::ILogger& logger);
-    ~YOLOv11();
+    void preprocess(cv::Mat& image, float* input_buffer);
 
-    void preprocess(cv::Mat& image);
-    void infer();
-    void postprocess(std::vector<Detection>& output);
-    void build(std::string onnx_path, nvinfer1::ILogger& logger);
-    bool save_engine(const std::string& filename);
-
-	int get_model_width() { return input_w; }
-	int get_model_height() { return input_h; }
+    int get_model_width() { return input_w; }
+    int get_model_height() { return input_h; }
 
     nvinfer1::ICudaEngine* get_engine() { return engine; }
-private:
-    void init(std::string engine_path, nvinfer1::ILogger& logger);
-
-    float* gpu_buffers[2];               
-    float* cpu_output_buffer = nullptr;
-
-    std::vector<cv::Rect> boxes;
-    std::vector<int> class_ids;
-    std::vector<float> confidences;
-    std::vector<int> nms_result;
-
+protected:
     cudaStream_t stream;
     nvinfer1::IRuntime* runtime;
     nvinfer1::ICudaEngine* engine;
@@ -57,6 +37,34 @@ private:
     const int MAX_IMAGE_SIZE = 4096 * 4096;
     float conf_threshold = 0.3f;
     float nms_threshold = 0.4f;
+};
+
+class TRTYolo : public TensorRT
+{
+public:
+    TRTYolo();
+    TRTYolo(std::string model_path, nvinfer1::ILogger& logger);
+    ~TRTYolo();
+
+    void infer();
+    void preprocess(cv::Mat& image) {
+        TensorRT::preprocess(image, gpu_buffers[0]);
+    }
+
+    void postprocess(std::vector<Detection>& output);
+    void build(std::string onnx_path, nvinfer1::ILogger& logger);
+    bool save_engine(const std::string& filename);
+
+private:
+    void init(std::string engine_path, nvinfer1::ILogger& logger);
+
+    float* gpu_buffers[2];               
+    float* cpu_output_buffer = nullptr;
+
+    std::vector<cv::Rect> boxes;
+    std::vector<int> class_ids;
+    std::vector<float> confidences;
+    std::vector<int> nms_result;
 
     std::vector<cv::Scalar> colors;
 };

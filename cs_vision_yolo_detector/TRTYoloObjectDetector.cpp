@@ -49,7 +49,7 @@ int TRTYoloObjectDetector::init(object_detector_environment& env)
 	load_rules(env.rules_path.c_str());
 	load_labels(env.label_path.c_str());
 
-	detector = make_unique<YOLOv11>(env.model_path, trt_yolo_logger);
+	detector = make_unique<TRTYolo>(env.model_path, trt_yolo_logger);
 
 	return 1;
 }
