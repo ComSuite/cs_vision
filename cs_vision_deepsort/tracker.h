@@ -1,8 +1,7 @@
 #ifndef TRACKER_H
 #define TRACKER_H
+
 #include <vector>
-
-
 #include "kalmanfilter.h"
 #include "track.h"
 #include "model.h"

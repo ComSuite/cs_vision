@@ -20,33 +20,19 @@ static Logger logger;
 #define isFP16 true
 #define warmup true
 
-void TensorRT::preprocess(Mat& image, float* input_buffer)
-{
-    cuda_preprocess(image.ptr(), image.cols, image.rows, input_buffer, input_w, input_h, stream); //gpu_buffers[0]
-#ifdef TRT_BUILD_RTX == 21
-    CUDA_CHECK(cudaStreamSynchronize(stream));
-#endif
-}
-
-
-///////////////////////////////////////////////////////////////////////
-TRTYolo::TRTYolo()
-{
-}
-
-TRTYolo::TRTYolo(string model_path, nvinfer1::ILogger& logger)
+TensorRT::TensorRT(std::string model_path, nvinfer1::ILogger& logger)
 {
 #ifdef __WITH_FILESYSTEM_CXX__
     if (to_lower(std::filesystem::path(model_path).extension().string()) == ".onnx") {
 #else
-	if (model_path.find(".onnx") != std::string::npos) {
+    if (model_path.find(".onnx") != std::string::npos) {
 #endif
-        build(model_path, logger);
+        build_engine(model_path, logger);
         save_engine(model_path);
     }
-	else {
-		init(model_path, logger);
-	}
+    else {
+        init_engine(model_path, logger);
+    }
 
 #if NV_TENSORRT_MAJOR < 10 && TRT_BUILD_RTX != 21
     auto input_dims = engine->getBindingDimensions(0);
@@ -59,10 +45,103 @@ TRTYolo::TRTYolo(string model_path, nvinfer1::ILogger& logger)
 #endif
 }
 
+void TensorRT::preprocess(Mat& image, float* input_buffer)
+{
+    cuda_preprocess(image.ptr(), image.cols, image.rows, input_buffer, input_w, input_h, stream); //gpu_buffers[0]
+#ifdef TRT_BUILD_RTX == 21
+    CUDA_CHECK(cudaStreamSynchronize(stream));
+#endif
+}
+
+bool TensorRT::init_engine(std::string engine_path, nvinfer1::ILogger& logger)
+{
+    ifstream engineStream(engine_path, ios::binary);
+    engineStream.seekg(0, ios::end);
+    const size_t modelSize = engineStream.tellg();
+    engineStream.seekg(0, ios::beg);
+    unique_ptr<char[]> engineData(new char[modelSize]);
+    engineStream.read(engineData.get(), modelSize);
+    engineStream.close();
+
+    runtime = createInferRuntime(logger);
+    engine = runtime->deserializeCudaEngine(engineData.get(), modelSize);
+    if (engine == nullptr) {
+        cout << "Failed to deserialize engine" << endl;
+        return false;
+    }
+
+    print_engine_info(engine);
+    cuda_preprocess_init(MAX_IMAGE_SIZE);
+    context = engine->createExecutionContext();
+
+    return true;
+}
+
+void TensorRT::build_engine(std::string onnx_path, nvinfer1::ILogger& logger)
+{
+    auto builder = createInferBuilder(logger);
+    const auto explicitBatch = 1U << static_cast<uint32_t>(NetworkDefinitionCreationFlag::kEXPLICIT_BATCH);
+    INetworkDefinition* network = builder->createNetworkV2(explicitBatch);
+    IBuilderConfig* config = builder->createBuilderConfig();
+    if (isFP16) {
+        config->setFlag(BuilderFlag::kFP16);
+    }
+    nvonnxparser::IParser* parser = nvonnxparser::createParser(*network, logger);
+    bool parsed = parser->parseFromFile(onnx_path.c_str(), static_cast<int>(nvinfer1::ILogger::Severity::kINFO));
+    IHostMemory* plan{ builder->buildSerializedNetwork(*network, *config) };
+
+    runtime = createInferRuntime(logger);
+
+    engine = runtime->deserializeCudaEngine(plan->data(), plan->size());
+
+    context = engine->createExecutionContext();
+
+    delete network;
+    delete config;
+    delete parser;
+    delete plan;
+}
+
+bool TensorRT::save_engine(const std::string& filename)
+{
+    std::string engine_path;
+    size_t dotIndex = filename.find_last_of(".");
+    if (dotIndex != std::string::npos) {
+        engine_path = filename.substr(0, dotIndex) + ".engine";
+    }
+    else {
+        return false;
+    }
+
+    if (engine) {
+        nvinfer1::IHostMemory* data = engine->serialize();
+        std::ofstream file;
+        file.open(engine_path, std::ios::binary | std::ios::out);
+        if (!file.is_open()) {
+            std::cout << "Create engine file" << engine_path << " failed" << std::endl;
+            return 0;
+        }
+
+        file.write((const char*)data->data(), data->size());
+        file.close();
+
+        delete data;
+    }
+
+    return true;
+}
+
+///////////////////////////////////////////////////////////////////////
+TRTYolo::TRTYolo(string model_path, nvinfer1::ILogger& logger) : TensorRT(model_path, logger)
+{
+	init();
+}
+
 TRTYolo::~TRTYolo()
 {
     CUDA_CHECK(cudaStreamSynchronize(stream));
     CUDA_CHECK(cudaStreamDestroy(stream));
+
     for (int i = 0; i < 2; i++)
         CUDA_CHECK(cudaFree(gpu_buffers[i]));
 
@@ -76,27 +155,8 @@ TRTYolo::~TRTYolo()
     delete runtime;
 }
 
-void TRTYolo::init(std::string engine_path, nvinfer1::ILogger& logger)
+void TRTYolo::init()
 {
-    ifstream engineStream(engine_path, ios::binary);
-    engineStream.seekg(0, ios::end);
-    const size_t modelSize = engineStream.tellg();
-    engineStream.seekg(0, ios::beg);
-    unique_ptr<char[]> engineData(new char[modelSize]);
-    engineStream.read(engineData.get(), modelSize);
-    engineStream.close();
-
-    runtime = createInferRuntime(logger);
-    engine = runtime->deserializeCudaEngine(engineData.get(), modelSize);
-	if (engine == nullptr) {
-		cout << "Failed to deserialize engine" << endl;
-		return;
-	}
-
-    print_engine_info(engine);
-
-    context = engine->createExecutionContext();
-
 #if NV_TENSORRT_MAJOR < 10 && TRT_BUILD_RTX != 21
     auto input_dims = engine->getBindingDimensions(0);
     input_h = input_dims.d[2];
@@ -135,7 +195,7 @@ void TRTYolo::init(std::string engine_path, nvinfer1::ILogger& logger)
     //context->set >setOutputShapeBinding(engine->getBindingIndex("output0"), (const int32_t*)gpu_buffers[1]);
 #endif
 
-    cuda_preprocess_init(MAX_IMAGE_SIZE);
+    //cuda_preprocess_init(MAX_IMAGE_SIZE);
 
     CUDA_CHECK(cudaStreamCreate(&stream));
 
@@ -154,6 +214,10 @@ void TRTYolo::infer()
 #else
     this->context->enqueueV3(this->stream);
 #endif
+}
+
+void TRTYolo::preprocess(cv::Mat& image) {
+    TensorRT::preprocess(image, gpu_buffers[0]);
 }
 
 void TRTYolo::postprocess(vector<Detection>& output)
@@ -210,58 +274,5 @@ void TRTYolo::postprocess(vector<Detection>& output)
     }
 }
 
-void TRTYolo::build(std::string onnx_path, nvinfer1::ILogger& logger)
-{
-    auto builder = createInferBuilder(logger);
-    const auto explicitBatch = 1U << static_cast<uint32_t>(NetworkDefinitionCreationFlag::kEXPLICIT_BATCH);
-    INetworkDefinition* network = builder->createNetworkV2(explicitBatch);
-    IBuilderConfig* config = builder->createBuilderConfig();
-    if (isFP16) {
-        config->setFlag(BuilderFlag::kFP16);
-    }
-    nvonnxparser::IParser* parser = nvonnxparser::createParser(*network, logger);
-    bool parsed = parser->parseFromFile(onnx_path.c_str(), static_cast<int>(nvinfer1::ILogger::Severity::kINFO));
-    IHostMemory* plan{ builder->buildSerializedNetwork(*network, *config) };
 
-    runtime = createInferRuntime(logger);
-
-    engine = runtime->deserializeCudaEngine(plan->data(), plan->size());
-
-    context = engine->createExecutionContext();
-
-    delete network;
-    delete config;
-    delete parser;
-    delete plan;
-}
-
-bool TRTYolo::save_engine(const std::string& filename)
-{
-    // Create an engine path from onnx path
-    std::string engine_path;
-    size_t dotIndex = filename.find_last_of(".");
-    if (dotIndex != std::string::npos) {
-        engine_path = filename.substr(0, dotIndex) + ".engine";
-    }
-    else {
-        return false;
-    }
-
-    if (engine) {
-        nvinfer1::IHostMemory* data = engine->serialize();
-        std::ofstream file;
-        file.open(engine_path, std::ios::binary | std::ios::out);
-        if (!file.is_open()) {
-            std::cout << "Create engine file" << engine_path << " failed" << std::endl;
-            return 0;
-        }
-
-        file.write((const char*)data->data(), data->size());
-        file.close();
-
-        delete data;
-    }
-
-    return true;
-}
 

@@ -17,12 +17,19 @@ struct Detection
 class TensorRT
 {
 public:
+    //TensorRT() = delete;
+    TensorRT(std::string model_path, nvinfer1::ILogger& logger);
+
     void preprocess(cv::Mat& image, float* input_buffer);
 
     int get_model_width() { return input_w; }
     int get_model_height() { return input_h; }
 
     nvinfer1::ICudaEngine* get_engine() { return engine; }
+
+    bool init_engine(std::string engine_path, nvinfer1::ILogger& logger);
+    void build_engine(std::string onnx_path, nvinfer1::ILogger& logger);
+    bool save_engine(const std::string& filename);
 protected:
     cudaStream_t stream;
     nvinfer1::IRuntime* runtime;
@@ -42,21 +49,14 @@ protected:
 class TRTYolo : public TensorRT
 {
 public:
-    TRTYolo();
     TRTYolo(std::string model_path, nvinfer1::ILogger& logger);
-    ~TRTYolo();
+    virtual ~TRTYolo();
 
     void infer();
-    void preprocess(cv::Mat& image) {
-        TensorRT::preprocess(image, gpu_buffers[0]);
-    }
-
+    void preprocess(cv::Mat& image);
     void postprocess(std::vector<Detection>& output);
-    void build(std::string onnx_path, nvinfer1::ILogger& logger);
-    bool save_engine(const std::string& filename);
-
 private:
-    void init(std::string engine_path, nvinfer1::ILogger& logger);
+    void init();
 
     float* gpu_buffers[2];               
     float* cpu_output_buffer = nullptr;
