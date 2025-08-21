@@ -26,6 +26,7 @@
 #include "NullObjectDetector.h"
 #include "TFYOLOv5ObjectDetector.h"
 #include "TRTYOLOObjectDetector.h"
+#include "TRTRetinaNetObjectDetector.h"
 #include "GemmaDetector.h"
 #include "QwenDetector.h"
 #include "OllamaTextPromptDetector.h"
@@ -55,6 +56,7 @@ IObjectDetector* create_detector(int kind)
 	case ObjectDetectorKind::OBJECT_DETECTOR_MOT_BYTETRACK: return new TrackerByteTrack();
 	case ObjectDetectorKind::OBJECT_DETECTOR_MOT_DEEPSORT: return new TrackerDeepSORT();
 	case ObjectDetectorKind::OBJECT_DETECTOR_OLLAMA_PROMPT: return new OllamaTextPromptDetector();
+	case ObjectDetectorKind::OBJECT_DETECTOR_RETINANET: return new TRTRetinaNetObjectDetector();
 	}
 
 	return nullptr;

@@ -15,8 +15,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)TRTRetinaNetObjectDetector.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)trt_retinanet.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)TRTRetinaNetObjectDetector.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)trt_retinanet.cpp" />
   </ItemGroup>
 </Project>

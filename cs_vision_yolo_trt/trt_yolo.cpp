@@ -162,18 +162,10 @@ TRTYolo::~TRTYolo()
 void TRTYolo::init()
 {
 #if NV_TENSORRT_MAJOR < 10 && TRT_BUILD_RTX != 21
-    auto input_dims = engine->getBindingDimensions(0);
-    input_h = input_dims.d[2];
-    input_w = input_dims.d[3];
-	
     detection_attribute_size = engine->getBindingDimensions(1).d[1];
     num_detections = engine->getBindingDimensions(1).d[2];
     num_classes = detection_attribute_size - 4;
 #else
-    auto input_dims = engine->getTensorShape(engine->getIOTensorName(0));
-    input_h = input_dims.d[2];
-    input_w = input_dims.d[3];
-	
 	auto output_dims = engine->getTensorShape(engine->getIOTensorName(1));
     detection_attribute_size = output_dims.d[1];
     num_detections = output_dims.d[2];
