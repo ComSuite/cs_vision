@@ -34,7 +34,8 @@
 						"execute_mode": 0,
 						"additional" : [
 								{"name": "illustration_mode", "val": 4, "descr": "0-none, 1-box, 2-box and text, 3-mask, 4-mask and text"},
-								{"name": "model", "val": "qwen2.5vl:3b"},
+								{"name": "model1", "val": "qwen2.5vl:3b"},
+								{"name": "model", "val": "granite3.2-vision:2b"},
 								{"name": "prompt2", "val": "Detect persons and cats in the image and return their locations and label (person, cat) in the form of coordinates."},
 								{"name": "prompt1", "val": "Provide a one-sentence caption for the provided image."},
 								{"name": "prompt", "val": "Do you see something dangerous at this image? If yes explain if no just answer Nothing danger."},

@@ -110,22 +110,25 @@ int OllamaDetector::detect(cv::Mat* input, int& current_id, bool is_draw, std::l
 		root.AddMember("stream", false, allocator);
 
 		if (input != nullptr && !input->empty()) {
-			double k = 0.50;
+			double k = 0.10;
 			cv::Mat img;
 			cv::resize(*input, img, cv::Size(), k, k);
 
 			std::vector<uchar> buf;
-			cv::imencode(".jpg", img, buf);
-			std::string encoded = base64_encode(buf.data(), buf.size());
-			Value image_array(kArrayType);
-			image_array.PushBack(Value().SetString(encoded.c_str(), encoded.length()), allocator);
+			if (cv::imencode(".jpg", img, buf)) {
+				std::string encoded = base64_encode(buf.data(), buf.size());
+				if (!encoded.empty()) {
+					rapidjson::Value image_array(kArrayType);
+					image_array.PushBack(Value().SetString(encoded.c_str(), encoded.length()), allocator);
 
-			root.AddMember("images", image_array, allocator);
+					root.AddMember("images", image_array, allocator);
+				}
+			}
 		}
 
-		StringBuffer buffer;
+		rapidjson::StringBuffer buffer;
 		buffer.Clear();
-		Writer<StringBuffer> writer(buffer);
+		rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
 		root.Accept(writer);
 		if (buffer.GetSize() == 0) {
 			std::cerr << "JSON serialization failed, buffer is empty." << std::endl;
